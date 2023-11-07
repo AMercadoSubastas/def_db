@@ -1,0 +1,11 @@
+{
+    "name": "subastas2024",
+    "version": "24.4.0",
+    "description": "subastas2024",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "private": true,
+    "dependencies": {},
+    "engines": {
+        "node": ">=18"
+    }
+}

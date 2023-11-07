@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<loginTicketResponse version="1.0">
+    <header>
+        <source>CN=wsaa, O=AFIP, C=AR, SERIALNUMBER=CUIT 33693450239</source>
+        <destination>C=ar, ST=some-state, O=adrian mercado s.a., SERIALNUMBER=CUIT 30710183437, CN=amercado4</destination>
+        <uniqueId>4154689970</uniqueId>
+        <generationTime>2023-05-19T09:59:57.643-03:00</generationTime>
+        <expirationTime>2023-05-19T21:59:57.643-03:00</expirationTime>
+    </header>
+    <credentials>
+        <token>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3NvIHZlcnNpb249IjIuMCI+CiAgICA8aWQgc3JjPSJDTj13c2FhLCBPPUFGSVAsIEM9QVIsIFNFUklBTE5VTUJFUj1DVUlUIDMzNjkzNDUwMjM5IiBkc3Q9IkNOPXdzZmUsIE89QUZJUCwgQz1BUiIgdW5pcXVlX2lkPSIyMjY5ODQwMjUyIiBnZW5fdGltZT0iMTY4NDUwMTEzNyIgZXhwX3RpbWU9IjE2ODQ1NDQzOTciLz4KICAgIDxvcGVyYXRpb24gdHlwZT0ibG9naW4iIHZhbHVlPSJncmFudGVkIj4KICAgICAgICA8bG9naW4gZW50aXR5PSIzMzY5MzQ1MDIzOSIgc2VydmljZT0id3NmZSIgdWlkPSJDPWFyLCBTVD1zb21lLXN0YXRlLCBPPWFkcmlhbiBtZXJjYWRvIHMuYS4sIFNFUklBTE5VTUJFUj1DVUlUIDMwNzEwMTgzNDM3LCBDTj1hbWVyY2FkbzQiIGF1dGhtZXRob2Q9ImNtcyIgcmVnbWV0aG9kPSIyMiI+CiAgICAgICAgICAgIDxyZWxhdGlvbnM+CiAgICAgICAgICAgICAgICA8cmVsYXRpb24ga2V5PSIzMDcxMDE4MzQzNyIgcmVsdHlwZT0iNCIvPgogICAgICAgICAgICA8L3JlbGF0aW9ucz4KICAgICAgICA8L2xvZ2luPgogICAgPC9vcGVyYXRpb24+Cjwvc3NvPgo=</token>
+        <sign>cLNTAdW+jE/P4ZLfqCllFqbdEwDCl+nDpu7GPL4Qa0sXmH/nkZfCyk5oDzO2h9ZSoTie7pnievpTj1NzJvkYlKJbGjdkl7wfBzeZZDn52+U9mbNR2GD7Hzx3mKt+oLMlhhZp+ebkHKfiFysu+XiTZjPBtn3+fwjJpfHtpTWOdxw=</sign>
+    </credentials>
+</loginTicketResponse>
