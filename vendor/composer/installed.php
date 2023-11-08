@@ -46,6 +46,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'composer/xdebug-handler' => array(
+            'pretty_version' => '3.0.3',
+            'version' => '3.0.3.0',
+            'reference' => 'ced299686f41dce890debac69273b47ffe98a40c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/./xdebug-handler',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'defuse/php-encryption' => array(
             'pretty_version' => 'v2.3.1',
             'version' => '2.3.1.0',
@@ -469,6 +478,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'pdepend/pdepend' => array(
+            'pretty_version' => '2.15.1',
+            'version' => '2.15.1.0',
+            'reference' => 'd12f25bcdfb7754bea458a4a5cb159d55e9950d0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../pdepend/pdepend',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'phenx/php-font-lib' => array(
             'pretty_version' => '0.5.4',
             'version' => '0.5.4.0',
@@ -519,6 +537,15 @@
             'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'phpmd/phpmd' => array(
+            'pretty_version' => '2.14.1',
+            'version' => '2.14.1.0',
+            'reference' => '442fc2c34edcd5198b442d8647c7f0aec3afabe8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmd/phpmd',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'phpoffice/phpspreadsheet' => array(
             'pretty_version' => '1.29.0',
@@ -572,6 +599,7 @@
             'dev_requirement' => false,
             'provided' => array(
                 0 => '^1.0',
+                1 => '1.1|2.0',
             ),
         ),
         'psr/event-dispatcher' => array(
@@ -806,6 +834,15 @@
                 0 => '1.1|2.0|3.0',
             ),
         ),
+        'symfony/config' => array(
+            'pretty_version' => 'v6.0.19',
+            'version' => '6.0.19.0',
+            'reference' => 'db4fc45c24e0c3e2198e68ada9d7f90daa1f97e3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/config',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'symfony/console' => array(
             'pretty_version' => 'v6.0.19',
             'version' => '6.0.19.0',
@@ -814,6 +851,24 @@
             'install_path' => __DIR__ . '/../symfony/console',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'symfony/dependency-injection' => array(
+            'pretty_version' => 'v6.0.20',
+            'version' => '6.0.20.0',
+            'reference' => '359806e1adebd1c43e18e5ea22acd14bef7fcf8c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/dependency-injection',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'symfony/deprecation-contracts' => array(
+            'pretty_version' => 'v3.0.2',
+            'version' => '3.0.2.0',
+            'reference' => '26954b3d62a6c5fd0ea8a2a00c0353a14978d05c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/deprecation-contracts',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'symfony/event-dispatcher' => array(
             'pretty_version' => 'v6.0.19',
@@ -838,6 +893,15 @@
             'provided' => array(
                 0 => '2.0|3.0',
             ),
+        ),
+        'symfony/filesystem' => array(
+            'pretty_version' => 'v6.0.19',
+            'version' => '6.0.19.0',
+            'reference' => '3d49eec03fda1f0fc19b7349fbbe55ebc1004214',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/filesystem',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'symfony/finder' => array(
             'pretty_version' => 'v6.0.19',
@@ -955,6 +1019,12 @@
             'install_path' => __DIR__ . '/../symfony/service-contracts',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'symfony/service-implementation' => array(
+            'dev_requirement' => true,
+            'provided' => array(
+                0 => '1.1|2.0|3.0',
+            ),
         ),
         'symfony/string' => array(
             'pretty_version' => 'v6.0.19',

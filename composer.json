@@ -82,5 +82,8 @@
     },
     "scripts": {
         "routes": "PHPMaker2024\\Subastas2024\\RouteAttributes::dispatch"
+    },
+    "require-dev": {
+        "phpmd/phpmd": "^2.14"
     }
 }
