@@ -1,5 +1,5 @@
 /*!
- * Core JavaScript for PHPMaker v2024.4.0
+ * Core JavaScript for PHPMaker v24.13.0
  * Copyright (c) e.World Technology Limited. All rights reserved.
  */
 var ew = (function () {
@@ -288,30 +288,30 @@ var ew = (function () {
   };
    //***
 
-  function _typeof(obj) {
+  function _typeof(o) {
     "@babel/helpers - typeof";
 
-    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    }, _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+      return typeof o;
+    } : function (o) {
+      return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+    }, _typeof(o);
   }
 
-  function _toPrimitive(input, hint) {
-    if (_typeof(input) !== "object" || input === null) return input;
-    var prim = input[Symbol.toPrimitive];
-    if (prim !== undefined) {
-      var res = prim.call(input, hint || "default");
-      if (_typeof(res) !== "object") return res;
+  function toPrimitive(t, r) {
+    if ("object" != _typeof(t) || !t) return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i = e.call(t, r || "default");
+      if ("object" != _typeof(i)) return i;
       throw new TypeError("@@toPrimitive must return a primitive value.");
     }
-    return (hint === "string" ? String : Number)(input);
+    return ("string" === r ? String : Number)(t);
   }
 
-  function _toPropertyKey(arg) {
-    var key = _toPrimitive(arg, "string");
-    return _typeof(key) === "symbol" ? key : String(key);
+  function toPropertyKey(t) {
+    var i = toPrimitive(t, "string");
+    return "symbol" == _typeof(i) ? i : String(i);
   }
 
   function _defineProperties(target, props) {
@@ -320,7 +320,7 @@ var ew = (function () {
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
       if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      Object.defineProperty(target, toPropertyKey(descriptor.key), descriptor);
     }
   }
   function _createClass(Constructor, protoProps, staticProps) {
@@ -333,7 +333,7 @@ var ew = (function () {
   }
 
   function _defineProperty(obj, key, value) {
-    key = _toPropertyKey(key);
+    key = toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -420,7 +420,11 @@ var ew = (function () {
   }
 
   function _isNativeFunction(fn) {
-    return Function.toString.call(fn).indexOf("[native code]") !== -1;
+    try {
+      return Function.toString.call(fn).indexOf("[native code]") !== -1;
+    } catch (e) {
+      return typeof fn === "function";
+    }
   }
 
   function _isNativeReflectConstruct() {
@@ -595,7 +599,7 @@ var ew = (function () {
       set: function (value) {
         var _this$_selectionList;
         this._selected = value;
-        (_this$_selectionList = this._selectionList) == null ? void 0 : _this$_selectionList.render();
+        (_this$_selectionList = this._selectionList) == null || _this$_selectionList.render();
       }
     }]);
     return SelectionListOption;
@@ -728,7 +732,7 @@ var ew = (function () {
      */;
     _proto.showLoading = function showLoading() {
       var _this$target;
-      (_this$target = this.target) == null ? void 0 : _this$target.appendChild(document.createRange().createContextualFragment(ew.spinnerTemplate()));
+      (_this$target = this.target) == null || _this$target.appendChild(document.createRange().createContextualFragment(ew.spinnerTemplate()));
     }
 
     /**
@@ -736,7 +740,7 @@ var ew = (function () {
      */;
     _proto.hideLoading = function hideLoading() {
       var _this$target2;
-      (_this$target2 = this.target) == null || (_this$target2 = _this$target2.querySelector(".ew-loading")) == null ? void 0 : _this$target2.remove();
+      (_this$target2 = this.target) == null || (_this$target2 = _this$target2.querySelector(".ew-loading")) == null || _this$target2.remove();
     }
 
     /**
@@ -816,7 +820,7 @@ var ew = (function () {
     _proto.focus = function focus() {
       if (this.list) {
         var _this$target3;
-        (_this$target3 = this.target) == null || (_this$target3 = _this$target3.querySelector("input")) == null ? void 0 : _this$target3.focus();
+        (_this$target3 = this.target) == null || (_this$target3 = _this$target3.querySelector("input")) == null || _this$target3.focus();
       } else {
         _HTMLElement.prototype.focus.call(this);
       }
@@ -1124,9 +1128,9 @@ var ew = (function () {
       popoverViews: ["dayGridMonth"],
       fullCalendarOptions: {
         headerToolbar: {
-          left: "prev,next today",
+          start: "prev,next today",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+          end: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
         },
         themeSystem: "bootstrap5",
         // Bootstrap5 theme with Font Awesome icons
@@ -1153,7 +1157,6 @@ var ew = (function () {
         // Define the automatic cropping area size (between 0 and 1)
         viewMode: 2 // Restrict the minimum canvas size to fit within the container
       },
-
       cropperCanvasOptions: {
         // See https://github.com/fengyuanchen/cropperjs/blob/e969348d313dafe3416926125b21388cc67cefb1/README.md#getcroppedcanvasoptions
         minWidth: 256,
@@ -1164,7 +1167,6 @@ var ew = (function () {
         imageSmoothingQuality: "high" // Quality of image smoothing
       }
     },
-
     importUploadOptions: {
       maxFileSize: 10000000,
       maxNumberOfFiles: 10
@@ -1177,7 +1179,6 @@ var ew = (function () {
         // Disable backdrop animation
         icon: "" // Disable icon animation
       },
-
       hideClass: {
         popup: "",
         // Disable popup animation
@@ -1185,7 +1186,6 @@ var ew = (function () {
         // Disable backdrop animation
         icon: "" // Disable icon animation
       },
-
       customClass: {
         container: "ew-swal2-container",
         popup: "ew-swal2-popup",
@@ -1245,7 +1245,6 @@ var ew = (function () {
         cursor: "grabbing"
       } // See https://api.jqueryui.com/draggable/
     },
-
     filterOptions: {
       // Select2 options
       allowClear: true,
@@ -1278,7 +1277,6 @@ var ew = (function () {
     toastOptions: {
       position: "topRight" // topRight|topLeft|bottomRight|bottomLeft
     },
-
     tippyOptions: {
       theme: "translucent"
     },
@@ -1295,7 +1293,6 @@ var ew = (function () {
       // Show view rules button
       allowClearRules: false // Show clear rules button
     },
-
     // Query builder options
     queryBuilderPlugins: {
       // Query builder plugins
@@ -1367,7 +1364,6 @@ var ew = (function () {
     el.setAttribute("data-bs-theme", theme); // For Bootstrap 5.3+
     el.classList.toggle("dark", theme == "dark"); // For Tailwind
   });
-
   ew$1.setTheme = theme => {
     if (theme !== "light" && theme !== "dark")
       // Auto
@@ -1581,6 +1577,13 @@ var ew = (function () {
    * Bundle IDs for applying client side template
    */
   ew$1.applyTemplateId = ["jsrender", "makerjs"];
+
+  /**
+   * Register 'ew' as global helper
+   */
+  loadjs.ready("jsrender", () => $.views.helpers({
+    ew: ew$1
+  }));
 
   /**
    * Render client side template, use the HTML in DOM and return the HTML

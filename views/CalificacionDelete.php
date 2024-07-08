@@ -111,8 +111,7 @@ while ($Page->fetch()) {
         <td<?= $Page->activo->cellAttributes() ?>>
 <span id="">
 <span<?= $Page->activo->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($Page->activo->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
-</span>
+<?= $Page->activo->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

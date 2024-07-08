@@ -1,5 +1,5 @@
 /*!
- * JavaScript for PHPMaker v2024.4.0
+ * JavaScript for PHPMaker v24.13.0
  * Copyright (c) e.World Technology Limited. All rights reserved.
  */
 (function (ew$1, $$1, luxon) {
@@ -526,7 +526,7 @@
       let value = ew.getValue(el);
       if (!ew.checkByRegEx(value, pattern)) {
         return {
-          regex: ew.language.phrase("IncorrectField")
+          regex: ew.language.phrase("IncorrectRegExp")
         };
       }
       return false;
@@ -737,30 +737,30 @@
     zip
   };
 
-  function _typeof(obj) {
+  function _typeof(o) {
     "@babel/helpers - typeof";
 
-    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    }, _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+      return typeof o;
+    } : function (o) {
+      return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+    }, _typeof(o);
   }
 
-  function _toPrimitive(input, hint) {
-    if (_typeof(input) !== "object" || input === null) return input;
-    var prim = input[Symbol.toPrimitive];
-    if (prim !== undefined) {
-      var res = prim.call(input, hint || "default");
-      if (_typeof(res) !== "object") return res;
+  function toPrimitive(t, r) {
+    if ("object" != _typeof(t) || !t) return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i = e.call(t, r || "default");
+      if ("object" != _typeof(i)) return i;
       throw new TypeError("@@toPrimitive must return a primitive value.");
     }
-    return (hint === "string" ? String : Number)(input);
+    return ("string" === r ? String : Number)(t);
   }
 
-  function _toPropertyKey(arg) {
-    var key = _toPrimitive(arg, "string");
-    return _typeof(key) === "symbol" ? key : String(key);
+  function toPropertyKey(t) {
+    var i = toPrimitive(t, "string");
+    return "symbol" == _typeof(i) ? i : String(i);
   }
 
   function _defineProperties(target, props) {
@@ -769,7 +769,7 @@
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
       if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      Object.defineProperty(target, toPropertyKey(descriptor.key), descriptor);
     }
   }
   function _createClass(Constructor, protoProps, staticProps) {
@@ -803,7 +803,7 @@
   }
 
   function _defineProperty(obj, key, value) {
-    key = _toPropertyKey(key);
+    key = toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -990,11 +990,11 @@
         // Call the user/success function, if it exists. Pass the response body, status text and xhr.
         if (statusText === 'success') {
           var _request$settings$suc;
-          (_request$settings$suc = request.settings.success) == null ? void 0 : _request$settings$suc.call(request.xhr, response, statusText);
+          (_request$settings$suc = request.settings.success) == null || _request$settings$suc.call(request.xhr, response, statusText);
         }
 
         // Call complete
-        (_request$settings$com = request.settings.complete) == null ? void 0 : _request$settings$com.call(request.xhr, statusText);
+        (_request$settings$com = request.settings.complete) == null || _request$settings$com.call(request.xhr, statusText);
       });
     }
   });
@@ -1136,7 +1136,6 @@
             });
           });
         }
-
         let args = {
             form: form,
             result: true
@@ -1566,7 +1565,6 @@
           self.trigger(evt, [args]);
           return false; // Disable normal submission
         });
-
         $form.find("[data-field], .ew-priv").on("change", function () {
           if (ew.CONFIRM_CANCEL) self.modified = true;
         });
@@ -1917,6 +1915,7 @@
           });
         }, delay); // Focus after tab transition
         this._focused = true;
+        this.trigger("focused");
       }
     }
 
@@ -1988,6 +1987,7 @@
           preventScroll: Form.autoFocusPreventScroll && this.autoFocusPreventScroll
         }); // Focus the Quick Search input
         this._focused = true;
+        this.trigger("focused");
       }
     }
 
@@ -2149,7 +2149,6 @@
         (_field$element2 = field.element) != null ? _field$element2 : field.element = this.getFieldElements(field.name, rowIndex);
         value[field.name] = field.value; // Get field value
       }
-
       return value;
     }
 
@@ -2747,7 +2746,7 @@
           let loadingMoreTimer;
           $dataset.on("scroll", () => {
             var _loadingMoreTimer;
-            (_loadingMoreTimer = loadingMoreTimer) == null ? void 0 : _loadingMoreTimer.cancel();
+            (_loadingMoreTimer = loadingMoreTimer) == null || _loadingMoreTimer.cancel();
             loadingMoreTimer = $$1.later(self.delay, null, () => {
               let $footer = $menu.find(".tt-footer");
               if (!$footer.is(":hidden") && !loadingMore) {
@@ -2759,7 +2758,7 @@
                   self.getMore().always(() => loadingMore = false);
                 } else {
                   var _loadingMoreTimer2;
-                  (_loadingMoreTimer2 = loadingMoreTimer) == null ? void 0 : _loadingMoreTimer2.cancel();
+                  (_loadingMoreTimer2 = loadingMoreTimer) == null || _loadingMoreTimer2.cancel();
                 }
               }
             });
@@ -2790,7 +2789,6 @@
           // Force selection or not search form
           v = this.element.options[index].value; // Replace the display value by Link Field value
       }
-
       if (v !== this.$element.attr("value")) this.$element.attr("value", v).trigger("change"); // Set value to the actual field
     }
 
@@ -3078,7 +3076,7 @@
       decorated.call(this, container, $container);
 
       // Remove handlers
-      (_container$listeners$ = container.listeners['results:select']) == null ? void 0 : _container$listeners$.pop();
+      (_container$listeners$ = container.listeners['results:select']) == null || _container$listeners$.pop();
       this.$results.off('mouseup');
       container.on('results:select', function (evt) {
         var $highlighted = self.getHighlightedResults();
@@ -3131,7 +3129,7 @@
       var _container$listeners$;
       var self = this;
       decorated.call(this, container, $container);
-      (_container$listeners$ = container.listeners['close']) == null ? void 0 : _container$listeners$.pop(); // Remove handler from Search
+      (_container$listeners$ = container.listeners['close']) == null || _container$listeners$.pop(); // Remove handler from Search
 
       container.on('close', function () {
         self.$search.attr('tabindex', -1).removeAttr('aria-controls').removeAttr('aria-activedescendant');
@@ -3216,7 +3214,7 @@
     // Override _positionDropdown()
     _proto._positionDropdown = function _positionDropdown() {
       var _this$_popper2;
-      (_this$_popper2 = this._popper) == null ? void 0 : _this$_popper2.update();
+      (_this$_popper2 = this._popper) == null || _this$_popper2.update();
     }
 
     // Override destroy()
@@ -3224,7 +3222,7 @@
     _proto.destroy = function destroy(decorated) {
       var _this$_popper3;
       _AttachBody.prototype.destroy.call(this, decorated);
-      (_this$_popper3 = this._popper) == null ? void 0 : _this$_popper3.destroy();
+      (_this$_popper3 = this._popper) == null || _this$_popper3.destroy();
       this._popper = null;
     };
     return Select2AttachBody;
@@ -3276,7 +3274,7 @@
       container.on('results:all', function () {
         var _self$$search$;
         self._updateDropdown();
-        (_self$$search$ = self.$search[0]) == null ? void 0 : _self$$search$.focus();
+        (_self$$search$ = self.$search[0]) == null || _self$$search$.focus();
       });
       container.on('results:append', function () {
         self._updateDropdown();
@@ -3287,13 +3285,13 @@
       container.on('select', function (e) {
         var _e$originalEvent;
         let target = (_e$originalEvent = e.originalEvent) == null ? void 0 : _e$originalEvent.currentTarget;
-        target == null ? void 0 : target.classList.add('select2-results__option--selected');
+        target == null || target.classList.add('select2-results__option--selected');
         self._updateDropdown();
       });
       container.on('unselect', function (e) {
         var _e$originalEvent2;
         let target = (_e$originalEvent2 = e.originalEvent) == null ? void 0 : _e$originalEvent2.currentTarget;
-        target == null ? void 0 : target.classList.remove('select2-results__option--selected');
+        target == null || target.classList.remove('select2-results__option--selected');
         self._updateDropdown();
       });
       this._containerResultsHandlersBound = true;
@@ -3356,7 +3354,7 @@
     ;
     _proto._positionDropdown = function _positionDropdown() {
       var _this$_popper;
-      (_this$_popper = this._popper) == null ? void 0 : _this$_popper.update();
+      (_this$_popper = this._popper) == null || _this$_popper.update();
     }
 
     // Override _resizeDropdown()
@@ -3428,7 +3426,7 @@
     _proto.destroy = function destroy(decorated) {
       var _this$_popper3;
       _AttachBody.prototype.destroy.call(this, decorated);
-      (_this$_popper3 = this._popper) == null ? void 0 : _this$_popper3.destroy();
+      (_this$_popper3 = this._popper) == null || _this$_popper3.destroy();
       this._popper = null;
     };
     return FilterAttachBody;
@@ -3488,7 +3486,7 @@
     ;
     _proto._positionDropdown = function _positionDropdown() {
       var _this$_popper2;
-      (_this$_popper2 = this._popper) == null ? void 0 : _this$_popper2.update();
+      (_this$_popper2 = this._popper) == null || _this$_popper2.update();
     }
 
     // Override position()
@@ -3504,7 +3502,7 @@
     _proto.destroy = function destroy(decorated) {
       var _this$_popper3;
       _AttachBody.prototype.destroy.call(this, decorated);
-      (_this$_popper3 = this._popper) == null ? void 0 : _this$_popper3.destroy();
+      (_this$_popper3 = this._popper) == null || _this$_popper3.destroy();
       this._popper = null;
     };
     return DropdownAttachBody;
@@ -3712,7 +3710,6 @@
       options.dropdownAdapter = Utils.Decorate(options.dropdownAdapter, options.modal ? ModalAttachBody : options.filter ? FilterAttachBody : options.dropdown ? DropdownAttachBody : Select2AttachBody // Override
       );
     }
-
     if (options.selectionAdapter == null) {
       if (options.multiple) {
         options.selectionAdapter = MultipleSelection;
@@ -3750,7 +3747,7 @@
   Pace.on("done", () => {
     var _forms$get;
     let form = document.querySelector(".modal.show form.ew-form") || document.querySelector("form.ew-form");
-    (_forms$get = forms.get(form == null ? void 0 : form.id)) == null ? void 0 : _forms$get.tryFocus();
+    (_forms$get = forms.get(form == null ? void 0 : form.id)) == null || _forms$get.tryFocus();
   });
 
   // Create select2
@@ -3802,7 +3799,7 @@
     let $select = $$1("select[data-select2-id='" + options.selectId + "']").select2(args.options);
     $select.on("select2:open", function () {
       var _$$data$$dropdown$fin;
-      (_$$data$$dropdown$fin = $$1(this).data("select2").$dropdown.find(".select2-search__field")[0]) == null ? void 0 : _$$data$$dropdown$fin.focus();
+      (_$$data$$dropdown$fin = $$1(this).data("select2").$dropdown.find(".select2-search__field")[0]) == null || _$$data$$dropdown$fin.focus();
     });
     if ($$1.isObject(options.ajax)) {
       $select.on("select2:opening", function () {
@@ -3882,7 +3879,7 @@
     let $select = $$1("select[data-select2-id='" + options.selectId + "']").select2(options);
     $select.on("select2:open", function () {
       var _$$data$$dropdown$fin2;
-      (_$$data$$dropdown$fin2 = $$1(this).data("select2").$dropdown.find(".select2-search__field").addClass("form-control")[0]) == null ? void 0 : _$$data$$dropdown$fin2.focus();
+      (_$$data$$dropdown$fin2 = $$1(this).data("select2").$dropdown.find(".select2-search__field").addClass("form-control")[0]) == null || _$$data$$dropdown$fin2.focus();
     });
     if ($$1.isObject(options.ajax)) {
       $select.on("select2:opening", function () {
@@ -3957,11 +3954,10 @@
     let $select = $$1("select[data-select2-id='" + options.selectId + "']").select2(options);
     $select.on("select2:open", function () {
       var _$$data$$dropdown$fin3;
-      (_$$data$$dropdown$fin3 = $$1(this).data("select2").$dropdown.find(".select2-search__field").addClass("form-control")[0]) == null ? void 0 : _$$data$$dropdown$fin3.focus({
+      (_$$data$$dropdown$fin3 = $$1(this).data("select2").$dropdown.find(".select2-search__field").addClass("form-control")[0]) == null || _$$data$$dropdown$fin3.focus({
         preventScroll: options.preventScroll
       }); // Do not scroll on focus by default
     });
-
     if ($$1.isObject(options.ajax)) {
       $select.on("select2:opening", function () {
         $$1(this).data("select2").$results.find(".select2-results__option:not(.loading-results)").remove();
@@ -4265,7 +4261,7 @@
         timeoutTime = 0;
         counter = 0;
       }
-      (_timer = timer) == null ? void 0 : _timer.cancel(); // Clear timer
+      (_timer = timer) == null || _timer.cancel(); // Clear timer
     };
     // Redirect to TIMEOUT_URL
     let doTimeout = () => {
@@ -4275,7 +4271,7 @@
     // Timeout
     let timeout = () => {
       var _keepAliveTimer;
-      (_keepAliveTimer = keepAliveTimer) == null ? void 0 : _keepAliveTimer.cancel(); // Stop keep alive
+      (_keepAliveTimer = keepAliveTimer) == null || _keepAliveTimer.cancel(); // Stop keep alive
       if (counter > 0) {
         let timerInterval,
           message = '<p class="text-danger">' + ew.language.phrase("SessionWillExpire") + '</p>';
@@ -4345,7 +4341,10 @@
   function initExportLinks(e) {
     var _e$target3;
     let $el = $$1((_e$target3 = e == null ? void 0 : e.target) != null ? _e$target3 : document);
-    $el.find("a.ew-export-link[href]:not(.ew-email):not(.ew-print):not(.ew-xml)").on("click", function (e) {
+    if (e != null && e.target && !$el.find("a.ew-export-link[href]")[0])
+      // Export links not found
+      $el = $el.closest(".content"); // For refresh
+    $el.find("a.ew-export-link[href]:not(.ew-email):not(.ew-print):not(.ew-xml)").off("click").on("click", function (e) {
       let href = this.href;
       if (href && href != "#") fileDownload(href, getchartParams());
       e.preventDefault();
@@ -4886,7 +4885,7 @@
         $document$1.trigger("addoption", [args]);
         if (args.valid) newOption(obj, result, fo);
       });
-      obj.render == null ? void 0 : obj.render(); // Selection list
+      obj.render == null || obj.render(); // Selection list
       selectOption(obj, ar, change);
       if (change) {
         if (!obj.options && obj.length) $obj.first().triggerHandler("click");
@@ -4894,7 +4893,6 @@
         //     $obj.first().trigger("change");
       }
     };
-
     if ($$1.isUndefined(async))
       // Async not specified, use default
       async = list.ajax;
@@ -4906,7 +4904,6 @@
         updateOptions.apply(self, args); // args[0] is string, use updateOptions()
       }
     };
-
     if (!$$1.isBoolean(async) || Array.isArray(list.lookupOptions) && list.lookupOptions.length > 0) {
       // Non-Ajax or Options loaded
       var ds = list.lookupOptions;
@@ -4937,7 +4934,7 @@
       for (var i = 0, cnt = arp.length; i < cnt; i++)
       // Filter by parent fields
       data["v" + (i + 1)] = arp[i].join(ew.MULTIPLE_OPTION_SEPARATOR);
-      obj.showLoading == null ? void 0 : obj.showLoading(); // selection-list
+      obj.showLoading == null || obj.showLoading(); // selection-list
       return $$1.ajax(getApiUrl(ew.API_LOOKUP_ACTION), {
         method: "POST",
         dataType: "json",
@@ -5024,7 +5021,7 @@
           $value.find("[name='" + rule.id + '_value_' + i + "']").each(function () {
             let $this = $$1(this),
               $invalid = $this.next("." + ew.queryBuilderErrorClass).empty();
-            validators == null || validators.forEach == null ? void 0 : validators.forEach(validator => {
+            validators == null || validators.forEach == null || validators.forEach(validator => {
               let err = validator(this);
               if ($$1.isObject(err)) {
                 errors++;
@@ -5260,7 +5257,6 @@
           // Action
           _append("action", action); // Set action
         }
-
         if (!$$1.isUndefined(value)) _append("actionvalue", value); // Set action value
         if ($$1.isObject(data)) {
           // User data
@@ -5286,7 +5282,6 @@
           data.set("ajax", action);
           $f.find("#action").remove(); // Remove action in form
         }
-
         if (!$$1.isUndefined(value)) data.set("actionvalue", value); // User input value
         data = mergeSearchParams(data, $f.serialize()); // Form data including key_m[]
         if (!isMultiple && $$1.isObject(key))
@@ -5367,7 +5362,7 @@
           export: type,
           custom: 1
         }, $$1(emailForm).serialize()); // Make sure parameters include "export=type&custom=1"
-        (_document$querySelect = document.querySelector("iframe[name='" + name + "']")) == null ? void 0 : _document$querySelect.remove();
+        (_document$querySelect = document.querySelector("iframe[name='" + name + "']")) == null || _document$querySelect.remove();
         let $iframe = $$1("<iframe>").attr("name", name).addClass("d-none").appendTo($body);
         $f.attr({
           action: url,
@@ -5514,7 +5509,7 @@
     }
     $$1(el).closest(fieldContainerSelector).find(".invalid-feedback").append("<p>" + msg + "</p>");
     if (focus) setFocus(el);
-    frm == null ? void 0 : frm.makeVisible(el);
+    frm == null || frm.makeVisible(el);
     return false;
   }
 
@@ -5640,7 +5635,7 @@
    * Scroll an element into view
    */
   function scrollIntoView(el) {
-    el == null ? void 0 : el.scrollIntoView();
+    el == null || el.scrollIntoView();
   }
 
   /**
@@ -5818,7 +5813,6 @@
             // Grid-Add
             $grid.find(".ew-grid-middle-panel .ew-table > tbody:last").append($row); // Append to bottom
         }
-
         let tbl = _getTable();
         _updateRowIndexes(tbl); // Update row index
         setupTable(tbl, true);
@@ -5844,7 +5838,7 @@
         } else {
           var _$grid$data;
           // Cancel Inline-Edit
-          (_$grid$data = $grid.data("detached")) == null ? void 0 : _$grid$data.replaceAll($record);
+          (_$grid$data = $grid.data("detached")) == null || _$grid$data.replaceAll($record);
         }
         _enableInlineButtons();
       } else if (f && ["insert", "update"].includes(action)) {
@@ -6137,9 +6131,8 @@
         });
       });
     });
-
     let $btn = $row.find(".ew-icon").closest("a, button");
-    (_bootstrap$Tooltip$ge2 = bootstrap.Tooltip.getInstance($btn[0])) == null ? void 0 : _bootstrap$Tooltip$ge2.dispose();
+    (_bootstrap$Tooltip$ge2 = bootstrap.Tooltip.getInstance($btn[0])) == null || _bootstrap$Tooltip$ge2.dispose();
     $btn.tooltip({
       ...ew.tooltipOptions,
       container: "body",
@@ -6154,8 +6147,8 @@
     $lastrow.after($row);
     $els.get().forEach(el => addScript(el.text.replace(/\$rowindex\$/g, keycnt)));
     let frm = $form.data("form");
-    frm == null ? void 0 : frm.initEditors();
-    frm == null ? void 0 : frm.initUpload();
+    frm == null || frm.initEditors();
+    frm == null || frm.initUpload();
     setupTable($tbl[0], true);
     $p.scrollTop($p[0].scrollHeight);
     $tbl.trigger("rowadded", [keycnt]);
@@ -6165,7 +6158,7 @@
   // Delete a row from grid
   function deleteGridRow(el, infix) {
     var _bootstrap$Tooltip$ge3;
-    (_bootstrap$Tooltip$ge3 = bootstrap.Tooltip.getInstance(el)) == null ? void 0 : _bootstrap$Tooltip$ge3.dispose();
+    (_bootstrap$Tooltip$ge3 = bootstrap.Tooltip.getInstance(el)) == null || _bootstrap$Tooltip$ge3.dispose();
     let grid = el.closest(".ew-grid, .ew-multi-column-grid"),
       row = el.closest("tr, div[data-rowindex]"),
       tbl = row == null ? void 0 : row.closest(".ew-table"),
@@ -6231,7 +6224,6 @@
       selectors = s2 ? ["[data-table='" + s1 + "']" + getFieldSelector(getId(s2))] // "<table> <name>", remove []
       : ["[name='" + el + "']:not(.ew-custom-option):not([data-old])", getFieldSelector(getId(el))]; // "<name>" only
     }
-
     let selector = ["input", "select", "textarea", "button", "selection-list"].flatMap(tag => selectors.map(sel => tag + sel)).join(),
       $els = $root.find(selector);
     if ($root.is("form.ew-form") && $root.find("div.ew-form")[0])
@@ -6444,32 +6436,6 @@
   }
 
   /**
-   * Get HTML for a single option
-   *
-   * @param {*} val - Value of the option
-   * @returns {string} HTML
-   */
-  function optionHtml(val) {
-    return ew.OPTION_HTML_TEMPLATE.replace(/\{value\}/g, val);
-  }
-
-  /**
-   * Get HTML for diplaying all options
-   *
-   * @param {string[]} options - Array of all options (HTML)
-   * @param {number} max - Maximum number of options to show
-   * @returns {string} HTML
-   */
-  function optionsHtml(options, max) {
-    if (options.length > (max || ew.MAX_OPTION_COUNT))
-      // More than max option count
-      return ew.language.phrase("CountSelected").replace("%s", options.length);else if (options.length)
-      // Some options
-      return options.reduce((previous, current) => previous + optionHtml(current), "");
-    return ew.language.phrase("PleaseSelect"); // No options
-  }
-
-  /**
    * Create new option
    *
    * @param {(HTMLElement|array)} obj - Selection list
@@ -6545,7 +6511,6 @@
         if (change && isSelect2(obj)) $obj.triggerHandler("change");
         if (obj.type == "select-one" && obj.selectedIndex == -1 && !((_obj$options$ = obj.options[0]) != null && _obj$options$.value)) obj.selectedIndex = 0; // Make sure an option is selected
       }
-
       if (isAutoSuggest(obj) && values.length == 1) {
         let opts = obj.options || [];
         for (let opt of opts) {
@@ -6599,7 +6564,6 @@
       init.headers.set(headerCase(ew.TOKEN_NAME_KEY), ew.TOKEN_NAME); // Send token name in header // PHP
       init.headers.set(headerCase(ew.ANTIFORGERY_TOKEN_KEY), ew.ANTIFORGERY_TOKEN); // Send antiforgery token in header // PHP
     }
-
     if (!init.method || sameText(init.method, "GET")) {
       // GET
       url = setSearchParams(url, init.body);
@@ -6616,7 +6580,6 @@
         }); // Add token name and antiforgery token // PHP
       }
     }
-
     let args = {
       url,
       init
@@ -6635,7 +6598,6 @@
       let objUrl = new URL(url);
       allowed = objUrl.hostname == currentUrl.hostname; // Same host name
     }
-
     if (allowed) {
       if (isApi && ew.API_JWT_TOKEN) jqxhr.setRequestHeader(ew.API_JWT_AUTHORIZATION_HEADER, "Bearer " + ew.API_JWT_TOKEN); // Note: settings.headers won't work
       if ($$1.isString(settings.contentType) && settings.contentType.includes("application/json")) {
@@ -6939,7 +6901,6 @@
         if (codes) showToast(ew.language.phrase("CopiedToClipboard"), "success");
         return false; // Keep the alert open
       },
-
       preDeny: async () => {
         Swal.showLoading(Swal.getDenyButton());
         await $$1.get(getApiUrl([ew.API_2FA_ACTION, ew.API_2FA_NEW_BACKUP_CODES])).then(result => {
@@ -7078,7 +7039,7 @@
                     // Not same options
                     continue;
                   newOption(obj2, row, form);
-                  obj2.render == null ? void 0 : obj2.render(); // Selection list
+                  obj2.render == null || obj2.render(); // Selection list
                 }
               }
             }
@@ -7169,7 +7130,6 @@
         //     });
         // });
       }
-
       ew.addOptionDialog = $dlg.modal("show");
       $dlg.find(".modal-footer .btn-primary").click(_submit).focus();
       if (form) {
@@ -7198,7 +7158,6 @@
       executeScript(data, args.el, true);
       $dlg.trigger("load.ew"); // Trigger load event
     };
-
     $$1.get(args.url, success).fail(_fail);
     return false;
   }
@@ -7209,7 +7168,7 @@
       args = $dlg.data("args"),
       frm = $dlg.removeData("args").find(".modal-body form").data("form");
     removeScript("modal_dialog");
-    frm == null ? void 0 : frm.destroyEditor();
+    frm == null || frm.destroyEditor();
     $dlg.find(".modal-footer .btn-primary").off();
     $dlg.find(".modal-dialog").removeClass((i, className) => {
       let m = className.match(/table\-\w+/);
@@ -7242,7 +7201,7 @@
   function modalDialogShow(args) {
     var _args$evt3, _bootstrap$Tooltip$ge4, _args$evt4, _args$evt5, _$dlg$data, _$dlg$data2;
     args.lnk || (args.lnk = (_args$evt3 = args.evt) == null ? void 0 : _args$evt3.currentTarget);
-    (_bootstrap$Tooltip$ge4 = bootstrap.Tooltip.getInstance(args.lnk)) == null ? void 0 : _bootstrap$Tooltip$ge4.hide();
+    (_bootstrap$Tooltip$ge4 = bootstrap.Tooltip.getInstance(args.lnk)) == null || _bootstrap$Tooltip$ge4.hide();
     let {
         ewAction,
         action
@@ -7413,7 +7372,7 @@
               $$1(this).on("click", function (e) {
                 let form = $dlg.find(".modal-body form")[0],
                   frm = forms.get(form.id);
-                frm == null ? void 0 : frm.updateTextArea();
+                frm == null || frm.updateTextArea();
                 if (frm != null && frm.modified && ew.hasFormData(this.form)) {
                   ew.prompt(ew.language.phrase("ConfirmCancel"), result => {
                     if (result) {
@@ -7576,7 +7535,6 @@
             }) : $dlglnk.addClass("d-none"); // Hide the link
           });
         }
-
         ew.modalDialog = $dlg.modal("show");
         executeScript(data, "modal_dialog", true);
         // Fix for CKEditor
@@ -7595,7 +7553,6 @@
         $dlg.trigger("load.ew"); // Trigger load event
       }
     };
-
     let show = function (html) {
       let args = $dlg.data("args");
       $dlg.find(".modal-title").html(_caption());
@@ -7612,7 +7569,6 @@
       args.reload = true; // Carry the reload state to current args
       $dlg.data("args").reload = false; // Remove reload so "hidden" event will not reload
     }
-
     $dlg.modal("hide");
     $dlg.data("args", args);
     if (url) {
@@ -7645,7 +7601,7 @@
   function importDialogShow(args) {
     var _args$evt6, _bootstrap$Tooltip$ge5;
     args.lnk = args.lnk || ((_args$evt6 = args.evt) == null ? void 0 : _args$evt6.currentTarget);
-    (_bootstrap$Tooltip$ge5 = bootstrap.Tooltip.getInstance(args.lnk)) == null ? void 0 : _bootstrap$Tooltip$ge5.hide();
+    (_bootstrap$Tooltip$ge5 = bootstrap.Tooltip.getInstance(args.lnk)) == null || _bootstrap$Tooltip$ge5.hide();
     let $dlg = ew.importDialog || $$1("#ew-import-dialog");
     if (!$dlg[0]) {
       _alert("DIV #ew-import-dialog not found.");
@@ -7792,7 +7748,7 @@
       let $btn = $dlg.find(".modal-footer .ew-import-btn").toggleClass("d-none", !result.rollbacked || !result.success); // Show/Hide the import button
       if (result.rollbacked) $btn.off("click").one("click", saveImport);
       console.log("Closing EventSource...");
-      (_sse = sse) == null ? void 0 : _sse.close();
+      (_sse = sse) == null || _sse.close();
     };
 
     // Import fail
@@ -7803,7 +7759,7 @@
       let result = parseJson(e.data) || {};
       if (result.error) showMessage(result.error, "text-danger");
       console.log("Closing EventSource...");
-      (_sse2 = sse) == null ? void 0 : _sse2.close();
+      (_sse2 = sse) == null || _sse2.close();
     };
 
     // Import file
@@ -7811,7 +7767,7 @@
       var _table;
       document.body.style.cursor = "wait";
       showProgress(0);
-      (_table = table) == null ? void 0 : _table.clearData();
+      (_table = table) == null || _table.clearData();
       $input.data(ew.API_FILE_TOKEN_NAME, filetoken);
       $dlg.find(".modal-footer .ew-close-btn").data("import-progress", true); // Show import progress
       let params = new URLSearchParams($data.serialize());
@@ -7829,7 +7785,7 @@
       var _table2;
       document.body.style.cursor = "wait";
       showProgress(0);
-      (_table2 = table) == null ? void 0 : _table2.clearData();
+      (_table2 = table) == null || _table2.clearData();
       $dlg.find(".modal-footer .ew-close-btn").data("import-progress", true); // Show import progress
       let params = new URLSearchParams($data.serialize());
       params.set(ew.API_ACTION_NAME, ew.API_IMPORT_ACTION);
@@ -7876,7 +7832,6 @@
             }
           }
         },
-
         change: function (e, data) {
           hideMessage();
         },
@@ -7885,7 +7840,6 @@
             if (file.error) showMessage(ew.language.phrase("ImportUploadError").replace("%f", file.name).replace("%s", file.error), "text-danger");
           }); // Show process errors for each file
         },
-
         fail: function (e, data) {
           showMessage(ew.language.phrase("ImportServerError").replace("%s", data.textStatus).replace("%t", data.errorThrown), "text-danger");
         },
@@ -7906,9 +7860,9 @@
     ew.importDialog = $dlg.on("show.bs.modal", function () {
       var _this$querySelector, _table3, _table4;
       hideProgress();
-      (_this$querySelector = this.querySelector(".modal-footer .ew-import-btn")) == null ? void 0 : _this$querySelector.classList.add("d-none");
-      (_table3 = table) == null ? void 0 : _table3.element.removeAttribute("style");
-      (_table4 = table) == null ? void 0 : _table4.destroy();
+      (_this$querySelector = this.querySelector(".modal-footer .ew-import-btn")) == null || _this$querySelector.classList.add("d-none");
+      (_table3 = table) == null || _table3.element.removeAttribute("style");
+      (_table4 = table) == null || _table4.destroy();
       table = null;
     }).modal("show");
     return false;
@@ -8032,7 +7986,7 @@
         frm.setupFilters(e, filters.filter(val => Array.isArray(val) && val.length == 2));
       });
     } else {
-      btn == null ? void 0 : btn.classList.add("d-none");
+      btn == null || btn.classList.add("d-none");
     }
   }
 
@@ -8225,7 +8179,7 @@
                 var _result$error13, _result$error14;
                 let result = parseJson(o.responseText);
                 if (result != null && (_result$error13 = result.error) != null && _result$error13.type && result != null && (_result$error14 = result.error) != null && _result$error14.description) {
-                  popover == null ? void 0 : popover.hide();
+                  popover == null || popover.hide();
                   return _alert({
                     title: result.error.type,
                     html: result.error.description,
@@ -8236,7 +8190,7 @@
                   });
                 }
               }
-              popover == null ? void 0 : popover.setContent({
+              popover == null || popover.setContent({
                 ".popover-body": '<p class="text-danger">' + o.responseText + '</p>'
               });
             }
@@ -8276,7 +8230,6 @@
             return results[0]; // Return a value
           else return results; // Return a row
         }
-
         return results;
       }
       return response;
@@ -8324,7 +8277,7 @@
   // Toggle multi-column layout
   function toggleLayout(el) {
     var _bootstrap$Tooltip$ge6;
-    (_bootstrap$Tooltip$ge6 = bootstrap.Tooltip.getInstance(el)) == null ? void 0 : _bootstrap$Tooltip$ge6.hide();
+    (_bootstrap$Tooltip$ge6 = bootstrap.Tooltip.getInstance(el)) == null || _bootstrap$Tooltip$ge6.hide();
     document.body.style.cursor = "wait";
     fetch(sanitizeUrl(setLayout(el.dataset.url, el.dataset.layout))).then(response => response.text()).then(html => {
       let $grid = $$1(".ew-multi-column-grid").html($$1("<div>" + html + "</div>").find(".ew-multi-column-grid").html());
@@ -8677,7 +8630,6 @@
               }
             }); // Use "files"
           }
-
           if (readonly)
             // Hide delete button if readonly
             $ft.find("td.delete").hide();
@@ -8893,7 +8845,7 @@
     $el.find(".ew-column-dropdown").each(function () {
       var _localStorage$getItem;
       let table = this.dataset.table;
-      (_localStorage$getItem = localStorage.getItem(ew.PROJECT_NAME + "_" + table + "_invisible_fields")) == null ? void 0 : _localStorage$getItem.split(",").forEach(field => $$1("#tbl_" + table + "list").find("th[data-name='" + field + "'],td[data-name='" + field + "']").toggleClass("d-none", true));
+      (_localStorage$getItem = localStorage.getItem(ew.PROJECT_NAME + "_" + table + "_invisible_fields")) == null || _localStorage$getItem.split(",").forEach(field => $$1("#tbl_" + table + "list").find("th[data-name='" + field + "'],td[data-name='" + field + "']").toggleClass("d-none", true));
       $$1(this).find(".ew-dropdown-checkbox").on("click", function (e) {
         let input = this.querySelector(".ew-dropdown-check-input[data-field]"),
           field = input == null ? void 0 : input.dataset.field;
@@ -9035,7 +8987,7 @@
     var _context;
     (_context = context) != null ? _context : context = ".ew-card.ew-grid";
     context = context.startsWith(".") || context.startsWith("#") ? context : "." + context;
-    let target = document.querySelector(context + ", .ew-multi-column-grid, .ew-view-form, .ew-edit-form, .ew-calendar, ew-dashboard, main.ew-no-record"),
+    let target = document.querySelector(context + ", .ew-multi-column-grid, .ew-view-form, .ew-edit-form, .ew-calendar, .ew-dashboard, main.ew-no-record"),
       dashboard = document.querySelector(".ew-dashboard");
     if (!target) return;
     let $overlay = $$1(ew.overlayTemplate()),
@@ -9091,7 +9043,6 @@
           // Only update browser URL if same page or view/edit page
           window.history.pushState(null, "", url.toString()); // Update browser URL
       }
-
       if ($html.find("main.ew-no-record")[0] || $target.is("main.ew-no-record")) {
         // New or old HTML contains no records => update <main> element
         selectors = [".ew-ext-search-form", "main", ...selectors];
@@ -9116,7 +9067,6 @@
           $old.html($new.html()); // Replace inner HTML
           $old.attr("class", $new.attr("class")); // Update class name
         }
-
         if (selector == ".ew-toolbar") {
           let e = {
             target: el
@@ -9140,7 +9090,6 @@
           if (!$new.hasClass("d-none")) $old.html($new.html()); // Replace inline html
         }
       }));
-
       selectors.filter(selector => selector != ".ew-message-dialog").forEach(selector => $html.find(selector).remove()); // Remove HTML used (except message)
       removeScript("refresh"); // Remove old scripts
       executeScript($html.html(), "refresh"); // Execute scripts, e.g. custom template
@@ -9311,8 +9260,6 @@
     modalDialogShow,
     newOption,
     onError,
-    optionHtml,
-    optionsHtml,
     parseDate: parseDateTime,
     parseDateTime,
     parseJson,
@@ -9435,7 +9382,7 @@
           if (action == ew.API_DELETE_ACTION) {
             var _calendar$getEventByI;
             // Remove deleted event
-            (_calendar$getEventByI = calendar.getEventById(event.id)) == null ? void 0 : _calendar$getEventByI.remove();
+            (_calendar$getEventByI = calendar.getEventById(event.id)) == null || _calendar$getEventByI.remove();
           } else if (action == ew.API_ADD_ACTION) {
             // Add/Copy event
             for (let name in event) {
@@ -9446,7 +9393,6 @@
                 // Value can be null
                 event[key] = convertValue(key, value); // Convert value
             }
-
             calendar.addEvent(event);
           } else {
             // Update event
@@ -9545,7 +9491,6 @@
         // if (allDayFld && data.allDay)
         //     params.set(allDayFld, "1");
       }
-
       if ($$1.isString(data) && data.match(/^\d+$/))
         // Copy
         url = urlAddId(url, data);
@@ -9591,13 +9536,13 @@
 
     // Add custom add button
     if (addUrl) {
-      fullCalendarOptions.customButtons = {
+      fullCalendarOptions.customButtons = Object.assign(fullCalendarOptions.customButtons || {}, {
         add: {
           text: ew.language.phrase("AddEvent"),
           click: addEventDialogShow
         }
-      };
-      fullCalendarOptions.headerToolbar.left += " add";
+      });
+      fullCalendarOptions.headerToolbar.start += " add";
     }
 
     // Get or create popover
@@ -9607,7 +9552,6 @@
         ...eventPopoverOptions,
         trigger: "manual" // Set trigger to "manual"
       };
-
       let popover = bootstrap.Popover.getOrCreateInstance(info.el, config),
         template = Array.from(document.querySelectorAll("script[data-name='event-popover']")).sort((a, b) => {
           a = parseInt(a.dataset.seq, 10) || 0;
@@ -9698,13 +9642,12 @@
           let allowed = info.event.extendedProps["_view"] || info.event.extendedProps["_edit"] || info.event.extendedProps["_copy"] || info.event.extendedProps["_delete"];
           if (bsDropdown && allowed) {
             var _bootstrap$Popover$ge2;
-            (_bootstrap$Popover$ge2 = bootstrap.Popover.getInstance(info.el)) == null ? void 0 : _bootstrap$Popover$ge2.hide();
+            (_bootstrap$Popover$ge2 = bootstrap.Popover.getInstance(info.el)) == null || _bootstrap$Popover$ge2.hide();
             bsDropdown.hide();
             bsDropdown._menu.querySelectorAll(".dropdown-item").forEach(item => {
               item.dataset.eventId = info.event.id;
               item.classList.toggle("d-none", !options[item.dataset.action + "Url"] || !info.event.extendedProps["_" + item.dataset.action]); // Check event permission
             });
-
             if (bsDropdown._menu.querySelectorAll(".dropdown-item:not(.d-done)").length) {
               virtualElement.getBoundingClientRect = generateGetBoundingClientRect(info);
               bsDropdown.show();
@@ -9714,7 +9657,7 @@
           window.open(info.event.url);
         } else if (options.usePopover && eventPopoverOptions.trigger.match(/\bclick\b/)) {
           var _getOrCreatePopover;
-          (_getOrCreatePopover = getOrCreatePopover(info)) == null ? void 0 : _getOrCreatePopover.toggle();
+          (_getOrCreatePopover = getOrCreatePopover(info)) == null || _getOrCreatePopover.toggle();
         } else if (options.showViewPageOnEventClick) {
           viewEventDialogShow(info.event.id);
         }
@@ -9722,12 +9665,12 @@
       eventMouseEnter: info => {
         var _bsDropdown, _getOrCreatePopover2;
         if ((_bsDropdown = bsDropdown) != null && _bsDropdown._isShown(bsDropdown._menu) /* && bsDropdown._element.dataset.eventId == info.event.id*/) return;
-        if (options.popoverViews.includes(info.view.type) && options.usePopover && eventPopoverOptions.trigger.match(/\bhover\b/)) (_getOrCreatePopover2 = getOrCreatePopover(info)) == null ? void 0 : _getOrCreatePopover2.show();
+        if (options.popoverViews.includes(info.view.type) && options.usePopover && eventPopoverOptions.trigger.match(/\bhover\b/)) (_getOrCreatePopover2 = getOrCreatePopover(info)) == null || _getOrCreatePopover2.show();
       },
       eventMouseLeave: info => {
         var _bsDropdown2, _bootstrap$Popover$ge3;
         if ((_bsDropdown2 = bsDropdown) != null && _bsDropdown2._isShown(bsDropdown._menu) /* && bsDropdown._element.dataset.eventId == info.event.id*/) return;
-        if (options.popoverViews.includes(info.view.type) && options.usePopover && eventPopoverOptions.trigger.match(/\bhover\b/)) (_bootstrap$Popover$ge3 = bootstrap.Popover.getInstance(info.el)) == null ? void 0 : _bootstrap$Popover$ge3.hide();
+        if (options.popoverViews.includes(info.view.type) && options.usePopover && eventPopoverOptions.trigger.match(/\bhover\b/)) (_bootstrap$Popover$ge3 = bootstrap.Popover.getInstance(info.el)) == null || _bootstrap$Popover$ge3.hide();
       }
     });
 
@@ -10046,7 +9989,6 @@
       let data = $$1(this).data();
       ew.maps[data.ext].fitBounds(data); // Fit bounds
     });
-
     $$1(document).trigger("maps");
   }
 
@@ -10288,7 +10230,7 @@
     for (let action of actions) {
       if (action == "submit-form") {
         var _this$form;
-        (_this$form = this.form) == null ? void 0 : _this$form.submit();
+        (_this$form = this.form) == null || _this$form.submit();
       } else if (action == "change-page-size") {
         let pageSize = ew.sameText(this.value, "ALL") ? "ALL" : ew.parseNumber(this.value);
         if (ew.convertToBool(data.ajax)) {
@@ -10360,7 +10302,6 @@
     // Use global settings in ewcore.js, see https://github.com/fengyuanchen/cropperjs/blob/e969348d313dafe3416926125b21388cc67cefb1/README.md#getcroppedcanvasoptions
     disabled: "@disableImageCrop" // Use data-disable-image-crop attribute to enable/disable
   });
-
   $$1.widget("blueimp.fileupload", $$1.blueimp.fileupload, {
     processActions: {
       cropImage: function (data, options) {
@@ -10373,7 +10314,7 @@
           $dlg.data("cropper", new Cropper(this.querySelector("#ew-crop-image"), options.cropperOptions));
         }).on("hidden.bs.modal", function () {
           var _$dlg$data;
-          (_$dlg$data = $dlg.data("cropper")) == null ? void 0 : _$dlg$data.destroy();
+          (_$dlg$data = $dlg.data("cropper")) == null || _$dlg$data.destroy();
           $dlg.removeData("cropper");
           $dlg.find("#ew-crop-image").attr("src", "data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=");
         });
@@ -10485,7 +10426,6 @@
       tbl = obj.id.replace(new RegExp("^f|" + obj.pageId + "$", "g"), ""); // table var
       infix = obj.htmlForm.dataset.rowindex; // row index
     }
-
     let selector = "[data-table" + (tbl ? "=" + tbl : "") + "][data-field" + (fldvar ? "=x_" + fldvar : "") + "]" + ($$1.isValue(infix) ? "[name^=x" + infix + "]" : "") + ":not(.ew-custom-option)";
     if (f && selector) {
       $$1(f).find(selector).each(function () {
@@ -10496,24 +10436,25 @@
         rec[key] = rec[key] ? rec[key].add(this) : $$1(this); // Create jQuery object for each field
       });
     }
-
     return fldvar ? rec[fldvar] : rec;
   };
   $$1.fn.extend({
     // Get jQuery object of the row (<div> or <tr>)
     row: function () {
-      var _this$data;
-      let $row = this.closest("#r_" + ((_this$data = this.data("field")) == null ? void 0 : _this$data.substring(2)));
+      var _this$data$substring, _this$data;
+      let id = (_this$data$substring = (_this$data = this.data("field")) == null ? void 0 : _this$data.substring(2)) != null ? _this$data$substring : "",
+        $row = this.closest("#r_" + id + ", #xs_" + id);
       if (!$row[0]) $row = this.closest(".ew-table > tbody > tr"); // Grid page
       return $row;
     },
     // Show/Hide field
     visible: function (v) {
-      var _this$data2;
-      let $p = this.closest("#r_" + ((_this$data2 = this.data("field")) == null ? void 0 : _this$data2.substring(2))); // Find the row
+      var _this$data$substring2, _this$data2;
+      let id = (_this$data$substring2 = (_this$data2 = this.data("field")) == null ? void 0 : _this$data2.substring(2)) != null ? _this$data$substring2 : "",
+        $p = this.closest("#r_" + id + ", #xs_" + id); // Find the row
       if (!$p[0]) $p = this.closest("[id^=el]"); // Find the span
       if (typeof v != "undefined") {
-        $p.toggle(v);
+        $p.toggleClass("d-none d-sm-none", !v); // Note: d-sm-none overrides d-sm-flex
         return this;
       } else {
         return $el.is(":visible");

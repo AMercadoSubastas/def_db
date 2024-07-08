@@ -246,7 +246,7 @@ loadjs.ready("fcabfacedit", function() {
 <?php if (!$Page->fecval->ReadOnly && !$Page->fecval->Disabled && !isset($Page->fecval->EditAttrs["readonly"]) && !isset($Page->fecval->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -260,6 +260,7 @@ loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -286,7 +287,7 @@ loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
 <?php if (!$Page->fecdoc->ReadOnly && !$Page->fecdoc->Disabled && !isset($Page->fecdoc->EditAttrs["readonly"]) && !isset($Page->fecdoc->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -300,6 +301,7 @@ loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -326,7 +328,7 @@ loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
 <?php if (!$Page->fecreg->ReadOnly && !$Page->fecreg->Disabled && !isset($Page->fecreg->EditAttrs["readonly"]) && !isset($Page->fecreg->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -340,6 +342,7 @@ loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -483,7 +486,7 @@ loadjs.ready("fcabfacedit", function() {
         <label id="elh_cabfac_emitido" class="<?= $Page->LeftColumnClass ?>"><?= $Page->emitido->caption() ?><?= $Page->emitido->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->emitido->cellAttributes() ?>>
 <span id="el_cabfac_emitido">
-<div class="form-check d-inline-block">
+<div class="form-check form-switch d-inline-block">
     <input type="checkbox" class="form-check-input<?= $Page->emitido->isInvalidClass() ?>" data-table="cabfac" data-field="x_emitido" data-boolean name="x_emitido" id="x_emitido" value="1"<?= ConvertToBool($Page->emitido->CurrentValue) ? " checked" : "" ?><?= $Page->emitido->editAttributes() ?> aria-describedby="x_emitido_help">
     <div class="invalid-feedback"><?= $Page->emitido->getErrorMessage() ?></div>
 </div>
@@ -714,7 +717,7 @@ loadjs.ready("fcabfacedit", function() {
 <?php if (!$Page->CAEFchVto->ReadOnly && !$Page->CAEFchVto->Disabled && !isset($Page->CAEFchVto->EditAttrs["readonly"]) && !isset($Page->CAEFchVto->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -728,6 +731,7 @@ loadjs.ready(["fcabfacedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)

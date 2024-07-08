@@ -371,10 +371,10 @@ class Series extends DbTable
             'x_fechatope', // Variable name
             'fechatope', // Name
             '`fechatope`', // Expression
-            CastDateFieldForLike("`fechatope`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechatope`", 11, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechatope`', // Virtual expression
             false, // Is virtual
@@ -385,7 +385,7 @@ class Series extends DbTable
         );
         $this->fechatope->InputTextType = "text";
         $this->fechatope->Raw = true;
-        $this->fechatope->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechatope->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechatope->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechatope'] = &$this->fechatope;
 
@@ -1229,14 +1229,7 @@ class Series extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

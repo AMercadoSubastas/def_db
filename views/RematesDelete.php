@@ -50,17 +50,14 @@ $Page->showMessage();
 <table class="<?= $Page->TableClass ?>">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <th class="<?= $Page->codnum->headerCellClass() ?>"><span id="elh_remates_codnum" class="remates_codnum"><?= $Page->codnum->caption() ?></span></th>
+<?php if ($Page->ncomp->Visible) { // ncomp ?>
+        <th class="<?= $Page->ncomp->headerCellClass() ?>"><span id="elh_remates_ncomp" class="remates_ncomp"><?= $Page->ncomp->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->tcomp->Visible) { // tcomp ?>
         <th class="<?= $Page->tcomp->headerCellClass() ?>"><span id="elh_remates_tcomp" class="remates_tcomp"><?= $Page->tcomp->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->serie->Visible) { // serie ?>
         <th class="<?= $Page->serie->headerCellClass() ?>"><span id="elh_remates_serie" class="remates_serie"><?= $Page->serie->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->ncomp->Visible) { // ncomp ?>
-        <th class="<?= $Page->ncomp->headerCellClass() ?>"><span id="elh_remates_ncomp" class="remates_ncomp"><?= $Page->ncomp->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->codcli->Visible) { // codcli ?>
         <th class="<?= $Page->codcli->headerCellClass() ?>"><span id="elh_remates_codcli" class="remates_codcli"><?= $Page->codcli->caption() ?></span></th>
@@ -152,11 +149,11 @@ while ($Page->fetch()) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <td<?= $Page->codnum->cellAttributes() ?>>
+<?php if ($Page->ncomp->Visible) { // ncomp ?>
+        <td<?= $Page->ncomp->cellAttributes() ?>>
 <span id="">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
+<span<?= $Page->ncomp->viewAttributes() ?>>
+<?= $Page->ncomp->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
@@ -173,14 +170,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->serie->viewAttributes() ?>>
 <?= $Page->serie->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->ncomp->Visible) { // ncomp ?>
-        <td<?= $Page->ncomp->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->ncomp->viewAttributes() ?>>
-<?= $Page->ncomp->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
@@ -364,7 +353,10 @@ while ($Page->fetch()) {
         <td<?= $Page->tasa->cellAttributes() ?>>
 <span id="">
 <span<?= $Page->tasa->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($Page->tasa->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
+<div class="form-check form-switch d-inline-block">
+    <input type="checkbox" id="x_tasa_<?= $Page->RowCount ?>" class="form-check-input" value="<?= $Page->tasa->getViewValue() ?>" disabled<?php if (ConvertToBool($Page->tasa->CurrentValue)) { ?> checked<?php } ?>>
+    <label class="form-check-label" for="x_tasa_<?= $Page->RowCount ?>"></label>
+</div>
 </span>
 </span>
 </td>

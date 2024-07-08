@@ -1,4 +1,3 @@
-<?php namespace PHPMaker2024\Subastas2024; ?>
 <?php
 
 namespace PHPMaker2024\Subastas2024;

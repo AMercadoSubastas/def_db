@@ -28,20 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "dir_remates")]
 class DirRemate extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codigo' => 'codigo',
-        'codrem' => 'codrem',
-        'secuencia' => 'secuencia',
-        'direccion' => 'direccion',
-        'codpais' => 'codpais',
-        'codprov' => 'codprov',
-        'codloc' => 'codloc',
-        'usuarioalta' => 'usuarioalta',
-        'fechaalta' => 'fechaalta',
-        'usuariomod' => 'usuariomod',
-        'fechaultmod' => 'fechaultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]

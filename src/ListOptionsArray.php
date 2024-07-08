@@ -32,11 +32,6 @@ class ListOptionsArray extends \ArrayObject
     // Visible
     public function visible()
     {
-        foreach ($this as $options) {
-            if ($options->visible()) {
-                return true;
-            }
-        }
-        return false;
+        return array_any($this->getArrayCopy(), fn($options) => $options->visible());
     }
 }

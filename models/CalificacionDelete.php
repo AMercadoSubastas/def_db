@@ -635,10 +635,10 @@ class CalificacionDelete extends Calificacion
             $this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Yes";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // codnum
@@ -734,7 +734,9 @@ class CalificacionDelete extends Calificacion
         }
         if ($deleteRows) {
             if ($this->UseTransaction) { // Commit transaction
-                $conn->commit();
+                if ($conn->isTransactionActive()) {
+                    $conn->commit();
+                }
             }
 
             // Set warning message if delete some records failed
@@ -743,7 +745,9 @@ class CalificacionDelete extends Calificacion
             }
         } else {
             if ($this->UseTransaction) { // Rollback transaction
-                $conn->rollback();
+                if ($conn->isTransactionActive()) {
+                    $conn->rollback();
+                }
             }
         }
 

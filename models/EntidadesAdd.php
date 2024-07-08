@@ -618,7 +618,7 @@ class EntidadesAdd extends Entidades
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "EntidadesList") {
@@ -2089,7 +2089,7 @@ class EntidadesAdd extends Entidades
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), false);
 
         // pagweb
         $this->pagweb->setDbValueDef($rsnew, $this->pagweb->CurrentValue, false);

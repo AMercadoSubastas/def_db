@@ -70,9 +70,9 @@ class Lotes extends DbTable
     public $codintlote;
     public $codintnum;
     public $codintsublote;
-    public $dir_secuencia;
     public $usuarioultmod;
     public $fecultmod;
+    public $dir_secuencia;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -172,10 +172,10 @@ class Lotes extends DbTable
         global $CurrentLanguage;
         switch ($CurrentLanguage) {
             case "en-US":
-                $this->codrem->Lookup = new Lookup($this->codrem, 'remates', false, 'ncomp', ["ncomp","observacion","",""], '', '', [], ["x_dir_secuencia"], [], [], [], [], false, '`ncomp` DESC', '', "CONCAT(COALESCE(`ncomp`, ''),'" . ValueSeparator(1, $this->codrem) . "',COALESCE(`observacion`,''))");
+                $this->codrem->Lookup = new Lookup($this->codrem, 'remates', false, 'ncomp', ["ncomp","observacion","",""], '', '', [], [], [], [], [], [], false, '`ncomp` DESC', '', "CONCAT(COALESCE(`ncomp`, ''),'" . ValueSeparator(1, $this->codrem) . "',COALESCE(`observacion`,''))");
                 break;
             default:
-                $this->codrem->Lookup = new Lookup($this->codrem, 'remates', false, 'ncomp', ["ncomp","observacion","",""], '', '', [], ["x_dir_secuencia"], [], [], [], [], false, '`ncomp` DESC', '', "CONCAT(COALESCE(`ncomp`, ''),'" . ValueSeparator(1, $this->codrem) . "',COALESCE(`observacion`,''))");
+                $this->codrem->Lookup = new Lookup($this->codrem, 'remates', false, 'ncomp', ["ncomp","observacion","",""], '', '', [], [], [], [], [], [], false, '`ncomp` DESC', '', "CONCAT(COALESCE(`ncomp`, ''),'" . ValueSeparator(1, $this->codrem) . "',COALESCE(`observacion`,''))");
                 break;
         }
         $this->codrem->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
@@ -610,10 +610,10 @@ class Lotes extends DbTable
             'x_fecalta', // Variable name
             'fecalta', // Name
             '`fecalta`', // Expression
-            CastDateFieldForLike("`fecalta`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecalta`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecalta`', // Virtual expression
             false, // Is virtual
@@ -626,7 +626,7 @@ class Lotes extends DbTable
         $this->fecalta->InputTextType = "text";
         $this->fecalta->Raw = true;
         $this->fecalta->Nullable = false; // NOT NULL field
-        $this->fecalta->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecalta->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecalta->SearchOperators = ["=", "<>"];
         $this->Fields['fecalta'] = &$this->fecalta;
 
@@ -731,42 +731,6 @@ class Lotes extends DbTable
         $this->codintsublote->SearchOperators = ["=", "<>", "IS NULL", "IS NOT NULL"];
         $this->Fields['codintsublote'] = &$this->codintsublote;
 
-        // dir_secuencia
-        $this->dir_secuencia = new DbField(
-            $this, // Table
-            'x_dir_secuencia', // Variable name
-            'dir_secuencia', // Name
-            '`dir_secuencia`', // Expression
-            '`dir_secuencia`', // Basic search expression
-            3, // Type
-            2, // Size
-            -1, // Date/Time format
-            false, // Is upload field
-            '`dir_secuencia`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'SELECT' // Edit Tag
-        );
-        $this->dir_secuencia->InputTextType = "text";
-        $this->dir_secuencia->Raw = true;
-        $this->dir_secuencia->setSelectMultiple(false); // Select one
-        $this->dir_secuencia->UsePleaseSelect = true; // Use PleaseSelect by default
-        $this->dir_secuencia->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        global $CurrentLanguage;
-        switch ($CurrentLanguage) {
-            case "en-US":
-                $this->dir_secuencia->Lookup = new Lookup($this->dir_secuencia, 'dir_remates', false, 'secuencia', ["direccion","","",""], '', '', ["x_codrem"], [], ["codrem"], ["x_codrem"], [], [], false, '`secuencia` ASC', '', "`direccion`");
-                break;
-            default:
-                $this->dir_secuencia->Lookup = new Lookup($this->dir_secuencia, 'dir_remates', false, 'secuencia', ["direccion","","",""], '', '', ["x_codrem"], [], ["codrem"], ["x_codrem"], [], [], false, '`secuencia` ASC', '', "`direccion`");
-                break;
-        }
-        $this->dir_secuencia->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->dir_secuencia->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
-        $this->Fields['dir_secuencia'] = &$this->dir_secuencia;
-
         // usuarioultmod
         $this->usuarioultmod = new DbField(
             $this, // Table
@@ -798,10 +762,10 @@ class Lotes extends DbTable
             'x_fecultmod', // Variable name
             'fecultmod', // Name
             '`fecultmod`', // Expression
-            CastDateFieldForLike("`fecultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecultmod`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecultmod`', // Virtual expression
             false, // Is virtual
@@ -813,9 +777,46 @@ class Lotes extends DbTable
         $this->fecultmod->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fecultmod->InputTextType = "text";
         $this->fecultmod->Raw = true;
-        $this->fecultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecultmod->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecultmod->SearchOperators = ["=", "<>", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecultmod'] = &$this->fecultmod;
+
+        // dir_secuencia
+        $this->dir_secuencia = new DbField(
+            $this, // Table
+            'x_dir_secuencia', // Variable name
+            'dir_secuencia', // Name
+            '`dir_secuencia`', // Expression
+            '`dir_secuencia`', // Basic search expression
+            3, // Type
+            2, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`dir_secuencia`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'SELECT' // Edit Tag
+        );
+        $this->dir_secuencia->InputTextType = "text";
+        $this->dir_secuencia->Raw = true;
+        $this->dir_secuencia->Required = true; // Required field
+        $this->dir_secuencia->setSelectMultiple(false); // Select one
+        $this->dir_secuencia->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->dir_secuencia->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        global $CurrentLanguage;
+        switch ($CurrentLanguage) {
+            case "en-US":
+                $this->dir_secuencia->Lookup = new Lookup($this->dir_secuencia, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', [], [], [], [], [], [], false, '', '', "`descripcion`");
+                break;
+            default:
+                $this->dir_secuencia->Lookup = new Lookup($this->dir_secuencia, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', [], [], [], [], [], [], false, '', '', "`descripcion`");
+                break;
+        }
+        $this->dir_secuencia->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->dir_secuencia->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->Fields['dir_secuencia'] = &$this->dir_secuencia;
 
         // Add Doctrine Cache
         $this->Cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
@@ -1441,9 +1442,9 @@ class Lotes extends DbTable
         $this->codintlote->DbValue = $row['codintlote'];
         $this->codintnum->DbValue = $row['codintnum'];
         $this->codintsublote->DbValue = $row['codintsublote'];
-        $this->dir_secuencia->DbValue = $row['dir_secuencia'];
         $this->usuarioultmod->DbValue = $row['usuarioultmod'];
         $this->fecultmod->DbValue = $row['fecultmod'];
+        $this->dir_secuencia->DbValue = $row['dir_secuencia'];
     }
 
     // Delete uploaded files
@@ -1760,14 +1761,7 @@ class Lotes extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys
@@ -1831,9 +1825,9 @@ class Lotes extends DbTable
         $this->codintlote->setDbValue($row['codintlote']);
         $this->codintnum->setDbValue($row['codintnum']);
         $this->codintsublote->setDbValue($row['codintsublote']);
-        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
         $this->usuarioultmod->setDbValue($row['usuarioultmod']);
         $this->fecultmod->setDbValue($row['fecultmod']);
+        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
     }
 
     // Render list content
@@ -1912,11 +1906,11 @@ class Lotes extends DbTable
 
         // codintsublote
 
-        // dir_secuencia
-
         // usuarioultmod
 
         // fecultmod
+
+        // dir_secuencia
 
         // codnum
         $this->codnum->ViewValue = $this->codnum->CurrentValue;
@@ -2031,12 +2025,20 @@ class Lotes extends DbTable
         // codintsublote
         $this->codintsublote->ViewValue = $this->codintsublote->CurrentValue;
 
+        // usuarioultmod
+        $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
+        $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
+
+        // fecultmod
+        $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
+        $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
+
         // dir_secuencia
         $curVal = strval($this->dir_secuencia->CurrentValue);
         if ($curVal != "") {
             $this->dir_secuencia->ViewValue = $this->dir_secuencia->lookupCacheOption($curVal);
             if ($this->dir_secuencia->ViewValue === null) { // Lookup from database
-                $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                 $sqlWrk = $this->dir_secuencia->Lookup->getSql(false, $filterWrk, '', $this, true, true);
                 $conn = Conn();
                 $config = $conn->getConfiguration();
@@ -2053,14 +2055,6 @@ class Lotes extends DbTable
         } else {
             $this->dir_secuencia->ViewValue = null;
         }
-
-        // usuarioultmod
-        $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
-        $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
-
-        // fecultmod
-        $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
-        $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
 
         // codnum
         $this->codnum->HrefValue = "";
@@ -2158,10 +2152,6 @@ class Lotes extends DbTable
         $this->codintsublote->HrefValue = "";
         $this->codintsublote->TooltipValue = "";
 
-        // dir_secuencia
-        $this->dir_secuencia->HrefValue = "";
-        $this->dir_secuencia->TooltipValue = "";
-
         // usuarioultmod
         $this->usuarioultmod->HrefValue = "";
         $this->usuarioultmod->TooltipValue = "";
@@ -2169,6 +2159,10 @@ class Lotes extends DbTable
         // fecultmod
         $this->fecultmod->HrefValue = "";
         $this->fecultmod->TooltipValue = "";
+
+        // dir_secuencia
+        $this->dir_secuencia->HrefValue = "";
+        $this->dir_secuencia->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -2231,12 +2225,8 @@ class Lotes extends DbTable
         }
 
         // estado
-        $this->estado->setupEditAttributes();
-        if (strval($this->estado->CurrentValue) != "") {
-            $this->estado->EditValue = $this->estado->optionCaption($this->estado->CurrentValue);
-        } else {
-            $this->estado->EditValue = null;
-        }
+        $this->estado->EditValue = $this->estado->options(false);
+        $this->estado->PlaceHolder = RemoveHtml($this->estado->caption());
 
         // moneda
         $this->moneda->setupEditAttributes();
@@ -2334,11 +2324,7 @@ class Lotes extends DbTable
 
         // codintlote
         $this->codintlote->setupEditAttributes();
-        if (!$this->codintlote->Raw) {
-            $this->codintlote->CurrentValue = HtmlDecode($this->codintlote->CurrentValue);
-        }
         $this->codintlote->EditValue = $this->codintlote->CurrentValue;
-        $this->codintlote->PlaceHolder = RemoveHtml($this->codintlote->caption());
 
         // codintnum
         $this->codintnum->setupEditAttributes();
@@ -2350,13 +2336,13 @@ class Lotes extends DbTable
         // codintsublote
         $this->codintsublote->setupEditAttributes();
 
-        // dir_secuencia
-        $this->dir_secuencia->setupEditAttributes();
-        $this->dir_secuencia->PlaceHolder = RemoveHtml($this->dir_secuencia->caption());
-
         // usuarioultmod
 
         // fecultmod
+
+        // dir_secuencia
+        $this->dir_secuencia->setupEditAttributes();
+        $this->dir_secuencia->PlaceHolder = RemoveHtml($this->dir_secuencia->caption());
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -2386,7 +2372,6 @@ class Lotes extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->codnum);
                     $doc->exportCaption($this->codrem);
                     $doc->exportCaption($this->codcli);
                     $doc->exportCaption($this->codrubro);
@@ -2409,9 +2394,9 @@ class Lotes extends DbTable
                     $doc->exportCaption($this->codintlote);
                     $doc->exportCaption($this->codintnum);
                     $doc->exportCaption($this->codintsublote);
-                    $doc->exportCaption($this->dir_secuencia);
                     $doc->exportCaption($this->usuarioultmod);
                     $doc->exportCaption($this->fecultmod);
+                    $doc->exportCaption($this->dir_secuencia);
                 } else {
                     $doc->exportCaption($this->codnum);
                     $doc->exportCaption($this->codrem);
@@ -2436,9 +2421,9 @@ class Lotes extends DbTable
                     $doc->exportCaption($this->codintlote);
                     $doc->exportCaption($this->codintnum);
                     $doc->exportCaption($this->codintsublote);
-                    $doc->exportCaption($this->dir_secuencia);
                     $doc->exportCaption($this->usuarioultmod);
                     $doc->exportCaption($this->fecultmod);
+                    $doc->exportCaption($this->dir_secuencia);
                 }
                 $doc->endExportRow();
             }
@@ -2465,7 +2450,6 @@ class Lotes extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->codnum);
                         $doc->exportField($this->codrem);
                         $doc->exportField($this->codcli);
                         $doc->exportField($this->codrubro);
@@ -2488,9 +2472,9 @@ class Lotes extends DbTable
                         $doc->exportField($this->codintlote);
                         $doc->exportField($this->codintnum);
                         $doc->exportField($this->codintsublote);
-                        $doc->exportField($this->dir_secuencia);
                         $doc->exportField($this->usuarioultmod);
                         $doc->exportField($this->fecultmod);
+                        $doc->exportField($this->dir_secuencia);
                     } else {
                         $doc->exportField($this->codnum);
                         $doc->exportField($this->codrem);
@@ -2515,9 +2499,9 @@ class Lotes extends DbTable
                         $doc->exportField($this->codintlote);
                         $doc->exportField($this->codintnum);
                         $doc->exportField($this->codintsublote);
-                        $doc->exportField($this->dir_secuencia);
                         $doc->exportField($this->usuarioultmod);
                         $doc->exportField($this->fecultmod);
+                        $doc->exportField($this->dir_secuencia);
                     }
                     $doc->endExportRow($rowCnt);
                 }
@@ -2601,18 +2585,18 @@ class Lotes extends DbTable
                 	$rsnew['codintnum'] = $numero;
                 	$rsnew['codintsublote'] = $letras;	
                 	$rsnew['descor'] = $rsnew['descripcion'];
-                     $codnum = $rsnew['codnum'];
+                    $codnum = $rsnew['codnum'];
 
                 	// BUSCO LOS CAMPOS NECESARIOS PARA VALIDAR
                 	$codrem     = $rsold['codrem']; 
                 	$codintlote  = $rsnew['codintlote'];
-                    $querySecun = sprintf("SELECT secuencia FROM lotes WHERE lotes.codrem = 139 AND codnum = 817 LIMIT 1");
+                    $querySecun = sprintf("SELECT secuencia FROM lotes WHERE lotes.codrem = $codrem AND codnum = $codintlote LIMIT 1");
                     $secuencia = $amercado->fetchAssociative($querySecun);
                     $secNum = $secuencia["secuencia"];
                     $rsnew['secuencia'] = $secNum;
 
                 	// LEO LA TABLA LOTES
-                	if($rsnew['secuencia'] == "$codintlote"){
+                	if($rsnew['codintnum'] == "$codintlote"){
                 	    return TRUE;
                     }
                 	else {
@@ -2642,7 +2626,7 @@ class Lotes extends DbTable
                 	$rsnew['codintnum'] = $numero;
                 	$rsnew['codintsublote'] = $letras;	
                 	$rsnew['descor'] = $rsnew['descripcion'];
-                     $codnum = $rsold['codnum'];
+                    $codnum = $rsold['codnum'];
 
                 	// BUSCO LOS CAMPOS NECESARIOS PARA VALIDAR
                 	$codrem     = $rsold['codrem']; 
@@ -2651,15 +2635,8 @@ class Lotes extends DbTable
                     $secuencia = $amercado->fetchAssociative($querySecun);
                     $secNum = $secuencia["secuencia"];
                     $rsnew['secuencia'] = $secNum;
+                	return TRUE;
 
-                	// LEO LA TABLA LOTES
-                	if($rsnew['secuencia'] == "$codintlote"){
-                	    return TRUE;
-                    }
-                	else {
-                        ?> <script>alert('La secuencia esta mal, si persiste el error, mandar ticket, probablemente está mal cargado el lote.')</script> <?php
-                        return FALSE;
-                    }
                     // ACA LE MANDO EL MENSAJE DE ERROR Y NO DEBE GRABAR EL LOTE    
     }
 

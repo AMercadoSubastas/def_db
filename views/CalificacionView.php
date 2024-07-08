@@ -90,8 +90,7 @@ loadjs.ready("head", function () {
         <td data-name="activo"<?= $Page->activo->cellAttributes() ?>>
 <span id="el_calificacion_activo">
 <span<?= $Page->activo->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($Page->activo->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
-</span>
+<?= $Page->activo->getViewValue() ?></span>
 </span>
 </td>
     </tr>

@@ -48,6 +48,10 @@ class FileViewer
             $crop = Get("crop", "");
         }
         $sessionId = Decrypt($sessionId);
+        // Check session ID
+        if ($sessionId && session_status() === PHP_SESSION_ACTIVE && $sessionId !== session_id()) {
+            return false;
+        }
         $key = $sessionId . Config("ENCRYPTION_KEY");
         if (!is_numeric($width)) {
             $width = 0;

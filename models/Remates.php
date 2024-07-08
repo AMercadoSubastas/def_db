@@ -46,10 +46,10 @@ class Remates extends DbTable
     public $ModalMultiEdit = false;
 
     // Fields
+    public $ncomp;
     public $codnum;
     public $tcomp;
     public $serie;
-    public $ncomp;
     public $codcli;
     public $direccion;
     public $codpais;
@@ -117,8 +117,37 @@ class Remates extends DbTable
         $this->GridAddRowCount = 5;
         $this->AllowAddDeleteRow = true; // Allow add/delete row
         $this->UseAjaxActions = $this->UseAjaxActions || Config("USE_AJAX_ACTIONS");
+        $this->UseColumnVisibility = true;
         $this->UserIDAllowSecurity = Config("DEFAULT_USER_ID_ALLOW_SECURITY"); // Default User ID allowed permissions
         $this->BasicSearch = new BasicSearch($this);
+        $this->BasicSearch->TypeDefault = "=";
+
+        // ncomp
+        $this->ncomp = new DbField(
+            $this, // Table
+            'x_ncomp', // Variable name
+            'ncomp', // Name
+            '`ncomp`', // Expression
+            '`ncomp`', // Basic search expression
+            3, // Type
+            10, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`ncomp`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->ncomp->InputTextType = "text";
+        $this->ncomp->Raw = true;
+        $this->ncomp->IsForeignKey = true; // Foreign key field
+        $this->ncomp->Nullable = false; // NOT NULL field
+        $this->ncomp->Required = true; // Required field
+        $this->ncomp->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->ncomp->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->Fields['ncomp'] = &$this->ncomp;
 
         // codnum
         $this->codnum = new DbField(
@@ -225,33 +254,6 @@ class Remates extends DbTable
         $this->serie->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['serie'] = &$this->serie;
 
-        // ncomp
-        $this->ncomp = new DbField(
-            $this, // Table
-            'x_ncomp', // Variable name
-            'ncomp', // Name
-            '`ncomp`', // Expression
-            '`ncomp`', // Basic search expression
-            3, // Type
-            9, // Size
-            -1, // Date/Time format
-            false, // Is upload field
-            '`ncomp`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->ncomp->InputTextType = "text";
-        $this->ncomp->Raw = true;
-        $this->ncomp->IsForeignKey = true; // Foreign key field
-        $this->ncomp->Nullable = false; // NOT NULL field
-        $this->ncomp->Required = true; // Required field
-        $this->ncomp->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->ncomp->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['ncomp'] = &$this->ncomp;
-
         // codcli
         $this->codcli = new DbField(
             $this, // Table
@@ -337,7 +339,6 @@ class Remates extends DbTable
         $this->codpais->addMethod("getDefault", fn() => 1);
         $this->codpais->InputTextType = "text";
         $this->codpais->Raw = true;
-        $this->codpais->Required = true; // Required field
         $this->codpais->setSelectMultiple(false); // Select one
         $this->codpais->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->codpais->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
@@ -362,7 +363,7 @@ class Remates extends DbTable
             '`codprov`', // Expression
             '`codprov`', // Basic search expression
             3, // Type
-            3, // Size
+            10, // Size
             -1, // Date/Time format
             false, // Is upload field
             'EV__codprov', // Virtual expression
@@ -374,6 +375,7 @@ class Remates extends DbTable
         );
         $this->codprov->InputTextType = "text";
         $this->codprov->Raw = true;
+        $this->codprov->Nullable = false; // NOT NULL field
         $this->codprov->Required = true; // Required field
         $this->codprov->setSelectMultiple(false); // Select one
         $this->codprov->UsePleaseSelect = true; // Use PleaseSelect by default
@@ -381,14 +383,14 @@ class Remates extends DbTable
         global $CurrentLanguage;
         switch ($CurrentLanguage) {
             case "en-US":
-                $this->codprov->Lookup = new Lookup($this->codprov, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', ["x_codpais"], ["x_codloc"], ["codpais"], ["x_codpais"], [], [], false, '`descripcion` ASC', '', "`descripcion`");
+                $this->codprov->Lookup = new Lookup($this->codprov, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', ["x_codpais"], [], ["codpais"], ["x_codpais"], [], [], false, '`descripcion` ASC', '', "`descripcion`");
                 break;
             default:
-                $this->codprov->Lookup = new Lookup($this->codprov, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', ["x_codpais"], ["x_codloc"], ["codpais"], ["x_codpais"], [], [], false, '`descripcion` ASC', '', "`descripcion`");
+                $this->codprov->Lookup = new Lookup($this->codprov, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', ["x_codpais"], [], ["codpais"], ["x_codpais"], [], [], false, '`descripcion` ASC', '', "`descripcion`");
                 break;
         }
         $this->codprov->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->codprov->SearchOperators = ["=", "<>", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->codprov->SearchOperators = ["=", "<>", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY"];
         $this->Fields['codprov'] = &$this->codprov;
 
         // codloc
@@ -411,17 +413,16 @@ class Remates extends DbTable
         );
         $this->codloc->InputTextType = "text";
         $this->codloc->Raw = true;
-        $this->codloc->Required = true; // Required field
         $this->codloc->setSelectMultiple(false); // Select one
         $this->codloc->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->codloc->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
         global $CurrentLanguage;
         switch ($CurrentLanguage) {
             case "en-US":
-                $this->codloc->Lookup = new Lookup($this->codloc, 'localidades', false, 'codnum', ["descripcion","","",""], '', '', ["x_codprov"], [], ["codprov"], ["x_codprov"], [], [], false, '`descripcion` ASC', '', "`descripcion`");
+                $this->codloc->Lookup = new Lookup($this->codloc, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', [], [], [], [], [], [], false, '`descripcion` ASC', '', "`descripcion`");
                 break;
             default:
-                $this->codloc->Lookup = new Lookup($this->codloc, 'localidades', false, 'codnum', ["descripcion","","",""], '', '', ["x_codprov"], [], ["codprov"], ["x_codprov"], [], [], false, '`descripcion` ASC', '', "`descripcion`");
+                $this->codloc->Lookup = new Lookup($this->codloc, 'provincias', false, 'codnum', ["descripcion","","",""], '', '', [], [], [], [], [], [], false, '`descripcion` ASC', '', "`descripcion`");
                 break;
         }
         $this->codloc->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
@@ -434,10 +435,10 @@ class Remates extends DbTable
             'x_fecest', // Variable name
             'fecest', // Name
             '`fecest`', // Expression
-            CastDateFieldForLike("`fecest`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecest`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecest`', // Virtual expression
             false, // Is virtual
@@ -448,7 +449,7 @@ class Remates extends DbTable
         );
         $this->fecest->InputTextType = "text";
         $this->fecest->Raw = true;
-        $this->fecest->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecest->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecest->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecest'] = &$this->fecest;
 
@@ -458,10 +459,10 @@ class Remates extends DbTable
             'x_fecreal', // Variable name
             'fecreal', // Name
             '`fecreal`', // Expression
-            CastDateFieldForLike("`fecreal`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecreal`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecreal`', // Virtual expression
             false, // Is virtual
@@ -472,7 +473,7 @@ class Remates extends DbTable
         );
         $this->fecreal->InputTextType = "text";
         $this->fecreal->Raw = true;
-        $this->fecreal->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecreal->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecreal->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecreal'] = &$this->fecreal;
 
@@ -665,10 +666,10 @@ class Remates extends DbTable
             'x_fecalta', // Variable name
             'fecalta', // Name
             '`fecalta`', // Expression
-            CastDateFieldForLike("`fecalta`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecalta`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecalta`', // Virtual expression
             false, // Is virtual
@@ -680,7 +681,7 @@ class Remates extends DbTable
         $this->fecalta->InputTextType = "text";
         $this->fecalta->Raw = true;
         $this->fecalta->Nullable = false; // NOT NULL field
-        $this->fecalta->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecalta->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecalta->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecalta'] = &$this->fecalta;
 
@@ -836,10 +837,10 @@ class Remates extends DbTable
             'x_fecultmod', // Variable name
             'fecultmod', // Name
             '`fecultmod`', // Expression
-            CastDateFieldForLike("`fecultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecultmod`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecultmod`', // Virtual expression
             false, // Is virtual
@@ -851,7 +852,7 @@ class Remates extends DbTable
         $this->fecultmod->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fecultmod->InputTextType = "text";
         $this->fecultmod->Raw = true;
-        $this->fecultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecultmod->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecultmod'] = &$this->fecultmod;
 
@@ -966,8 +967,8 @@ class Remates extends DbTable
         }
     }
 
-    // Single column sort
-    public function updateSort(&$fld)
+    // Multiple column sort
+    public function updateSort(&$fld, $ctrl)
     {
         if ($this->CurrentOrder == $fld->Name) {
             $sortField = $fld->Expression;
@@ -977,11 +978,53 @@ class Remates extends DbTable
             } else {
                 $curSort = $lastSort;
             }
-            $orderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortField . " " . $curSort : "";
-            $this->setSessionOrderBy($orderBy); // Save to Session
+            $lastOrderBy = in_array($lastSort, ["ASC", "DESC"]) ? $sortField . " " . $lastSort : "";
+            $curOrderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortField . " " . $curSort : "";
+            if ($ctrl) {
+                $orderBy = $this->getSessionOrderBy();
+                $arOrderBy = !empty($orderBy) ? explode(", ", $orderBy) : [];
+                if ($lastOrderBy != "" && in_array($lastOrderBy, $arOrderBy)) {
+                    foreach ($arOrderBy as $key => $val) {
+                        if ($val == $lastOrderBy) {
+                            if ($curOrderBy == "") {
+                                unset($arOrderBy[$key]);
+                            } else {
+                                $arOrderBy[$key] = $curOrderBy;
+                            }
+                        }
+                    }
+                } elseif ($curOrderBy != "") {
+                    $arOrderBy[] = $curOrderBy;
+                }
+                $orderBy = implode(", ", $arOrderBy);
+                $this->setSessionOrderBy($orderBy); // Save to Session
+            } else {
+                $this->setSessionOrderBy($curOrderBy); // Save to Session
+            }
             $sortFieldList = ($fld->VirtualExpression != "") ? $fld->VirtualExpression : $sortField;
-            $orderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortFieldList . " " . $curSort : "";
-            $this->setSessionOrderByList($orderBy); // Save to Session
+            $lastOrderBy = in_array($lastSort, ["ASC", "DESC"]) ? $sortFieldList . " " . $lastSort : "";
+            $curOrderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortFieldList . " " . $curSort : "";
+            if ($ctrl) {
+                $orderByList = $this->getSessionOrderByList();
+                $arOrderBy = !empty($orderByList) ? explode(", ", $orderByList) : [];
+                if ($lastOrderBy != "" && in_array($lastOrderBy, $arOrderBy)) {
+                    foreach ($arOrderBy as $key => $val) {
+                        if ($val == $lastOrderBy) {
+                            if ($curOrderBy == "") {
+                                unset($arOrderBy[$key]);
+                            } else {
+                                $arOrderBy[$key] = $curOrderBy;
+                            }
+                        }
+                    }
+                } elseif ($curOrderBy != "") {
+                    $arOrderBy[] = $curOrderBy;
+                }
+                $orderByList = implode(", ", $arOrderBy);
+                $this->setSessionOrderByList($orderByList); // Save to Session
+            } else {
+                $this->setSessionOrderByList($curOrderBy); // Save to Session
+            }
         }
     }
 
@@ -1105,7 +1148,7 @@ class Remates extends DbTable
         if ($this->SqlSelectList) {
             return $this->SqlSelectList;
         }
-        $from = "(SELECT " . $this->sqlSelectFields() . ", (SELECT `descripcion` FROM paises TMP_LOOKUPTABLE WHERE TMP_LOOKUPTABLE.codnum = remates.codpais LIMIT 1) AS EV__codpais, (SELECT `descripcion` FROM provincias TMP_LOOKUPTABLE WHERE TMP_LOOKUPTABLE.codnum = remates.codprov LIMIT 1) AS EV__codprov, (SELECT `descripcion` FROM localidades TMP_LOOKUPTABLE WHERE TMP_LOOKUPTABLE.codnum = remates.codloc LIMIT 1) AS EV__codloc FROM remates)";
+        $from = "(SELECT " . $this->sqlSelectFields() . ", (SELECT `descripcion` FROM paises TMP_LOOKUPTABLE WHERE TMP_LOOKUPTABLE.codnum = remates.codpais LIMIT 1) AS EV__codpais, (SELECT `descripcion` FROM provincias TMP_LOOKUPTABLE WHERE TMP_LOOKUPTABLE.codnum = remates.codprov LIMIT 1) AS EV__codprov, (SELECT `descripcion` FROM provincias TMP_LOOKUPTABLE WHERE TMP_LOOKUPTABLE.codnum = remates.codloc LIMIT 1) AS EV__codloc FROM remates)";
         return $from . " TMP_TABLE";
     }
 
@@ -1577,10 +1620,10 @@ class Remates extends DbTable
         if (!is_array($row)) {
             return;
         }
+        $this->ncomp->DbValue = $row['ncomp'];
         $this->codnum->DbValue = $row['codnum'];
         $this->tcomp->DbValue = $row['tcomp'];
         $this->serie->DbValue = $row['serie'];
-        $this->ncomp->DbValue = $row['ncomp'];
         $this->codcli->DbValue = $row['codcli'];
         $this->direccion->DbValue = $row['direccion'];
         $this->codpais->DbValue = $row['codpais'];
@@ -1843,7 +1886,7 @@ class Remates extends DbTable
         $attrs = "";
         if ($this->PageID != "grid" && $fld->Sortable) {
             $sortUrl = $this->sortUrl($fld);
-            $attrs = ' role="button" data-ew-action="sort" data-ajax="' . ($this->UseAjaxActions ? "true" : "false") . '" data-sort-url="' . $sortUrl . '" data-sort-type="1"';
+            $attrs = ' role="button" data-ew-action="sort" data-ajax="' . ($this->UseAjaxActions ? "true" : "false") . '" data-sort-url="' . $sortUrl . '" data-sort-type="2"';
             if ($this->ContextClass) { // Add context
                 $attrs .= ' data-context="' . HtmlEncode($this->ContextClass) . '"';
             }
@@ -1925,14 +1968,7 @@ class Remates extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys
@@ -1972,10 +2008,10 @@ class Remates extends DbTable
         } else {
             return;
         }
+        $this->ncomp->setDbValue($row['ncomp']);
         $this->codnum->setDbValue($row['codnum']);
         $this->tcomp->setDbValue($row['tcomp']);
         $this->serie->setDbValue($row['serie']);
-        $this->ncomp->setDbValue($row['ncomp']);
         $this->codcli->setDbValue($row['codcli']);
         $this->direccion->setDbValue($row['direccion']);
         $this->codpais->setDbValue($row['codpais']);
@@ -2030,13 +2066,13 @@ class Remates extends DbTable
 
         // Common render codes
 
+        // ncomp
+
         // codnum
 
         // tcomp
 
         // serie
-
-        // ncomp
 
         // codcli
 
@@ -2085,6 +2121,10 @@ class Remates extends DbTable
         // gastos
 
         // tasa
+
+        // ncomp
+        $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
+        $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
 
         // codnum
         $this->codnum->ViewValue = $this->codnum->CurrentValue;
@@ -2136,10 +2176,6 @@ class Remates extends DbTable
         } else {
             $this->serie->ViewValue = null;
         }
-
-        // ncomp
-        $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
-        $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
 
         // codcli
         $curVal = strval($this->codcli->CurrentValue);
@@ -2340,6 +2376,10 @@ class Remates extends DbTable
             $this->tasa->ViewValue = $this->tasa->tagCaption(2) != "" ? $this->tasa->tagCaption(2) : "No";
         }
 
+        // ncomp
+        $this->ncomp->HrefValue = "";
+        $this->ncomp->TooltipValue = "";
+
         // codnum
         $this->codnum->HrefValue = "";
         $this->codnum->TooltipValue = "";
@@ -2351,10 +2391,6 @@ class Remates extends DbTable
         // serie
         $this->serie->HrefValue = "";
         $this->serie->TooltipValue = "";
-
-        // ncomp
-        $this->ncomp->HrefValue = "";
-        $this->ncomp->TooltipValue = "";
 
         // codcli
         $this->codcli->HrefValue = "";
@@ -2467,6 +2503,11 @@ class Remates extends DbTable
         // Call Row Rendering event
         $this->rowRendering();
 
+        // ncomp
+        $this->ncomp->setupEditAttributes();
+        $this->ncomp->EditValue = $this->ncomp->CurrentValue;
+        $this->ncomp->EditValue = FormatNumber($this->ncomp->EditValue, $this->ncomp->formatPattern());
+
         // codnum
         $this->codnum->setupEditAttributes();
         $this->codnum->EditValue = $this->codnum->CurrentValue;
@@ -2478,14 +2519,6 @@ class Remates extends DbTable
         // serie
         $this->serie->setupEditAttributes();
         $this->serie->PlaceHolder = RemoveHtml($this->serie->caption());
-
-        // ncomp
-        $this->ncomp->setupEditAttributes();
-        $this->ncomp->EditValue = $this->ncomp->CurrentValue;
-        $this->ncomp->PlaceHolder = RemoveHtml($this->ncomp->caption());
-        if (strval($this->ncomp->EditValue) != "" && is_numeric($this->ncomp->EditValue)) {
-            $this->ncomp->EditValue = FormatNumber($this->ncomp->EditValue, null);
-        }
 
         // codcli
         $this->codcli->setupEditAttributes();
@@ -2637,10 +2670,9 @@ class Remates extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->codnum);
+                    $doc->exportCaption($this->ncomp);
                     $doc->exportCaption($this->tcomp);
                     $doc->exportCaption($this->serie);
-                    $doc->exportCaption($this->ncomp);
                     $doc->exportCaption($this->codcli);
                     $doc->exportCaption($this->direccion);
                     $doc->exportCaption($this->codpais);
@@ -2666,10 +2698,10 @@ class Remates extends DbTable
                     $doc->exportCaption($this->gastos);
                     $doc->exportCaption($this->tasa);
                 } else {
+                    $doc->exportCaption($this->ncomp);
                     $doc->exportCaption($this->codnum);
                     $doc->exportCaption($this->tcomp);
                     $doc->exportCaption($this->serie);
-                    $doc->exportCaption($this->ncomp);
                     $doc->exportCaption($this->codcli);
                     $doc->exportCaption($this->direccion);
                     $doc->exportCaption($this->codpais);
@@ -2719,10 +2751,9 @@ class Remates extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->codnum);
+                        $doc->exportField($this->ncomp);
                         $doc->exportField($this->tcomp);
                         $doc->exportField($this->serie);
-                        $doc->exportField($this->ncomp);
                         $doc->exportField($this->codcli);
                         $doc->exportField($this->direccion);
                         $doc->exportField($this->codpais);
@@ -2748,10 +2779,10 @@ class Remates extends DbTable
                         $doc->exportField($this->gastos);
                         $doc->exportField($this->tasa);
                     } else {
+                        $doc->exportField($this->ncomp);
                         $doc->exportField($this->codnum);
                         $doc->exportField($this->tcomp);
                         $doc->exportField($this->serie);
-                        $doc->exportField($this->ncomp);
                         $doc->exportField($this->codcli);
                         $doc->exportField($this->direccion);
                         $doc->exportField($this->codpais);
@@ -2854,39 +2885,23 @@ class Remates extends DbTable
 
     public function rowInserted($rsold, &$rsnew) {
     	$this->setSuccessMessage("Registro agregado. El nuevo numero de Remate es " . $rsnew["ncomp"]);    
-    		$hostname_amercado = "vm3.adrianmercado.com.ar";
-    		$database_amercado = "am_test";
-    		$username_amercado = "am_test_user";
-    		$password_amercado = "IV20pRY3VkAcIcs";
-
+    		$amercado = Conn();
     		// BUSCO LOS CAMPOS NECESARIOS PARA VALIDAR
     		$serie    = 4;  
 
     		// LEO LA TABLA SERIES
-    		$amercado = mysqli_connect($hostname_amercado, $username_amercado, $password_amercado) or trigger_error(mysqli_error($amercado),E_USER_ERROR);
-    		mysqli_select_db($database_amercado, $amercado);
+
+            // consulta por series si codnum es = 4
     		$query = sprintf("SELECT * FROM series WHERE series.codnum = $serie"); 
     		$Result = mysqli_query($amercado, $query) or die(mysqli_error($amercado));
+
+            // hacer if que retorne false si no sale
     		$row_Result = mysqli_fetch_assoc($Result);   
     		$nroact = $row_Result['nroact'] + 1;
     		$rematenum = $nroact;
     		// ACTUALIZO EL ULTIMO NRO DE LA serie
     		$query2 = sprintf("UPDATE SERIES SET nroact = $nroact WHERE series.codnum = $serie");
     		$Result2 = mysqli_query($amercado, $query2) or die(mysqli_error($amercado));
-    		//echo "Row Inserted"
-    		// LEO LOS LOTES RELACIONADOS Y LES GRABO LA SECUENCIA
-    		$amercado = mysqli_connect($hostname_amercado, $username_amercado, $password_amercado) or trigger_error(mysqli_error($amercado),E_USER_ERROR);
-    		mysqli_select_db($amercado, $database_amercado);
-    		$query3 = sprintf("SELECT * FROM lotes WHERE lotes.codrem = $rematenum ORDER BY lotes.codrem, lotes.codintlote"); 
-    		$Result3 = mysqli_query($amercado, $query3) or die(mysqli_error($amercado));
-    		$row_Result3 = mysqli_fetch_assoc($Result3);   
-    		$j = 0;
-    		while ($row_Result3 = mysqli_fetch_assoc($Result3)) {
-    			// ACTUALIZO EL  NRO DE SECUENCIA
-    			$query4 = sprintf("UPDATE LOTES SET secuencia = $j" );
-    			$Result4 = mysqli_query($amercado, $query4) or die(mysqli_error());
-    			$j++;
-    		}
     }
 
     // Row Updating event

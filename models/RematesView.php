@@ -139,10 +139,10 @@ class RematesView extends Remates
     // Set field visibility
     public function setVisibility()
     {
+        $this->ncomp->setVisibility();
         $this->codnum->setVisibility();
         $this->tcomp->setVisibility();
         $this->serie->setVisibility();
-        $this->ncomp->setVisibility();
         $this->codcli->setVisibility();
         $this->direccion->setVisibility();
         $this->codpais->setVisibility();
@@ -590,9 +590,6 @@ class RematesView extends Remates
         $loadCurrentRecord = false;
         $returnUrl = "";
         $matchRecord = false;
-        if (Get(Config("TABLE_START_REC")) !== null || Get(Config("TABLE_PAGE_NUMBER")) !== null) {
-            $loadCurrentRecord = true;
-        }
         if (($keyValue = Get("codnum") ?? Route("codnum")) !== null) {
             $this->codnum->setQueryStringValue($keyValue);
             $this->RecKey["codnum"] = $this->codnum->QueryStringValue;
@@ -610,47 +607,7 @@ class RematesView extends Remates
         $this->CurrentAction = "show"; // Display
         switch ($this->CurrentAction) {
             case "show": // Get a record to display
-                if (!$this->IsModal && !IsApi()) { // Normal view page
-                    $this->StartRecord = 1; // Initialize start position
-                    $this->Recordset = $this->loadRecordset(); // Load records
-                    if ($this->TotalRecords <= 0) { // No record found
-                        if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
-                            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-                        }
-                        $this->terminate("RematesList"); // Return to list page
-                        return;
-                    } elseif ($loadCurrentRecord) { // Load current record position
-                        $this->setupStartRecord(); // Set up start record position
-                        // Point to current record
-                        if ($this->StartRecord <= $this->TotalRecords) {
-                            $matchRecord = true;
-                            $this->fetch($this->StartRecord);
-                            // Redirect to correct record
-                            $this->loadRowValues($this->CurrentRow);
-                            $url = $this->getCurrentUrl(Config("TABLE_SHOW_DETAIL") . "=" . $this->getCurrentDetailTable());
-                            $this->terminate($url);
-                            return;
-                        }
-                    } else { // Match key values
-                        while ($this->fetch()) {
-                            if (SameString($this->codnum->CurrentValue, $this->CurrentRow['codnum'])) {
-                                $this->setStartRecordNumber($this->StartRecord); // Save record position
-                                $matchRecord = true;
-                                break;
-                            } else {
-                                $this->StartRecord++;
-                            }
-                        }
-                    }
-                    if (!$matchRecord) {
-                        if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
-                            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-                        }
-                        $returnUrl = "RematesList"; // No matching record, return to list
-                    } else {
-                        $this->loadRowValues($this->CurrentRow); // Load row values
-                    }
-                } else {
+
                     // Load record based on key
                     if (IsApi()) {
                         $filter = $this->getRecordFilter();
@@ -667,7 +624,6 @@ class RematesView extends Remates
                         }
                         $returnUrl = "RematesList"; // No matching record, return to list
                     }
-                } // End modal checking
                 break;
         }
 
@@ -700,13 +656,6 @@ class RematesView extends Remates
                 $this->terminate(true);
             }
             return;
-        }
-
-        // Set up pager
-        if (!$this->IsModal) { // Normal view page
-            $this->Pager = new PrevNextPager($this, $this->StartRecord, $this->DisplayRecords, $this->TotalRecords, "", $this->RecordRange, $this->AutoHidePager, false, false);
-            $this->Pager->PageNumberName = Config("TABLE_PAGE_NUMBER");
-            $this->Pager->PagePhraseId = "Record"; // Show as record
         }
 
         // Set LoginStatus / Page_Rendering / Page_Render
@@ -957,10 +906,10 @@ class RematesView extends Remates
 
         // Call Row Selected event
         $this->rowSelected($row);
+        $this->ncomp->setDbValue($row['ncomp']);
         $this->codnum->setDbValue($row['codnum']);
         $this->tcomp->setDbValue($row['tcomp']);
         $this->serie->setDbValue($row['serie']);
-        $this->ncomp->setDbValue($row['ncomp']);
         $this->codcli->setDbValue($row['codcli']);
         $this->direccion->setDbValue($row['direccion']);
         $this->codpais->setDbValue($row['codpais']);
@@ -1006,10 +955,10 @@ class RematesView extends Remates
     protected function newRow()
     {
         $row = [];
+        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codnum'] = $this->codnum->DefaultValue;
         $row['tcomp'] = $this->tcomp->DefaultValue;
         $row['serie'] = $this->serie->DefaultValue;
-        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codcli'] = $this->codcli->DefaultValue;
         $row['direccion'] = $this->direccion->DefaultValue;
         $row['codpais'] = $this->codpais->DefaultValue;
@@ -1055,13 +1004,13 @@ class RematesView extends Remates
 
         // Common render codes for all row types
 
+        // ncomp
+
         // codnum
 
         // tcomp
 
         // serie
-
-        // ncomp
 
         // codcli
 
@@ -1113,6 +1062,10 @@ class RematesView extends Remates
 
         // View row
         if ($this->RowType == RowType::VIEW) {
+            // ncomp
+            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
+            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
+
             // codnum
             $this->codnum->ViewValue = $this->codnum->CurrentValue;
 
@@ -1163,10 +1116,6 @@ class RematesView extends Remates
             } else {
                 $this->serie->ViewValue = null;
             }
-
-            // ncomp
-            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
-            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
 
             // codcli
             $curVal = strval($this->codcli->CurrentValue);
@@ -1367,9 +1316,9 @@ class RematesView extends Remates
                 $this->tasa->ViewValue = $this->tasa->tagCaption(2) != "" ? $this->tasa->tagCaption(2) : "No";
             }
 
-            // codnum
-            $this->codnum->HrefValue = "";
-            $this->codnum->TooltipValue = "";
+            // ncomp
+            $this->ncomp->HrefValue = "";
+            $this->ncomp->TooltipValue = "";
 
             // tcomp
             $this->tcomp->HrefValue = "";
@@ -1378,10 +1327,6 @@ class RematesView extends Remates
             // serie
             $this->serie->HrefValue = "";
             $this->serie->TooltipValue = "";
-
-            // ncomp
-            $this->ncomp->HrefValue = "";
-            $this->ncomp->TooltipValue = "";
 
             // codcli
             $this->codcli->HrefValue = "";
@@ -1523,7 +1468,7 @@ class RematesView extends Remates
             return "<a href=\"$exportUrl\" class=\"btn btn-default ew-export-link ew-csv\" title=\"" . HtmlEncode($Language->phrase("ExportToCsv", true)) . "\" data-caption=\"" . HtmlEncode($Language->phrase("ExportToCsv", true)) . "\">" . $Language->phrase("ExportToCsv") . "</a>";
         } elseif (SameText($type, "email")) {
             $url = $custom ? ' data-url="' . $exportUrl . '"' : '';
-            return '<button type="button" class="btn btn-default ew-export-link ew-email" title="' . $Language->phrase("ExportToEmail", true) . '" data-caption="' . $Language->phrase("ExportToEmail", true) . '" form="frematesview" data-ew-action="email" data-hdr="' . $Language->phrase("ExportToEmail", true) . '" data-key="' . ArrayToJsonAttribute($this->RecKey) . '" data-exported-selected="false"' . $url . '>' . $Language->phrase("ExportToEmail") . '</button>';
+            return '<button type="button" class="btn btn-default ew-export-link ew-email" title="' . $Language->phrase("ExportToEmail", true) . '" data-caption="' . $Language->phrase("ExportToEmail", true) . '" form="frematesview" data-ew-action="email" data-custom="false" data-hdr="' . $Language->phrase("ExportToEmail", true) . '" data-key="' . ArrayToJsonAttribute($this->RecKey) . '" data-exported-selected="false"' . $url . '>' . $Language->phrase("ExportToEmail") . '</button>';
         } elseif (SameText($type, "print")) {
             return "<a href=\"$exportUrl\" class=\"btn btn-default ew-export-link ew-print\" title=\"" . HtmlEncode($Language->phrase("PrinterFriendly", true)) . "\" data-caption=\"" . HtmlEncode($Language->phrase("PrinterFriendly", true)) . "\">" . $Language->phrase("PrinterFriendly") . "</a>";
         }

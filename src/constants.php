@@ -41,11 +41,11 @@ define(PROJECT_NAMESPACE . "PRIVILEGES", [
 ]); // User permissions
 
 // Product version
-define(PROJECT_NAMESPACE . "PRODUCT_VERSION", "24.4.0");
+define(PROJECT_NAMESPACE . "PRODUCT_VERSION", "24.13.0");
 
 // Project
 define(PROJECT_NAMESPACE . "PROJECT_NAME", "Subastas2024"); // Project name
-define(PROJECT_NAMESPACE . "PROJECT_ID", "{02827D3D-6DF9-4506-954E-CA333C80D2BB}"); // Project ID
+define(PROJECT_NAMESPACE . "PROJECT_ID", "{35AF585C-C723-49AB-ACD9-D7D82F885863}"); // Project ID
 
 /**
  * Character encoding

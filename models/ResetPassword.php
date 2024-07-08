@@ -340,7 +340,17 @@ class ResetPassword extends Usuarios
             $filter = [Config("LOGIN_USERNAME_PROPERTY_NAME") => $userName];
         }
         if ($action != "") {
-            $users = $filter ? GetUserRepository()->findBy($filter) : GetUserRepository()->findAll();
+            if ($this->UpdateTable != $this->TableName) { // Note: The username field name must be the same
+                $entityClass = GetEntityClass($this->UpdateTable);
+                if ($entityClass) {
+                    $userRepository = GetUserEntityManager()->getRepository($entityClass);
+                } else {
+                    throw new \Exception("Entity class for UpdateTable not found.");
+                }
+            } else {
+                $userRepository = GetUserRepository();
+            }
+            $users = $filter ? $userRepository->findBy($filter) : $userRepository->findAll();
             if ($users) {
                 $validEmail = false;
                 foreach ($users as $user) {

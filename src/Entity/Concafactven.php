@@ -28,21 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "concafactven")]
 class Concafactven extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'nroconc' => 'nroconc',
-        'descrip' => 'descrip',
-        'porcentaje' => 'porcentaje',
-        'importe' => 'importe',
-        'usuario' => 'usuario',
-        'fechahora' => 'fechahora',
-        'activo' => 'activo',
-        'tipoiva' => 'tipoiva',
-        'impuesto' => 'impuesto',
-        'tieneresol' => 'tieneresol',
-        'ctacbleBAS' => 'ctacbleBas',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -66,8 +51,8 @@ class Concafactven extends AbstractEntity
     #[Column(type: "datetime")]
     private DateTime $fechahora;
 
-    #[Column(type: "boolean")]
-    private bool $activo = true;
+    #[Column(type: "integer")]
+    private int $activo;
 
     #[Column(type: "integer", nullable: true)]
     private ?int $tipoiva;
@@ -75,11 +60,17 @@ class Concafactven extends AbstractEntity
     #[Column(type: "integer", nullable: true)]
     private ?int $impuesto;
 
-    #[Column(type: "boolean")]
-    private bool $tieneresol = false;
+    #[Column(type: "integer")]
+    private int $tieneresol;
 
     #[Column(name: "ctacbleBAS", type: "string", nullable: true)]
     private ?string $ctacbleBas;
+
+    public function __construct()
+    {
+        $this->activo = 1;
+        $this->tieneresol = 0;
+    }
 
     public function getCodnum(): int
     {
@@ -158,12 +149,12 @@ class Concafactven extends AbstractEntity
         return $this;
     }
 
-    public function getActivo(): bool
+    public function getActivo(): int
     {
         return $this->activo;
     }
 
-    public function setActivo(bool $value): static
+    public function setActivo(int $value): static
     {
         $this->activo = $value;
         return $this;
@@ -191,12 +182,12 @@ class Concafactven extends AbstractEntity
         return $this;
     }
 
-    public function getTieneresol(): bool
+    public function getTieneresol(): int
     {
         return $this->tieneresol;
     }
 
-    public function setTieneresol(bool $value): static
+    public function setTieneresol(int $value): static
     {
         $this->tieneresol = $value;
         return $this;

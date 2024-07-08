@@ -35,7 +35,7 @@ ew.PREVIEW_NAV_STYLE ??= "tabs"; // tabs/pills/underline
 ew.PREVIEW_MODAL_CLASS ??= "modal modal-fullscreen-sm-down";
 ew.PREVIEW_ROW ??= true;
 ew.PREVIEW_SINGLE_ROW ??= false;
-ew.PREVIEW || ew.ready("head", ew.PATH_BASE + "js/preview.js?v=24.4.0", "preview");
+ew.PREVIEW || ew.ready("head", ew.PATH_BASE + "js/preview.min.js?v=24.13.0", "preview");
 </script>
 <script>
 loadjs.ready("head", function () {
@@ -59,6 +59,9 @@ loadjs.ready("head", function () {
 <?php } ?>
 </div>
 <?php } ?>
+<?php if ($Page->ShowCurrentFilter) { ?>
+<?php $Page->showFilterList() ?>
+<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <form name="frematessrch" id="frematessrch" class="ew-form ew-ext-search-form" action="<?= CurrentPageUrl(false) ?>" autocomplete="off">
 <div id="frematessrch_search_panel" class="mb-2 mb-sm-0 <?= $Page->SearchPanelClass ?>"><!-- .ew-search-panel -->
@@ -79,6 +82,41 @@ loadjs.ready(["wrapper", "head"], function () {
         .setSubmitWithFetch(true)
 <?php } ?>
 
+        // Add fields
+        .addFields([
+            ["ncomp", [ew.Validators.integer], fields.ncomp.isInvalid]
+        ])
+        // Validate form
+        .setValidate(
+            async function () {
+                if (!this.validateRequired)
+                    return true; // Ignore validation
+                let fobj = this.getForm();
+
+                // Validate fields
+                if (!this.validateFields())
+                    return false;
+
+                // Call Form_CustomValidate event
+                if (!(await this.customValidate?.(fobj) ?? true)) {
+                    this.focus();
+                    return false;
+                }
+                return true;
+            }
+        )
+
+        // Form_CustomValidate
+        .setCustomValidate(
+            function (fobj) { // DO NOT CHANGE THIS LINE! (except for adding "async" keyword)!
+                    // Your custom validation code here, return false if invalid.
+                    return true;
+                }
+        )
+
+        // Use JavaScript validation or not
+        .setValidateRequired(ew.CLIENT_VALIDATE)
+
         // Dynamic selection lists
         .setLists({
         })
@@ -98,6 +136,36 @@ loadjs.ready(["wrapper", "head"], function () {
 <?php if ($Security->canSearch()) { ?>
 <?php if (!$Page->isExport() && !($Page->CurrentAction && $Page->CurrentAction != "search") && $Page->hasSearchFields()) { ?>
 <div class="ew-extended-search container-fluid ps-2">
+<div class="row mb-0<?= ($Page->SearchFieldsPerRow > 0) ? " row-cols-sm-" . $Page->SearchFieldsPerRow : "" ?>">
+<?php
+// Render search row
+$Page->RowType = RowType::SEARCH;
+$Page->resetAttributes();
+$Page->renderRow();
+?>
+<?php if ($Page->ncomp->Visible) { // ncomp ?>
+<?php
+if (!$Page->ncomp->UseFilter) {
+    $Page->SearchColumnCount++;
+}
+?>
+    <div id="xs_ncomp" class="col-sm-auto d-sm-flex align-items-start mb-3 px-0 pe-sm-2<?= $Page->ncomp->UseFilter ? " ew-filter-field" : "" ?>">
+        <div class="d-flex my-1 my-sm-0">
+            <label for="x_ncomp" class="ew-search-caption ew-label"><?= $Page->ncomp->caption() ?></label>
+            <div class="ew-search-operator">
+<?= $Language->phrase("=") ?>
+<input type="hidden" name="z_ncomp" id="z_ncomp" value="=">
+</div>
+        </div>
+        <div id="el_remates_ncomp" class="ew-search-field">
+<input type="<?= $Page->ncomp->getInputTextType() ?>" name="x_ncomp" id="x_ncomp" data-table="remates" data-field="x_ncomp" value="<?= $Page->ncomp->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->ncomp->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->ncomp->formatPattern()) ?>"<?= $Page->ncomp->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Page->ncomp->getErrorMessage(false) ?></div>
+</div>
+        <div class="d-flex my-1 my-sm-0">
+        </div><!-- /.ew-search-field -->
+    </div><!-- /.col-sm-auto -->
+<?php } ?>
+</div><!-- /.row -->
 <div class="row mb-0">
     <div class="col-sm-auto px-0 pe-sm-2">
         <div class="ew-basic-search input-group">
@@ -169,17 +237,14 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <th data-name="codnum" class="<?= $Page->codnum->headerCellClass() ?>"><div id="elh_remates_codnum" class="remates_codnum"><?= $Page->renderFieldHeader($Page->codnum) ?></div></th>
+<?php if ($Page->ncomp->Visible) { // ncomp ?>
+        <th data-name="ncomp" class="<?= $Page->ncomp->headerCellClass() ?>"><div id="elh_remates_ncomp" class="remates_ncomp"><?= $Page->renderFieldHeader($Page->ncomp) ?></div></th>
 <?php } ?>
 <?php if ($Page->tcomp->Visible) { // tcomp ?>
         <th data-name="tcomp" class="<?= $Page->tcomp->headerCellClass() ?>"><div id="elh_remates_tcomp" class="remates_tcomp"><?= $Page->renderFieldHeader($Page->tcomp) ?></div></th>
 <?php } ?>
 <?php if ($Page->serie->Visible) { // serie ?>
         <th data-name="serie" class="<?= $Page->serie->headerCellClass() ?>"><div id="elh_remates_serie" class="remates_serie"><?= $Page->renderFieldHeader($Page->serie) ?></div></th>
-<?php } ?>
-<?php if ($Page->ncomp->Visible) { // ncomp ?>
-        <th data-name="ncomp" class="<?= $Page->ncomp->headerCellClass() ?>"><div id="elh_remates_ncomp" class="remates_ncomp"><?= $Page->renderFieldHeader($Page->ncomp) ?></div></th>
 <?php } ?>
 <?php if ($Page->codcli->Visible) { // codcli ?>
         <th data-name="codcli" class="<?= $Page->codcli->headerCellClass() ?>"><div id="elh_remates_codcli" class="remates_codcli"><?= $Page->renderFieldHeader($Page->codcli) ?></div></th>
@@ -277,11 +342,11 @@ while ($Page->RecordCount < $Page->StopRecord || $Page->RowIndex === '$rowindex$
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->codnum->Visible) { // codnum ?>
-        <td data-name="codnum"<?= $Page->codnum->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_remates_codnum" class="el_remates_codnum">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
+    <?php if ($Page->ncomp->Visible) { // ncomp ?>
+        <td data-name="ncomp"<?= $Page->ncomp->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_remates_ncomp" class="el_remates_ncomp">
+<span<?= $Page->ncomp->viewAttributes() ?>>
+<?= $Page->ncomp->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
@@ -298,14 +363,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_remates_serie" class="el_remates_serie">
 <span<?= $Page->serie->viewAttributes() ?>>
 <?= $Page->serie->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->ncomp->Visible) { // ncomp ?>
-        <td data-name="ncomp"<?= $Page->ncomp->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_remates_ncomp" class="el_remates_ncomp">
-<span<?= $Page->ncomp->viewAttributes() ?>>
-<?= $Page->ncomp->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
@@ -489,7 +546,10 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
         <td data-name="tasa"<?= $Page->tasa->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_remates_tasa" class="el_remates_tasa">
 <span<?= $Page->tasa->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($Page->tasa->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
+<div class="form-check form-switch d-inline-block">
+    <input type="checkbox" id="x_tasa_<?= $Page->RowCount ?>" class="form-check-input" value="<?= $Page->tasa->getViewValue() ?>" disabled<?php if (ConvertToBool($Page->tasa->CurrentValue)) { ?> checked<?php } ?>>
+    <label class="form-check-label" for="x_tasa_<?= $Page->RowCount ?>"></label>
+</div>
 </span>
 </span>
 </td>

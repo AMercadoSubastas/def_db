@@ -2520,7 +2520,7 @@ class CartvaloresEdit extends Cartvalores
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // tcompsal
         $this->tcompsal->setDbValueDef($rsnew, $this->tcompsal->CurrentValue, $this->tcompsal->ReadOnly);

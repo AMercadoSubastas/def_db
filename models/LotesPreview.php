@@ -121,7 +121,7 @@ class LotesPreview extends Lotes
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->codnum->Visible = false;
         $this->codrem->setVisibility();
         $this->codcli->setVisibility();
         $this->codrubro->setVisibility();
@@ -145,9 +145,9 @@ class LotesPreview extends Lotes
         $this->codintlote->setVisibility();
         $this->codintnum->setVisibility();
         $this->codintsublote->setVisibility();
-        $this->dir_secuencia->setVisibility();
         $this->usuarioultmod->setVisibility();
         $this->fecultmod->setVisibility();
+        $this->dir_secuencia->setVisibility();
     }
 
     // Constructor
@@ -555,9 +555,9 @@ class LotesPreview extends Lotes
             $this->codintlote->setSort("");
             $this->codintnum->setSort("");
             $this->codintsublote->setSort("");
-            $this->dir_secuencia->setSort("");
             $this->usuarioultmod->setSort("");
             $this->fecultmod->setSort("");
+            $this->dir_secuencia->setSort("");
 
             // Save sort to session
             $this->setSessionOrderBy("");
@@ -576,7 +576,6 @@ class LotesPreview extends Lotes
 
         // Check for sort field
         if ($this->CurrentOrder !== "") {
-            $this->updateSort($this->codnum); // codnum
             $this->updateSort($this->codrem); // codrem
             $this->updateSort($this->codcli); // codcli
             $this->updateSort($this->codrubro); // codrubro
@@ -599,9 +598,9 @@ class LotesPreview extends Lotes
             $this->updateSort($this->codintlote); // codintlote
             $this->updateSort($this->codintnum); // codintnum
             $this->updateSort($this->codintsublote); // codintsublote
-            $this->updateSort($this->dir_secuencia); // dir_secuencia
             $this->updateSort($this->usuarioultmod); // usuarioultmod
             $this->updateSort($this->fecultmod); // fecultmod
+            $this->updateSort($this->dir_secuencia); // dir_secuencia
         }
 
         // Update field sort
@@ -732,6 +731,18 @@ class LotesPreview extends Lotes
     {
         global $Language, $Security;
         $options = &$this->OtherOptions;
+        $option = $options["addedit"];
+        $option->UseButtonGroup = true;
+
+        // Add group option item
+        $item = &$option->addGroupOption();
+        $item->Body = "";
+        $item->OnLeft = true;
+        $item->Visible = false;
+
+        // Add
+        $item = &$option->add("add");
+        $item->Visible = $Security->canAdd();
     }
 
     // Render other options
@@ -739,6 +750,22 @@ class LotesPreview extends Lotes
     {
         global $Language, $Security;
         $options = &$this->OtherOptions;
+        $option = $options["addedit"];
+
+        // Add
+        $item = $option["add"];
+        if ($Security->canAdd()) {
+            $addCaption = $Language->phrase("AddLink");
+            $addTitle = HtmlTitle($addCaption);
+            $addUrl = GetUrl($this->getAddUrl($this->masterKeyUrl()));
+            if ($this->UseModalLinks && !IsMobile()) {
+                $item->Body = "<a class=\"btn btn-default btn-sm ew-add-edit ew-add\" title=\"" . $addTitle . "\" data-caption=\"" . $addTitle . "\" data-ew-action=\"modal\" data-url=\"" . HtmlEncode($addUrl) . "\" data-btn=\"AddBtn\">" . $addCaption . "</a>";
+            } else {
+                $item->Body = "<a class=\"btn btn-default btn-sm ew-add-edit ew-add\" title=\"" . $addTitle . "\" data-caption=\"" . $addTitle . "\" href=\"" . HtmlEncode($addUrl) . "\">" . $addCaption . "</a>";
+            }
+        } else {
+            $item->Body = "";
+        }
     }
 
     // Get master foreign key URL

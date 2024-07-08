@@ -19,7 +19,7 @@ if ($trace) {
         <?php if (@$Error["error"]["type"]) { ?>
         <h3><i class="fa-solid fa-triangle-exclamation <?= @$Error["error"]["class"] ?>"></i> <?= @$Error["error"]["type"] ?></h3>
         <?php } ?>
-        <p><?= @$Error["error"]["description"] ?></p>
+        <p><?= HtmlEncode(@$Error["error"]["description"]) ?></p>
         <?= $trace ?>
     </div>
     <!-- /.error-content -->

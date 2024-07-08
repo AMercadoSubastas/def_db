@@ -930,10 +930,10 @@ class UsuariosEdit extends Usuarios
             }
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Sí";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // email
@@ -1009,7 +1009,8 @@ class UsuariosEdit extends Usuarios
             }
 
             // activo
-            $this->activo->EditValue = $this->activo->options(false);
+            $this->activo->setupEditAttributes();
+            $this->activo->EditValue = $this->activo->options(true);
             $this->activo->PlaceHolder = RemoveHtml($this->activo->caption());
 
             // email
@@ -1087,7 +1088,7 @@ class UsuariosEdit extends Usuarios
                 }
             }
             if ($this->activo->Visible && $this->activo->Required) {
-                if ($this->activo->FormValue == "") {
+                if (!$this->activo->IsDetailKey && EmptyValue($this->activo->FormValue)) {
                     $this->activo->addErrorMessage(str_replace("%s", $this->activo->caption(), $this->activo->RequiredErrorMessage));
                 }
             }
@@ -1199,7 +1200,7 @@ class UsuariosEdit extends Usuarios
         }
 
         // activo
-        $this->activo->setDbValueDef($rsnew, strval($this->activo->CurrentValue) == "1" ? "1" : "0", $this->activo->ReadOnly);
+        $this->activo->setDbValueDef($rsnew, $this->activo->CurrentValue, $this->activo->ReadOnly);
 
         // email
         $this->_email->setDbValueDef($rsnew, $this->_email->CurrentValue, $this->_email->ReadOnly);

@@ -413,7 +413,7 @@ label.form-check-label {
                 > span[id^=elh_] {
                     font-weight: bold;
                     display: inline-block;
-                    margin-top: $table-cell-padding-y;
+                    margin-top: $table-cell-padding-y-sm;
                 }
                 .checkbox { // Checkbox (update page)
                     margin-top: 0;
@@ -426,7 +426,7 @@ label.form-check-label {
             > td:nth-of-type(2):not(:last-of-type) {
                 //text-align: right;
                 .ew-search-operator { // Search operator (Search page)
-                    margin-top: $table-cell-padding-y;
+                    margin-top: $table-cell-padding-y-sm;
                 }
             }
             > th:last-of-type, > td:last-of-type { // Input
@@ -1189,6 +1189,11 @@ input.cke_dialog_ui_input_text {
         margin-left: 10px;
         border-radius: $border-radius 0 $border-radius $border-radius;
     }
+}
+
+// PDFObject
+.ew-pdfobject {
+    max-width: 1000px;
 }
 @mixin media-desktop {
     // Column widths
@@ -2843,6 +2848,9 @@ body > div.wrapper.ew-layout > div.content-wrapper {
 	position: absolute;
     top: 17px;
 }
+#ew-navbar > a > img {
+	width :200px;
+}
 
 /*END_USER_STYLES*/
 
@@ -2882,6 +2890,11 @@ tr.ew-table-preview-row.expandable-body > td,
         padding-right: 10px;
         /*rtl:ignore*/ direction: ltr;
     }
+}
+
+// Button group
+.ew-preview-container .btn-group {
+    display: block;
 }
 
 // Detail count for plain theme

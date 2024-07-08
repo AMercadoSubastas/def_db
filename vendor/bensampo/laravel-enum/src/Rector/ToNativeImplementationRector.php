@@ -8,25 +8,29 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest
- */
+/** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest */
 class ToNativeImplementationRector extends ToNativeRector
 {
     public function __construct(
         protected PhpDocInfoPrinter $phpDocInfoPrinter,
-    ) {}
+        protected PhpDocInfoFactory $phpDocInfoFactory,
+        protected ValueResolver $valueResolver,
+    ) {
+        parent::__construct($valueResolver);
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -104,28 +108,32 @@ CODE_SAMPLE,
         $enum->stmts = $class->getTraitUses();
 
         $constants = $class->getConstants();
-        if ($constants !== []) {
-            // Assume the first constant value has the correct type
-            $value = $this->valueResolver->getValue($constants[0]->consts[0]->value);
-            $enum->scalarType = is_string($value)
-                ? new Identifier('string')
-                : new Identifier('int');
 
-            foreach ($constants as $constant) {
-                $constConst = $constant->consts[0];
-                $enumCase = new EnumCase(
-                    $constConst->name,
-                    $constConst->value,
-                    [],
-                    ['startLine' => $constConst->getStartLine(), 'endLine' => $constConst->getEndLine()],
-                );
+        $constantValues = array_map(
+            fn (ClassConst $classConst): mixed => $this->valueResolver->getValue(
+                $classConst->consts[0]->value
+            ),
+            $constants
+        );
+        $enumScalarType = $this->enumScalarType($constantValues);
+        if ($enumScalarType) {
+            $enum->scalarType = new Identifier($enumScalarType);
+        }
 
-                // mirror comments
-                $enumCase->setAttribute(AttributeKey::PHP_DOC_INFO, $constant->getAttribute(AttributeKey::PHP_DOC_INFO));
-                $enumCase->setAttribute(AttributeKey::COMMENTS, $constant->getAttribute(AttributeKey::COMMENTS));
+        foreach ($constants as $constant) {
+            $constConst = $constant->consts[0];
+            $enumCase = new EnumCase(
+                $constConst->name,
+                $constConst->value,
+                [],
+                ['startLine' => $constConst->getStartLine(), 'endLine' => $constConst->getEndLine()],
+            );
 
-                $enum->stmts[] = $enumCase;
-            }
+            // mirror comments
+            $enumCase->setAttribute(AttributeKey::PHP_DOC_INFO, $constant->getAttribute(AttributeKey::PHP_DOC_INFO));
+            $enumCase->setAttribute(AttributeKey::COMMENTS, $constant->getAttribute(AttributeKey::COMMENTS));
+
+            $enum->stmts[] = $enumCase;
         }
 
         $enum->stmts = [...$enum->stmts, ...$class->getMethods()];

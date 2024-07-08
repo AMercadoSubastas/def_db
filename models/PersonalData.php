@@ -44,7 +44,7 @@ class PersonalData
     public $RenderingView = false;
 
     // CSS class/style
-    public $CurrentPageName = "LFacncintController";
+    public $CurrentPageName = "ListaCtacteCliTotController";
 
     // Page headings
     public $Heading = "";
@@ -329,7 +329,17 @@ class PersonalData
     {
         global $Language, $UserTable;
         $pwd = Post($this->Password->FieldVar, "");
-        $user = FindUserByUserName(CurrentUserName());
+        $userName = CurrentUserName();
+        if ($UserTable->UpdateTable != $UserTable->TableName) { // Note: The username and password field name must be the same
+            $entityClass = GetEntityClass($UserTable->UpdateTable);
+            if ($entityClass) {
+                $user = GetUserEntityManager()->getRepository($entityClass)->findOneBy(["usuario" => $userName]);
+            } else {
+                throw new \Exception("Entity class for UpdateTable not found.");
+            }
+        } else {
+            $user = FindUserByUserName($userName);
+        }
         if ($user) {
             if (ComparePassword($user->get(Config("LOGIN_PASSWORD_FIELD_NAME")), $pwd)) {
                 $row = $user->toArray();

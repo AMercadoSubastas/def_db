@@ -121,10 +121,10 @@ class RematesEdit extends Remates
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->ncomp->setVisibility();
+        $this->codnum->Visible = false;
         $this->tcomp->setVisibility();
         $this->serie->setVisibility();
-        $this->ncomp->setVisibility();
         $this->codcli->setVisibility();
         $this->direccion->setVisibility();
         $this->codpais->setVisibility();
@@ -513,6 +513,7 @@ class RematesEdit extends Remates
         $CurrentForm = new HttpForm();
         $this->CurrentAction = Param("action"); // Set up current action
         $this->setVisibility();
+        $this->ncomp->Required = false;
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -738,10 +739,14 @@ class RematesEdit extends Remates
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
 
-        // Check field name 'codnum' first before field var 'x_codnum'
-        $val = $CurrentForm->hasValue("codnum") ? $CurrentForm->getValue("codnum") : $CurrentForm->getValue("x_codnum");
-        if (!$this->codnum->IsDetailKey) {
-            $this->codnum->setFormValue($val, true, $validate);
+        // Check field name 'ncomp' first before field var 'x_ncomp'
+        $val = $CurrentForm->hasValue("ncomp") ? $CurrentForm->getValue("ncomp") : $CurrentForm->getValue("x_ncomp");
+        if (!$this->ncomp->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->ncomp->Visible = false; // Disable update for API request
+            } else {
+                $this->ncomp->setFormValue($val);
+            }
         }
 
         // Check field name 'tcomp' first before field var 'x_tcomp'
@@ -761,16 +766,6 @@ class RematesEdit extends Remates
                 $this->serie->Visible = false; // Disable update for API request
             } else {
                 $this->serie->setFormValue($val);
-            }
-        }
-
-        // Check field name 'ncomp' first before field var 'x_ncomp'
-        $val = $CurrentForm->hasValue("ncomp") ? $CurrentForm->getValue("ncomp") : $CurrentForm->getValue("x_ncomp");
-        if (!$this->ncomp->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->ncomp->Visible = false; // Disable update for API request
-            } else {
-                $this->ncomp->setFormValue($val, true, $validate);
             }
         }
 
@@ -1019,6 +1014,12 @@ class RematesEdit extends Remates
                 $this->tasa->setFormValue($val);
             }
         }
+
+        // Check field name 'codnum' first before field var 'x_codnum'
+        $val = $CurrentForm->hasValue("codnum") ? $CurrentForm->getValue("codnum") : $CurrentForm->getValue("x_codnum");
+        if (!$this->codnum->IsDetailKey) {
+            $this->codnum->setFormValue($val);
+        }
     }
 
     // Restore form values
@@ -1026,9 +1027,9 @@ class RematesEdit extends Remates
     {
         global $CurrentForm;
         $this->codnum->CurrentValue = $this->codnum->FormValue;
+        $this->ncomp->CurrentValue = $this->ncomp->FormValue;
         $this->tcomp->CurrentValue = $this->tcomp->FormValue;
         $this->serie->CurrentValue = $this->serie->FormValue;
-        $this->ncomp->CurrentValue = $this->ncomp->FormValue;
         $this->codcli->CurrentValue = $this->codcli->FormValue;
         $this->direccion->CurrentValue = $this->direccion->FormValue;
         $this->codpais->CurrentValue = $this->codpais->FormValue;
@@ -1099,10 +1100,10 @@ class RematesEdit extends Remates
 
         // Call Row Selected event
         $this->rowSelected($row);
+        $this->ncomp->setDbValue($row['ncomp']);
         $this->codnum->setDbValue($row['codnum']);
         $this->tcomp->setDbValue($row['tcomp']);
         $this->serie->setDbValue($row['serie']);
-        $this->ncomp->setDbValue($row['ncomp']);
         $this->codcli->setDbValue($row['codcli']);
         $this->direccion->setDbValue($row['direccion']);
         $this->codpais->setDbValue($row['codpais']);
@@ -1148,10 +1149,10 @@ class RematesEdit extends Remates
     protected function newRow()
     {
         $row = [];
+        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codnum'] = $this->codnum->DefaultValue;
         $row['tcomp'] = $this->tcomp->DefaultValue;
         $row['serie'] = $this->serie->DefaultValue;
-        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codcli'] = $this->codcli->DefaultValue;
         $row['direccion'] = $this->direccion->DefaultValue;
         $row['codpais'] = $this->codpais->DefaultValue;
@@ -1210,6 +1211,9 @@ class RematesEdit extends Remates
 
         // Common render codes for all row types
 
+        // ncomp
+        $this->ncomp->RowCssClass = "row";
+
         // codnum
         $this->codnum->RowCssClass = "row";
 
@@ -1218,9 +1222,6 @@ class RematesEdit extends Remates
 
         // serie
         $this->serie->RowCssClass = "row";
-
-        // ncomp
-        $this->ncomp->RowCssClass = "row";
 
         // codcli
         $this->codcli->RowCssClass = "row";
@@ -1296,6 +1297,10 @@ class RematesEdit extends Remates
 
         // View row
         if ($this->RowType == RowType::VIEW) {
+            // ncomp
+            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
+            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
+
             // codnum
             $this->codnum->ViewValue = $this->codnum->CurrentValue;
 
@@ -1346,10 +1351,6 @@ class RematesEdit extends Remates
             } else {
                 $this->serie->ViewValue = null;
             }
-
-            // ncomp
-            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
-            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
 
             // codcli
             $curVal = strval($this->codcli->CurrentValue);
@@ -1550,17 +1551,15 @@ class RematesEdit extends Remates
                 $this->tasa->ViewValue = $this->tasa->tagCaption(2) != "" ? $this->tasa->tagCaption(2) : "No";
             }
 
-            // codnum
-            $this->codnum->HrefValue = "";
+            // ncomp
+            $this->ncomp->HrefValue = "";
+            $this->ncomp->TooltipValue = "";
 
             // tcomp
             $this->tcomp->HrefValue = "";
 
             // serie
             $this->serie->HrefValue = "";
-
-            // ncomp
-            $this->ncomp->HrefValue = "";
 
             // codcli
             $this->codcli->HrefValue = "";
@@ -1634,9 +1633,10 @@ class RematesEdit extends Remates
             // tasa
             $this->tasa->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
-            // codnum
-            $this->codnum->setupEditAttributes();
-            $this->codnum->EditValue = $this->codnum->CurrentValue;
+            // ncomp
+            $this->ncomp->setupEditAttributes();
+            $this->ncomp->EditValue = $this->ncomp->CurrentValue;
+            $this->ncomp->EditValue = FormatNumber($this->ncomp->EditValue, $this->ncomp->formatPattern());
 
             // tcomp
             $this->tcomp->setupEditAttributes();
@@ -1693,14 +1693,6 @@ class RematesEdit extends Remates
                 $this->serie->EditValue = $arwrk;
             }
             $this->serie->PlaceHolder = RemoveHtml($this->serie->caption());
-
-            // ncomp
-            $this->ncomp->setupEditAttributes();
-            $this->ncomp->EditValue = $this->ncomp->CurrentValue;
-            $this->ncomp->PlaceHolder = RemoveHtml($this->ncomp->caption());
-            if (strval($this->ncomp->EditValue) != "" && is_numeric($this->ncomp->EditValue)) {
-                $this->ncomp->EditValue = FormatNumber($this->ncomp->EditValue, null);
-            }
 
             // codcli
             $this->codcli->setupEditAttributes();
@@ -1919,17 +1911,15 @@ class RematesEdit extends Remates
 
             // Edit refer script
 
-            // codnum
-            $this->codnum->HrefValue = "";
+            // ncomp
+            $this->ncomp->HrefValue = "";
+            $this->ncomp->TooltipValue = "";
 
             // tcomp
             $this->tcomp->HrefValue = "";
 
             // serie
             $this->serie->HrefValue = "";
-
-            // ncomp
-            $this->ncomp->HrefValue = "";
 
             // codcli
             $this->codcli->HrefValue = "";
@@ -2023,13 +2013,10 @@ class RematesEdit extends Remates
             return true;
         }
         $validateForm = true;
-            if ($this->codnum->Visible && $this->codnum->Required) {
-                if (!$this->codnum->IsDetailKey && EmptyValue($this->codnum->FormValue)) {
-                    $this->codnum->addErrorMessage(str_replace("%s", $this->codnum->caption(), $this->codnum->RequiredErrorMessage));
+            if ($this->ncomp->Visible && $this->ncomp->Required) {
+                if (!$this->ncomp->IsDetailKey && EmptyValue($this->ncomp->FormValue)) {
+                    $this->ncomp->addErrorMessage(str_replace("%s", $this->ncomp->caption(), $this->ncomp->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->codnum->FormValue)) {
-                $this->codnum->addErrorMessage($this->codnum->getErrorMessage(false));
             }
             if ($this->tcomp->Visible && $this->tcomp->Required) {
                 if (!$this->tcomp->IsDetailKey && EmptyValue($this->tcomp->FormValue)) {
@@ -2040,14 +2027,6 @@ class RematesEdit extends Remates
                 if (!$this->serie->IsDetailKey && EmptyValue($this->serie->FormValue)) {
                     $this->serie->addErrorMessage(str_replace("%s", $this->serie->caption(), $this->serie->RequiredErrorMessage));
                 }
-            }
-            if ($this->ncomp->Visible && $this->ncomp->Required) {
-                if (!$this->ncomp->IsDetailKey && EmptyValue($this->ncomp->FormValue)) {
-                    $this->ncomp->addErrorMessage(str_replace("%s", $this->ncomp->caption(), $this->ncomp->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->ncomp->FormValue)) {
-                $this->ncomp->addErrorMessage($this->ncomp->getErrorMessage(false));
             }
             if ($this->codcli->Visible && $this->codcli->Required) {
                 if (!$this->codcli->IsDetailKey && EmptyValue($this->codcli->FormValue)) {
@@ -2270,11 +2249,15 @@ class RematesEdit extends Remates
             if ($this->getCurrentDetailTable() != "") {
                 if ($editRow) {
                     if ($this->UseTransaction) { // Commit transaction
-                        $conn->commit();
+                        if ($conn->isTransactionActive()) {
+                            $conn->commit();
+                        }
                     }
                 } else {
                     if ($this->UseTransaction) { // Rollback transaction
-                        $conn->rollback();
+                        if ($conn->isTransactionActive()) {
+                            $conn->rollback();
+                        }
                     }
                 }
             }
@@ -2320,9 +2303,6 @@ class RematesEdit extends Remates
         // serie
         $this->serie->setDbValueDef($rsnew, $this->serie->CurrentValue, $this->serie->ReadOnly);
 
-        // ncomp
-        $this->ncomp->setDbValueDef($rsnew, $this->ncomp->CurrentValue, $this->ncomp->ReadOnly);
-
         // codcli
         $this->codcli->setDbValueDef($rsnew, $this->codcli->CurrentValue, $this->codcli->ReadOnly);
 
@@ -2364,7 +2344,7 @@ class RematesEdit extends Remates
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // fecalta
         $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()), $this->fecalta->ReadOnly);
@@ -2383,11 +2363,11 @@ class RematesEdit extends Remates
 
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, $this->usuarioultmod->ReadOnly);
 
         // fecultmod
         $this->fecultmod->CurrentValue = $this->fecultmod->getAutoUpdateValue(); // PHP
-        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()));
+        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), $this->fecultmod->ReadOnly);
 
         // servicios
         $this->servicios->setDbValueDef($rsnew, $this->servicios->CurrentValue, $this->servicios->ReadOnly);
@@ -2415,9 +2395,6 @@ class RematesEdit extends Remates
         }
         if (isset($row['serie'])) { // serie
             $this->serie->CurrentValue = $row['serie'];
-        }
-        if (isset($row['ncomp'])) { // ncomp
-            $this->ncomp->CurrentValue = $row['ncomp'];
         }
         if (isset($row['codcli'])) { // codcli
             $this->codcli->CurrentValue = $row['codcli'];

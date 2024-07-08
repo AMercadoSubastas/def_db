@@ -853,10 +853,10 @@ class MonedasEdit extends Monedas
             $this->descrip->ViewValue = $this->descrip->CurrentValue;
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Sí";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // codnum
@@ -892,7 +892,8 @@ class MonedasEdit extends Monedas
             $this->descrip->PlaceHolder = RemoveHtml($this->descrip->caption());
 
             // activo
-            $this->activo->EditValue = $this->activo->options(false);
+            $this->activo->setupEditAttributes();
+            $this->activo->EditValue = $this->activo->options(true);
             $this->activo->PlaceHolder = RemoveHtml($this->activo->caption());
 
             // Edit refer script
@@ -945,7 +946,7 @@ class MonedasEdit extends Monedas
                 }
             }
             if ($this->activo->Visible && $this->activo->Required) {
-                if ($this->activo->FormValue == "") {
+                if (!$this->activo->IsDetailKey && EmptyValue($this->activo->FormValue)) {
                     $this->activo->addErrorMessage(str_replace("%s", $this->activo->caption(), $this->activo->RequiredErrorMessage));
                 }
             }
@@ -1045,7 +1046,7 @@ class MonedasEdit extends Monedas
         $this->descrip->setDbValueDef($rsnew, $this->descrip->CurrentValue, $this->descrip->ReadOnly);
 
         // activo
-        $this->activo->setDbValueDef($rsnew, strval($this->activo->CurrentValue) == "1" ? "1" : "0", $this->activo->ReadOnly);
+        $this->activo->setDbValueDef($rsnew, $this->activo->CurrentValue, $this->activo->ReadOnly);
         return $rsnew;
     }
 

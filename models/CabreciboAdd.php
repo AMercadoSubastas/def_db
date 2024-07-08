@@ -610,7 +610,7 @@ class CabreciboAdd extends Cabrecibo
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "CabreciboList") {
@@ -1477,11 +1477,15 @@ class CabreciboAdd extends Cabrecibo
         if ($this->getCurrentDetailTable() != "") {
             if ($addRow) {
                 if ($this->UseTransaction) { // Commit transaction
-                    $conn->commit();
+                    if ($conn->isTransactionActive()) {
+                        $conn->commit();
+                    }
                 }
             } else {
                 if ($this->UseTransaction) { // Rollback transaction
-                    $conn->rollback();
+                    if ($conn->isTransactionActive()) {
+                        $conn->rollback();
+                    }
                 }
             }
         }
@@ -1526,11 +1530,11 @@ class CabreciboAdd extends Cabrecibo
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, false);
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), false);
 
         // cliente
         $this->cliente->setDbValueDef($rsnew, $this->cliente->CurrentValue, false);
@@ -1547,11 +1551,11 @@ class CabreciboAdd extends Cabrecibo
 
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, false);
 
         // fecultmod
         $this->fecultmod->CurrentValue = $this->fecultmod->getAutoUpdateValue(); // PHP
-        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()));
+        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), false);
         return $rsnew;
     }
 

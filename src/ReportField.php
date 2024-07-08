@@ -90,48 +90,62 @@ class ReportField extends DbField
     }
 
     // Get Sum
-    public function getSum($records)
+    public function getSum($records, $skipNull = false)
     {
         $name = $this->getGroupName();
         $sum = 0;
         if (count($records) > 0) {
-            $sum = Collection::make($records)->sum($name);
+            $collection = $skipNull
+                ? Collection::make($records)->whereNotNull($name)
+                : Collection::make($records);
+            if (!$collection->isEmpty()) {
+                $sum = $collection->sum($name);
+            }
         }
         $this->SumValue = $sum;
     }
 
     // Get Avg
-    public function getAvg($records)
+    public function getAvg($records, $skipNull = false)
     {
         $name = $this->getGroupName();
         $avg = 0;
         if (count($records) > 0) {
-            $avg = Collection::make($records)->average($name);
+            $collection = $skipNull
+                ? Collection::make($records)->whereNotNull($name)
+                : Collection::make($records);
+            if (!$collection->isEmpty()) {
+                $avg = $collection->avg($name);
+            }
         }
         $this->AvgValue = $avg;
     }
 
     // Get Min
-    public function getMin($records)
+    public function getMin($records, $skipNull = false)
     {
         $name = $this->getGroupName();
         $min = null;
         if (count($records) > 0) {
-            $collection = Collection::make($records)->whereNotNull($name);
+            $collection = $skipNull
+                ? Collection::make($records)->whereNotNull($name)
+                : Collection::make($records);
             if (!$collection->isEmpty()) {
-                $max = $collection->min($name);
+                $min = $collection->min($name);
             }
         }
         $this->MinValue = $min;
     }
 
     // Get Max
-    public function getMax($records)
+    public function getMax($records, $skipNull = false)
     {
         $name = $this->getGroupName();
         $max = null;
         if (count($records) > 0) {
-            $collection = Collection::make($records)->whereNotNull($name);
+            $collection = $skipNull
+                ? Collection::make($records)->whereNotNull($name)
+                : Collection::make($records);
             if (!$collection->isEmpty()) {
                 $max = $collection->max($name);
             }
@@ -140,12 +154,15 @@ class ReportField extends DbField
     }
 
     // Get Count
-    public function getCnt($records)
+    public function getCnt($records, $skipNull = false)
     {
         $name = $this->getGroupName();
         $cnt = 0;
         if (count($records) > 0) {
-            $cnt = Collection::make($records)->count();
+            $collection = $skipNull
+                ? Collection::make($records)->whereNotNull($name)
+                : Collection::make($records);
+            $cnt = $collection->count();
         }
         $this->CntValue = $cnt;
         $this->Count = $cnt;

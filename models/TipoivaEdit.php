@@ -878,10 +878,10 @@ class TipoivaEdit extends Tipoiva
             }
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Sí";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // codnum
@@ -924,7 +924,8 @@ class TipoivaEdit extends Tipoiva
             $this->discrimina->PlaceHolder = RemoveHtml($this->discrimina->caption());
 
             // activo
-            $this->activo->EditValue = $this->activo->options(false);
+            $this->activo->setupEditAttributes();
+            $this->activo->EditValue = $this->activo->options(true);
             $this->activo->PlaceHolder = RemoveHtml($this->activo->caption());
 
             // Edit refer script
@@ -985,7 +986,7 @@ class TipoivaEdit extends Tipoiva
                 }
             }
             if ($this->activo->Visible && $this->activo->Required) {
-                if ($this->activo->FormValue == "") {
+                if (!$this->activo->IsDetailKey && EmptyValue($this->activo->FormValue)) {
                     $this->activo->addErrorMessage(str_replace("%s", $this->activo->caption(), $this->activo->RequiredErrorMessage));
                 }
             }
@@ -1088,7 +1089,7 @@ class TipoivaEdit extends Tipoiva
         $this->discrimina->setDbValueDef($rsnew, strval($this->discrimina->CurrentValue) == "1" ? "1" : "0", $this->discrimina->ReadOnly);
 
         // activo
-        $this->activo->setDbValueDef($rsnew, strval($this->activo->CurrentValue) == "1" ? "1" : "0", $this->activo->ReadOnly);
+        $this->activo->setDbValueDef($rsnew, $this->activo->CurrentValue, $this->activo->ReadOnly);
         return $rsnew;
     }
 

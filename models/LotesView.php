@@ -163,9 +163,9 @@ class LotesView extends Lotes
         $this->codintlote->setVisibility();
         $this->codintnum->setVisibility();
         $this->codintsublote->setVisibility();
-        $this->dir_secuencia->setVisibility();
         $this->usuarioultmod->setVisibility();
         $this->fecultmod->setVisibility();
+        $this->dir_secuencia->setVisibility();
     }
 
     // Constructor
@@ -741,6 +741,16 @@ class LotesView extends Lotes
         $options = &$this->OtherOptions;
         $option = $options["action"];
 
+        // Add
+        $item = &$option->add("add");
+        $addcaption = HtmlTitle($Language->phrase("ViewPageAddLink"));
+        if ($this->IsModal) {
+            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" data-ew-action=\"modal\" data-url=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
+        } else {
+            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
+        }
+        $item->Visible = $this->AddUrl != "" && $Security->canAdd();
+
         // Edit
         $item = &$option->add("edit");
         $editcaption = HtmlTitle($Language->phrase("ViewPageEditLink"));
@@ -887,9 +897,9 @@ class LotesView extends Lotes
         $this->codintlote->setDbValue($row['codintlote']);
         $this->codintnum->setDbValue($row['codintnum']);
         $this->codintsublote->setDbValue($row['codintsublote']);
-        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
         $this->usuarioultmod->setDbValue($row['usuarioultmod']);
         $this->fecultmod->setDbValue($row['fecultmod']);
+        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
     }
 
     // Return a row with default values
@@ -920,9 +930,9 @@ class LotesView extends Lotes
         $row['codintlote'] = $this->codintlote->DefaultValue;
         $row['codintnum'] = $this->codintnum->DefaultValue;
         $row['codintsublote'] = $this->codintsublote->DefaultValue;
-        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         $row['usuarioultmod'] = $this->usuarioultmod->DefaultValue;
         $row['fecultmod'] = $this->fecultmod->DefaultValue;
+        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         return $row;
     }
 
@@ -992,11 +1002,11 @@ class LotesView extends Lotes
 
         // codintsublote
 
-        // dir_secuencia
-
         // usuarioultmod
 
         // fecultmod
+
+        // dir_secuencia
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -1113,12 +1123,20 @@ class LotesView extends Lotes
             // codintsublote
             $this->codintsublote->ViewValue = $this->codintsublote->CurrentValue;
 
+            // usuarioultmod
+            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
+            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
+
+            // fecultmod
+            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
+            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
+
             // dir_secuencia
             $curVal = strval($this->dir_secuencia->CurrentValue);
             if ($curVal != "") {
                 $this->dir_secuencia->ViewValue = $this->dir_secuencia->lookupCacheOption($curVal);
                 if ($this->dir_secuencia->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                     $sqlWrk = $this->dir_secuencia->Lookup->getSql(false, $filterWrk, '', $this, true, true);
                     $conn = Conn();
                     $config = $conn->getConfiguration();
@@ -1135,18 +1153,6 @@ class LotesView extends Lotes
             } else {
                 $this->dir_secuencia->ViewValue = null;
             }
-
-            // usuarioultmod
-            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
-            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
-
-            // fecultmod
-            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
-            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
-
-            // codnum
-            $this->codnum->HrefValue = "";
-            $this->codnum->TooltipValue = "";
 
             // codrem
             $this->codrem->HrefValue = "";
@@ -1236,10 +1242,6 @@ class LotesView extends Lotes
             $this->codintsublote->HrefValue = "";
             $this->codintsublote->TooltipValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-            $this->dir_secuencia->TooltipValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
             $this->usuarioultmod->TooltipValue = "";
@@ -1247,6 +1249,10 @@ class LotesView extends Lotes
             // fecultmod
             $this->fecultmod->HrefValue = "";
             $this->fecultmod->TooltipValue = "";
+
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
+            $this->dir_secuencia->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1292,7 +1298,7 @@ class LotesView extends Lotes
             return "<a href=\"$exportUrl\" class=\"btn btn-default ew-export-link ew-csv\" title=\"" . HtmlEncode($Language->phrase("ExportToCsv", true)) . "\" data-caption=\"" . HtmlEncode($Language->phrase("ExportToCsv", true)) . "\">" . $Language->phrase("ExportToCsv") . "</a>";
         } elseif (SameText($type, "email")) {
             $url = $custom ? ' data-url="' . $exportUrl . '"' : '';
-            return '<button type="button" class="btn btn-default ew-export-link ew-email" title="' . $Language->phrase("ExportToEmail", true) . '" data-caption="' . $Language->phrase("ExportToEmail", true) . '" form="flotesview" data-ew-action="email" data-hdr="' . $Language->phrase("ExportToEmail", true) . '" data-key="' . ArrayToJsonAttribute($this->RecKey) . '" data-exported-selected="false"' . $url . '>' . $Language->phrase("ExportToEmail") . '</button>';
+            return '<button type="button" class="btn btn-default ew-export-link ew-email" title="' . $Language->phrase("ExportToEmail", true) . '" data-caption="' . $Language->phrase("ExportToEmail", true) . '" form="flotesview" data-ew-action="email" data-custom="false" data-hdr="' . $Language->phrase("ExportToEmail", true) . '" data-key="' . ArrayToJsonAttribute($this->RecKey) . '" data-exported-selected="false"' . $url . '>' . $Language->phrase("ExportToEmail") . '</button>';
         } elseif (SameText($type, "print")) {
             return "<a href=\"$exportUrl\" class=\"btn btn-default ew-export-link ew-print\" title=\"" . HtmlEncode($Language->phrase("PrinterFriendly", true)) . "\" data-caption=\"" . HtmlEncode($Language->phrase("PrinterFriendly", true)) . "\">" . $Language->phrase("PrinterFriendly") . "</a>";
         }

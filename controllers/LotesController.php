@@ -22,6 +22,13 @@ class LotesController extends ControllerBase
         return $this->runPage($request, $response, $args, "LotesList");
     }
 
+    // add
+    #[Map(["GET","POST","OPTIONS"], "/LotesAdd[/{codnum}]", [PermissionMiddleware::class], "add.lotes")]
+    public function add(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "LotesAdd");
+    }
+
     // view
     #[Map(["GET","POST","OPTIONS"], "/LotesView[/{codnum}]", [PermissionMiddleware::class], "view.lotes")]
     public function view(Request $request, Response $response, array $args): Response

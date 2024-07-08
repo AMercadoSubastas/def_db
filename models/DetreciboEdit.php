@@ -629,7 +629,7 @@ class DetreciboEdit extends Detrecibo
                     }
 
                     // Handle UseAjaxActions with return page
-                    if ($this->IsModal && $this->UseAjaxActions) {
+                    if ($this->IsModal && $this->UseAjaxActions && !$this->getCurrentMasterTable()) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "DetreciboList") {
                             Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL

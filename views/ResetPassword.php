@@ -63,15 +63,15 @@ loadjs.ready(["wrapper", "head"], function() {
 <?php
 $Page->showMessage();
 ?>
+<div class="ew-reset-pwd-box">
+<div class="card">
+<div class="card-body">
 <form name="freset_password" id="freset_password" class="ew-form ew-forgot-pwd-form" action="<?= CurrentPageUrl(false) ?>" method="post" autocomplete="off">
 <?php if (Config("CHECK_TOKEN")) { ?>
 <input type="hidden" name="<?= $TokenNameKey ?>" value="<?= $TokenName ?>"><!-- CSRF token name -->
 <input type="hidden" name="<?= $TokenValueKey ?>" value="<?= $TokenValue ?>"><!-- CSRF token value -->
 <?php } ?>
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
-<div class="ew-reset-pwd-box">
-<div class="card">
-<div class="card-body">
 <p class="login-box-msg"><?= $Language->phrase("ResetPwdTitle") ?></p>
     <div class="row gx-0">
         <input type="text" name="<?= $Page->Email->FieldVar ?>" id="<?= $Page->Email->FieldVar ?>" value="<?= HtmlEncode($Page->Email->CurrentValue) ?>" size="30" maxlength="60" placeholder="<?= HtmlEncode($Language->phrase("UserEmail", true)) ?>"<?= $Page->Email->editAttributes() ?>>
@@ -80,10 +80,10 @@ $Page->showMessage();
 <div class="d-grid mb-3">
     <button class="btn btn-primary ew-btn disabled enable-on-init" name="btn-submit" id="btn-submit" type="submit" formaction="<?= CurrentPageUrl(false) ?>"><?= $Language->phrase("SendPwd") ?></button>
 </div>
-</div>
-</div>
-</div>
 </form>
+</div>
+</div>
+</div>
 <?php
 $Page->showPageFooter();
 echo GetDebugMessage();

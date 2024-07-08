@@ -209,7 +209,7 @@ loadjs.ready("fcabreciboadd", function() {
 <?php if (!$Page->fecha->ReadOnly && !$Page->fecha->Disabled && !isset($Page->fecha->EditAttrs["readonly"]) && !isset($Page->fecha->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["fcabreciboadd", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -223,6 +223,7 @@ loadjs.ready(["fcabreciboadd", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -301,7 +302,7 @@ loadjs.ready("fcabreciboadd", function() {
         <label id="elh_cabrecibo_emitido" class="<?= $Page->LeftColumnClass ?>"><?= $Page->emitido->caption() ?><?= $Page->emitido->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->emitido->cellAttributes() ?>>
 <span id="el_cabrecibo_emitido">
-<div class="form-check d-inline-block">
+<div class="form-check form-switch d-inline-block">
     <input type="checkbox" class="form-check-input<?= $Page->emitido->isInvalidClass() ?>" data-table="cabrecibo" data-field="x_emitido" data-boolean name="x_emitido" id="x_emitido" value="1"<?= ConvertToBool($Page->emitido->CurrentValue) ? " checked" : "" ?><?= $Page->emitido->editAttributes() ?> aria-describedby="x_emitido_help">
     <div class="invalid-feedback"><?= $Page->emitido->getErrorMessage() ?></div>
 </div>

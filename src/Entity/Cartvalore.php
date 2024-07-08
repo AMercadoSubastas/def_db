@@ -28,42 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "cartvalores")]
 class Cartvalore extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'codban' => 'codban',
-        'codsuc' => 'codsuc',
-        'codcta' => 'codcta',
-        'tipcta' => 'tipcta',
-        'codchq' => 'codchq',
-        'codpais' => 'codpais',
-        'importe' => 'importe',
-        'fechaemis' => 'fechaemis',
-        'fechapago' => 'fechapago',
-        'entrego' => 'entrego',
-        'recibio' => 'recibio',
-        'fechaingr' => 'fechaingr',
-        'fechaentrega' => 'fechaentrega',
-        'tcomprel' => 'tcomprel',
-        'serierel' => 'serierel',
-        'ncomprel' => 'ncomprel',
-        'estado' => 'estado',
-        'moneda' => 'moneda',
-        'fechahora' => 'fechahora',
-        'usuario' => 'usuario',
-        'tcompsal' => 'tcompsal',
-        'seriesal' => 'seriesal',
-        'ncompsal' => 'ncompsal',
-        'codrem' => 'codrem',
-        'cotiz' => 'cotiz',
-        'usurel' => 'usurel',
-        'fecharel' => 'fecharel',
-        'ususal' => 'ususal',
-        'fechasal' => 'fechasal',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -97,7 +61,7 @@ class Cartvalore extends AbstractEntity
     private ?int $codpais;
 
     #[Column(type: "decimal")]
-    private string $importe = "0.00";
+    private string $importe;
 
     #[Column(type: "date", nullable: true)]
     private ?DateTime $fechaemis;
@@ -130,7 +94,7 @@ class Cartvalore extends AbstractEntity
     private string $estado;
 
     #[Column(type: "integer")]
-    private int $moneda = 1;
+    private int $moneda;
 
     #[Column(type: "datetime")]
     private DateTime $fechahora;
@@ -164,6 +128,12 @@ class Cartvalore extends AbstractEntity
 
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fechasal;
+
+    public function __construct()
+    {
+        $this->importe = "0.00";
+        $this->moneda = 1;
+    }
 
     public function getCodnum(): int
     {

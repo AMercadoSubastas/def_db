@@ -28,36 +28,8 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "remates")]
 class Remate extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'codcli' => 'codcli',
-        'direccion' => 'direccion',
-        'codpais' => 'codpais',
-        'codprov' => 'codprov',
-        'codloc' => 'codloc',
-        'fecest' => 'fecest',
-        'fecreal' => 'fecreal',
-        'imptot' => 'imptot',
-        'impbase' => 'impbase',
-        'estado' => 'estado',
-        'cantlotes' => 'cantlotes',
-        'horaest' => 'horaest',
-        'horareal' => 'horareal',
-        'usuario' => 'usuario',
-        'fecalta' => 'fecalta',
-        'observacion' => 'observacion',
-        'tipoind' => 'tipoind',
-        'sello' => 'sello',
-        'plazoSAP' => 'plazoSap',
-        'usuarioultmod' => 'usuarioultmod',
-        'fecultmod' => 'fecultmod',
-        'servicios' => 'servicios',
-        'gastos' => 'gastos',
-        'tasa' => 'tasa',
-    ];
+    #[Column(type: "integer")]
+    private int $ncomp;
 
     #[Id]
     #[Column(type: "integer", unique: true)]
@@ -71,19 +43,16 @@ class Remate extends AbstractEntity
     private int $serie;
 
     #[Column(type: "integer")]
-    private int $ncomp;
-
-    #[Column(type: "integer")]
-    private int $codcli = 940;
+    private int $codcli;
 
     #[Column(type: "string")]
     private string $direccion;
 
     #[Column(type: "integer", nullable: true)]
-    private ?int $codpais = 1;
+    private ?int $codpais;
 
-    #[Column(type: "integer", nullable: true)]
-    private ?int $codprov;
+    #[Column(type: "integer")]
+    private int $codprov;
 
     #[Column(type: "integer", nullable: true)]
     private ?int $codloc;
@@ -101,7 +70,7 @@ class Remate extends AbstractEntity
     private ?float $impbase;
 
     #[Column(type: "integer")]
-    private int $estado = 0;
+    private int $estado;
 
     #[Column(type: "integer")]
     private int $cantlotes;
@@ -124,8 +93,8 @@ class Remate extends AbstractEntity
     #[Column(type: "integer")]
     private int $tipoind;
 
-    #[Column(type: "boolean", nullable: true)]
-    private ?bool $sello = false;
+    #[Column(type: "integer", nullable: true)]
+    private ?int $sello;
 
     #[Column(name: "plazoSAP", type: "string", nullable: true)]
     private ?string $plazoSap;
@@ -143,7 +112,27 @@ class Remate extends AbstractEntity
     private ?float $gastos;
 
     #[Column(type: "boolean")]
-    private bool $tasa = true;
+    private bool $tasa;
+
+    public function __construct()
+    {
+        $this->codcli = 940;
+        $this->codpais = 1;
+        $this->estado = 0;
+        $this->sello = 0;
+        $this->tasa = true;
+    }
+
+    public function getNcomp(): int
+    {
+        return $this->ncomp;
+    }
+
+    public function setNcomp(int $value): static
+    {
+        $this->ncomp = $value;
+        return $this;
+    }
 
     public function getCodnum(): int
     {
@@ -175,17 +164,6 @@ class Remate extends AbstractEntity
     public function setSerie(int $value): static
     {
         $this->serie = $value;
-        return $this;
-    }
-
-    public function getNcomp(): int
-    {
-        return $this->ncomp;
-    }
-
-    public function setNcomp(int $value): static
-    {
-        $this->ncomp = $value;
         return $this;
     }
 
@@ -222,12 +200,12 @@ class Remate extends AbstractEntity
         return $this;
     }
 
-    public function getCodprov(): ?int
+    public function getCodprov(): int
     {
         return $this->codprov;
     }
 
-    public function setCodprov(?int $value): static
+    public function setCodprov(int $value): static
     {
         $this->codprov = $value;
         return $this;
@@ -376,12 +354,12 @@ class Remate extends AbstractEntity
         return $this;
     }
 
-    public function getSello(): ?bool
+    public function getSello(): ?int
     {
         return $this->sello;
     }
 
-    public function setSello(?bool $value): static
+    public function setSello(?int $value): static
     {
         $this->sello = $value;
         return $this;

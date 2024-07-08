@@ -12,6 +12,7 @@ abstract class Sms
     public $Recipient = ""; // Recipient
     public $Content = ""; // Content
     public $SendErrDescription; // Send error description
+    protected $data;
 
     /**
      * Load message from template name
@@ -21,7 +22,7 @@ abstract class Sms
      * @param array $data Data for template
      * @return void
      */
-     public function load($name, $langId = "", $data = [])
+    public function load($name, $langId = "", $data = [])
     {
         global $CurrentLanguage;
         $langId = $langId ?: $CurrentLanguage;

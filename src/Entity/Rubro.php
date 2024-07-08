@@ -28,13 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "rubros")]
 class Rubro extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'descripcion' => 'descripcion',
-        'codimp' => 'codimp',
-        'activo' => 'activo',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -46,8 +39,13 @@ class Rubro extends AbstractEntity
     #[Column(type: "integer", nullable: true)]
     private ?int $codimp;
 
-    #[Column(type: "boolean")]
-    private bool $activo = true;
+    #[Column(type: "integer")]
+    private int $activo;
+
+    public function __construct()
+    {
+        $this->activo = 1;
+    }
 
     public function getCodnum(): int
     {
@@ -82,12 +80,12 @@ class Rubro extends AbstractEntity
         return $this;
     }
 
-    public function getActivo(): bool
+    public function getActivo(): int
     {
         return $this->activo;
     }
 
-    public function setActivo(bool $value): static
+    public function setActivo(int $value): static
     {
         $this->activo = $value;
         return $this;

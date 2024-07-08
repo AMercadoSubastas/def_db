@@ -184,7 +184,7 @@ class ApiController extends AbstractController
      * /api/export/search
      * $args["param"] can be {type} or {id} or "search"
      */
-    #[Map(["GET", "POST", "OPTIONS"], "/export/{param}[/{table}[/{key:.*}]]", [ApiPermissionMiddleware::class, JwtMiddleware::class], "export")]
+    #[Map(["GET", "POST", "OPTIONS"], "/export[/{param}[/{table}[/{key:.*}]]]", [ApiPermissionMiddleware::class, JwtMiddleware::class], "export")]
     public function export(Request $request, Response $response, array $args): Response
     {
         $this->setup($request, $response);
@@ -440,7 +440,7 @@ class ApiController extends AbstractController
     public function chat(Request $request, Response $response, array $args): Response
     {
         if (IsLoggedIn() && !IsSysAdmin()) {
-            if ((new UserProfile(CurrentUserName()))->set("ChatEnabled", ConvertToBool($args["value"]))->saveToStorage()) {
+            if ((new UserProfile(CurrentUserName()))->setChatEnabled(ConvertToBool($args["value"]))->saveToStorage()) {
                 return $response->withJson(["success" => true]);
             }
         }

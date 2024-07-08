@@ -1,6 +1,6 @@
 /*!
  * AdminLTE v3.2.0 (https://adminlte.io)
- * Copyright 2014-2023 Colorlib <https://colorlib.com>
+ * Copyright 2014-2024 Colorlib <https://colorlib.com>
  * Licensed under MIT (https://github.com/ColorlibHQ/AdminLTE/blob/master/LICENSE)
  */
 (function (global, factory) {
@@ -227,8 +227,9 @@
     maximizeTrigger: SELECTOR_DATA_MAXIMIZE,
     collapseIcon: 'fa-minus',
     expandIcon: 'fa-plus',
-    maximizeIcon: 'fa-expand',
-    minimizeIcon: 'fa-compress'
+    maximizeIcon: 'fa-maximize',
+    //***
+    minimizeIcon: 'fa-minimize' //***
   };
   var CardWidget = /*#__PURE__*/function () {
     function CardWidget(element, settings) {

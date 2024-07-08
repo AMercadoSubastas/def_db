@@ -1086,14 +1086,7 @@ class AjaxClient extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

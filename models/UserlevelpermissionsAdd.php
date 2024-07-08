@@ -585,7 +585,7 @@ class UserlevelpermissionsAdd extends Userlevelpermissions
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "UserlevelpermissionsList") {

@@ -326,7 +326,7 @@ class Detfac extends DbTable
             '`neto`', // Expression
             '`neto`', // Basic search expression
             131, // Type
-            12, // Size
+            14, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`neto`', // Virtual expression
@@ -351,7 +351,7 @@ class Detfac extends DbTable
             '`bruto`', // Expression
             '`bruto`', // Basic search expression
             131, // Type
-            12, // Size
+            14, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`bruto`', // Virtual expression
@@ -474,10 +474,10 @@ class Detfac extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 7, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -490,7 +490,7 @@ class Detfac extends DbTable
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
         $this->fechahora->Nullable = false; // NOT NULL field
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -1642,14 +1642,7 @@ class Detfac extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

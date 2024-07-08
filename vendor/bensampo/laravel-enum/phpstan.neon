@@ -1,10 +1,5 @@
 includes:
 - extension.neon
-- vendor/nunomaduro/larastan/extension.neon
-- vendor/phpstan/phpstan/conf/bleedingEdge.neon
-- vendor/phpstan/phpstan-mockery/extension.neon
-- vendor/phpstan/phpstan-phpunit/extension.neon
-- vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
   level: 6 # TODO level up to max
   paths:
@@ -21,6 +16,7 @@ parameters:
   - '#invalid type Illuminate\\Process#'
   excludePaths:
   - tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
+  - tests/PHPStan/Fixtures
   # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
   editorUrl: '%%relFile%%:%%line%%'
   editorUrlTitle: '%%relFile%%:%%line%%'

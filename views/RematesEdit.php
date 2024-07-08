@@ -28,10 +28,9 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["codnum", [fields.codnum.visible && fields.codnum.required ? ew.Validators.required(fields.codnum.caption) : null, ew.Validators.integer], fields.codnum.isInvalid],
+            ["ncomp", [fields.ncomp.visible && fields.ncomp.required ? ew.Validators.required(fields.ncomp.caption) : null], fields.ncomp.isInvalid],
             ["tcomp", [fields.tcomp.visible && fields.tcomp.required ? ew.Validators.required(fields.tcomp.caption) : null], fields.tcomp.isInvalid],
             ["serie", [fields.serie.visible && fields.serie.required ? ew.Validators.required(fields.serie.caption) : null], fields.serie.isInvalid],
-            ["ncomp", [fields.ncomp.visible && fields.ncomp.required ? ew.Validators.required(fields.ncomp.caption) : null, ew.Validators.integer], fields.ncomp.isInvalid],
             ["codcli", [fields.codcli.visible && fields.codcli.required ? ew.Validators.required(fields.codcli.caption) : null], fields.codcli.isInvalid],
             ["direccion", [fields.direccion.visible && fields.direccion.required ? ew.Validators.required(fields.direccion.caption) : null], fields.direccion.isInvalid],
             ["codpais", [fields.codpais.visible && fields.codpais.required ? ew.Validators.required(fields.codpais.caption) : null], fields.codpais.isInvalid],
@@ -105,14 +104,14 @@ loadjs.ready("head", function () {
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
 <div class="ew-edit-div"><!-- page* -->
-<?php if ($Page->codnum->Visible) { // codnum ?>
-    <div id="r_codnum"<?= $Page->codnum->rowAttributes() ?>>
-        <label id="elh_remates_codnum" for="x_codnum" class="<?= $Page->LeftColumnClass ?>"><?= $Page->codnum->caption() ?><?= $Page->codnum->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->codnum->cellAttributes() ?>>
-<span id="el_remates_codnum">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->codnum->getDisplayValue($Page->codnum->EditValue))) ?>"></span>
-<input type="hidden" data-table="remates" data-field="x_codnum" data-hidden="1" name="x_codnum" id="x_codnum" value="<?= HtmlEncode($Page->codnum->CurrentValue) ?>">
+<?php if ($Page->ncomp->Visible) { // ncomp ?>
+    <div id="r_ncomp"<?= $Page->ncomp->rowAttributes() ?>>
+        <label id="elh_remates_ncomp" for="x_ncomp" class="<?= $Page->LeftColumnClass ?>"><?= $Page->ncomp->caption() ?><?= $Page->ncomp->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->ncomp->cellAttributes() ?>>
+<span id="el_remates_ncomp">
+<span<?= $Page->ncomp->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->ncomp->getDisplayValue($Page->ncomp->EditValue))) ?>"></span>
+<input type="hidden" data-table="remates" data-field="x_ncomp" data-hidden="1" name="x_ncomp" id="x_ncomp" value="<?= HtmlEncode($Page->ncomp->CurrentValue) ?>">
 </span>
 </div></div>
     </div>
@@ -205,18 +204,6 @@ loadjs.ready("frematesedit", function() {
 });
 </script>
 <?php } ?>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->ncomp->Visible) { // ncomp ?>
-    <div id="r_ncomp"<?= $Page->ncomp->rowAttributes() ?>>
-        <label id="elh_remates_ncomp" for="x_ncomp" class="<?= $Page->LeftColumnClass ?>"><?= $Page->ncomp->caption() ?><?= $Page->ncomp->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->ncomp->cellAttributes() ?>>
-<span id="el_remates_ncomp">
-<input type="<?= $Page->ncomp->getInputTextType() ?>" name="x_ncomp" id="x_ncomp" data-table="remates" data-field="x_ncomp" value="<?= $Page->ncomp->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->ncomp->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->ncomp->formatPattern()) ?>"<?= $Page->ncomp->editAttributes() ?> aria-describedby="x_ncomp_help">
-<?= $Page->ncomp->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->ncomp->getErrorMessage() ?></div>
 </span>
 </div></div>
     </div>
@@ -342,7 +329,6 @@ loadjs.ready("frematesedit", function() {
         data-field="x_codprov"
         data-value-separator="<?= $Page->codprov->displayValueSeparatorAttribute() ?>"
         data-placeholder="<?= HtmlEncode($Page->codprov->getPlaceHolder()) ?>"
-        data-ew-action="update-options"
         <?= $Page->codprov->editAttributes() ?>>
         <?= $Page->codprov->selectOptionListHtml("x_codprov") ?>
     </select>
@@ -361,7 +347,7 @@ loadjs.ready("frematesedit", function() {
     if (frematesedit.lists.codprov?.lookupOptions.length) {
         options.data = { id: "x_codprov", form: "frematesedit" };
     } else {
-        options.ajax = { id: "x_codprov", form: "frematesedit", limit: 99999 };
+        options.ajax = { id: "x_codprov", form: "frematesedit", limit: ew.LOOKUP_PAGE_SIZE };
     }
     options.minimumResultsForSearch = Infinity;
     options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.remates.fields.codprov.selectOptions);
@@ -407,7 +393,7 @@ loadjs.ready("frematesedit", function() {
     if (frematesedit.lists.codloc?.lookupOptions.length) {
         options.data = { id: "x_codloc", form: "frematesedit" };
     } else {
-        options.ajax = { id: "x_codloc", form: "frematesedit", limit: 99999 };
+        options.ajax = { id: "x_codloc", form: "frematesedit", limit: ew.LOOKUP_PAGE_SIZE };
     }
     options.minimumResultsForSearch = Infinity;
     options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.remates.fields.codloc.selectOptions);
@@ -430,7 +416,7 @@ loadjs.ready("frematesedit", function() {
 <?php if (!$Page->fecest->ReadOnly && !$Page->fecest->Disabled && !isset($Page->fecest->EditAttrs["readonly"]) && !isset($Page->fecest->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["frematesedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -444,6 +430,7 @@ loadjs.ready(["frematesedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -470,7 +457,7 @@ loadjs.ready(["frematesedit", "datetimepicker"], function () {
 <?php if (!$Page->fecreal->ReadOnly && !$Page->fecreal->Disabled && !isset($Page->fecreal->EditAttrs["readonly"]) && !isset($Page->fecreal->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["frematesedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(7) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -484,6 +471,7 @@ loadjs.ready(["frematesedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -553,7 +541,7 @@ loadjs.ready(["frematesedit", "datetimepicker"], function () {
 <?php if (!$Page->fecalta->ReadOnly && !$Page->fecalta->Disabled && !isset($Page->fecalta->EditAttrs["readonly"]) && !isset($Page->fecalta->EditAttrs["disabled"])) { ?>
 <script>
 loadjs.ready(["frematesedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
+    let format = "<?= DateFormat(11) ?>",
         options = {
             localization: {
                 locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
@@ -567,6 +555,7 @@ loadjs.ready(["frematesedit", "datetimepicker"], function () {
                     next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
                 },
                 components: {
+                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
                     hours: !!format.match(/h/i),
                     minutes: !!format.match(/m/),
                     seconds: !!format.match(/s/i)
@@ -725,7 +714,7 @@ loadjs.ready("frematesedit", function() {
         <label id="elh_remates_tasa" class="<?= $Page->LeftColumnClass ?>"><?= $Page->tasa->caption() ?><?= $Page->tasa->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->tasa->cellAttributes() ?>>
 <span id="el_remates_tasa">
-<div class="form-check d-inline-block">
+<div class="form-check form-switch d-inline-block">
     <input type="checkbox" class="form-check-input<?= $Page->tasa->isInvalidClass() ?>" data-table="remates" data-field="x_tasa" data-boolean name="x_tasa" id="x_tasa" value="1"<?= ConvertToBool($Page->tasa->CurrentValue) ? " checked" : "" ?><?= $Page->tasa->editAttributes() ?> aria-describedby="x_tasa_help">
     <div class="invalid-feedback"><?= $Page->tasa->getErrorMessage() ?></div>
 </div>
@@ -747,6 +736,7 @@ loadjs.ready("frematesedit", function() {
 <span id="el_remates_horaest">
 <input type="hidden" data-table="remates" data-field="x_horaest" data-hidden="1" name="x_horaest" id="x_horaest" value="<?= HtmlEncode($Page->horaest->CurrentValue) ?>">
 </span>
+    <input type="hidden" data-table="remates" data-field="x_codnum" data-hidden="1" name="x_codnum" id="x_codnum" value="<?= HtmlEncode($Page->codnum->CurrentValue) ?>">
 <?php
     if (in_array("lotes", explode(",", $Page->getCurrentDetailTable())) && $lotes->DetailEdit) {
 ?>

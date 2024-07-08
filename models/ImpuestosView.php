@@ -810,10 +810,10 @@ class ImpuestosView extends Impuestos
             $this->montomin->ViewValue = FormatNumber($this->montomin->ViewValue, $this->montomin->formatPattern());
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Sí";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // codnum

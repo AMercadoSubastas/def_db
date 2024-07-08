@@ -28,31 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "detfac")]
 class Detfac extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'nreng' => 'nreng',
-        'codrem' => 'codrem',
-        'codlote' => 'codlote',
-        'descrip' => 'descrip',
-        'neto' => 'neto',
-        'bruto' => 'bruto',
-        'iva' => 'iva',
-        'imp' => 'imp',
-        'comcob' => 'comcob',
-        'compag' => 'compag',
-        'fechahora' => 'fechahora',
-        'usuario' => 'usuario',
-        'porciva' => 'porciva',
-        'tieneresol' => 'tieneresol',
-        'concafac' => 'concafac',
-        'tcomsal' => 'tcomsal',
-        'seriesal' => 'seriesal',
-        'ncompsal' => 'ncompsal',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -80,22 +55,22 @@ class Detfac extends AbstractEntity
     private ?string $descrip;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $neto = "0.00";
+    private ?string $neto;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $bruto = "0.00";
+    private ?string $bruto;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $iva = "0.00";
+    private ?string $iva;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $imp = "0.00";
+    private ?string $imp;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $comcob = "0.00";
+    private ?string $comcob;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $compag = "0.00";
+    private ?string $compag;
 
     #[Column(type: "datetime")]
     private DateTime $fechahora;
@@ -106,8 +81,8 @@ class Detfac extends AbstractEntity
     #[Column(type: "float", nullable: true)]
     private ?float $porciva;
 
-    #[Column(type: "boolean", nullable: true)]
-    private ?bool $tieneresol = false;
+    #[Column(type: "integer", nullable: true)]
+    private ?int $tieneresol;
 
     #[Column(type: "integer", nullable: true)]
     private ?int $concafac;
@@ -120,6 +95,17 @@ class Detfac extends AbstractEntity
 
     #[Column(type: "integer", nullable: true)]
     private ?int $ncompsal;
+
+    public function __construct()
+    {
+        $this->neto = "0.00";
+        $this->bruto = "0.00";
+        $this->iva = "0.00";
+        $this->imp = "0.00";
+        $this->comcob = "0.00";
+        $this->compag = "0.00";
+        $this->tieneresol = 0;
+    }
 
     public function getCodnum(): int
     {
@@ -308,12 +294,12 @@ class Detfac extends AbstractEntity
         return $this;
     }
 
-    public function getTieneresol(): ?bool
+    public function getTieneresol(): ?int
     {
         return $this->tieneresol;
     }
 
-    public function setTieneresol(?bool $value): static
+    public function setTieneresol(?int $value): static
     {
         $this->tieneresol = $value;
         return $this;

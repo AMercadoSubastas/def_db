@@ -599,7 +599,7 @@ class ConcafactvenAdd extends Concafactven
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "ConcafactvenList") {
@@ -1402,7 +1402,7 @@ class ConcafactvenAdd extends Concafactven
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, false);
 
         // fechahora
         $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), false);

@@ -121,7 +121,7 @@ class ApiPermissionMiddleware
             if ($parm == Config("API_PUSH_NOTIFICATION_SUBSCRIBE") || $parm == Config("API_PUSH_NOTIFICATION_DELETE")) {
                 $authorised = Config("PUSH_ANONYMOUS") || $Security->isLoggedIn();
             } elseif ($parm == Config("API_PUSH_NOTIFICATION_SEND")) {
-                $Security->loadTablePermissions(Config("SUBSCRIPTION_TABLE"));
+                $Security->loadTablePermissions(Config("SUBSCRIPTION_TABLE_NAME"));
                 $authorised = $Security->canPush();
             }
         } elseif ($action == Config("API_2FA_ACTION")) { // Two factor authentication

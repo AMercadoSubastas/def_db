@@ -28,57 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "cabfac")]
 class Cabfac extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'fecval' => 'fecval',
-        'fecdoc' => 'fecdoc',
-        'fecreg' => 'fecreg',
-        'cliente' => 'cliente',
-        'cpago' => 'cpago',
-        'fecvenc' => 'fecvenc',
-        'direc' => 'direc',
-        'dnro' => 'dnro',
-        'pisodto' => 'pisodto',
-        'codpost' => 'codpost',
-        'codpais' => 'codpais',
-        'codprov' => 'codprov',
-        'codloc' => 'codloc',
-        'telef' => 'telef',
-        'codrem' => 'codrem',
-        'estado' => 'estado',
-        'emitido' => 'emitido',
-        'moneda' => 'moneda',
-        'totneto' => 'totneto',
-        'totbruto' => 'totbruto',
-        'totiva105' => 'totiva105',
-        'totiva21' => 'totiva21',
-        'totimp' => 'totimp',
-        'totcomis' => 'totcomis',
-        'totneto105' => 'totneto105',
-        'totneto21' => 'totneto21',
-        'tipoiva' => 'tipoiva',
-        'porciva' => 'porciva',
-        'nrengs' => 'nrengs',
-        'fechahora' => 'fechahora',
-        'usuario' => 'usuario',
-        'tieneresol' => 'tieneresol',
-        'leyendafc' => 'leyendafc',
-        'concepto' => 'concepto',
-        'nrodoc' => 'nrodoc',
-        'tcompsal' => 'tcompsal',
-        'seriesal' => 'seriesal',
-        'ncompsal' => 'ncompsal',
-        'en_liquid' => 'enLiquid',
-        'CAE' => 'cae',
-        'CAEFchVto' => 'caeFchVto',
-        'Resultado' => 'resultado',
-        'usuarioultmod' => 'usuarioultmod',
-        'fecultmod' => 'fecultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -145,37 +94,37 @@ class Cabfac extends AbstractEntity
     private ?bool $emitido;
 
     #[Column(type: "integer", nullable: true)]
-    private ?int $moneda = 0;
+    private ?int $moneda;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totneto = "0.00";
+    private ?string $totneto;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totbruto = "0.00";
+    private ?string $totbruto;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totiva105 = "0.00";
+    private ?string $totiva105;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totiva21 = "0.00";
+    private ?string $totiva21;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totimp = "0.00";
+    private ?string $totimp;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totcomis = "0.00";
+    private ?string $totcomis;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totneto105 = "0.00";
+    private ?string $totneto105;
 
     #[Column(type: "decimal", nullable: true)]
-    private ?string $totneto21 = "0.00";
+    private ?string $totneto21;
 
     #[Column(type: "integer", nullable: true)]
-    private ?int $tipoiva = 0;
+    private ?int $tipoiva;
 
     #[Column(type: "float", nullable: true)]
-    private ?float $porciva = 0;
+    private ?float $porciva;
 
     #[Column(type: "integer", nullable: true)]
     private ?int $nrengs;
@@ -184,10 +133,10 @@ class Cabfac extends AbstractEntity
     private DateTime $fechahora;
 
     #[Column(type: "integer")]
-    private int $usuario = 1;
+    private int $usuario;
 
-    #[Column(type: "boolean", nullable: true)]
-    private ?bool $tieneresol = false;
+    #[Column(type: "integer", nullable: true)]
+    private ?int $tieneresol;
 
     #[Column(type: "string", nullable: true)]
     private ?string $leyendafc;
@@ -224,6 +173,23 @@ class Cabfac extends AbstractEntity
 
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fecultmod;
+
+    public function __construct()
+    {
+        $this->moneda = 0;
+        $this->totneto = "0.00";
+        $this->totbruto = "0.00";
+        $this->totiva105 = "0.00";
+        $this->totiva21 = "0.00";
+        $this->totimp = "0.00";
+        $this->totcomis = "0.00";
+        $this->totneto105 = "0.00";
+        $this->totneto21 = "0.00";
+        $this->tipoiva = 0;
+        $this->porciva = 0;
+        $this->usuario = 1;
+        $this->tieneresol = 0;
+    }
 
     public function getCodnum(): int
     {
@@ -610,12 +576,12 @@ class Cabfac extends AbstractEntity
         return $this;
     }
 
-    public function getTieneresol(): ?bool
+    public function getTieneresol(): ?int
     {
         return $this->tieneresol;
     }
 
-    public function setTieneresol(?bool $value): static
+    public function setTieneresol(?int $value): static
     {
         $this->tieneresol = $value;
         return $this;

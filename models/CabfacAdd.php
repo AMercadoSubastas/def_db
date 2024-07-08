@@ -648,7 +648,7 @@ class CabfacAdd extends Cabfac
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "CabfacList") {
@@ -2796,11 +2796,15 @@ class CabfacAdd extends Cabfac
         if ($this->getCurrentDetailTable() != "") {
             if ($addRow) {
                 if ($this->UseTransaction) { // Commit transaction
-                    $conn->commit();
+                    if ($conn->isTransactionActive()) {
+                        $conn->commit();
+                    }
                 }
             } else {
                 if ($this->UseTransaction) { // Rollback transaction
-                    $conn->rollback();
+                    if ($conn->isTransactionActive()) {
+                        $conn->rollback();
+                    }
                 }
             }
         }
@@ -2918,11 +2922,11 @@ class CabfacAdd extends Cabfac
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), false);
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, strval($this->usuario->CurrentValue) == "");
 
         // tieneresol
         $this->tieneresol->setDbValueDef($rsnew, $this->tieneresol->CurrentValue, strval($this->tieneresol->CurrentValue) == "");

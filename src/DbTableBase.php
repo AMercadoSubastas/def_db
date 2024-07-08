@@ -386,7 +386,7 @@ class DbTableBase
                 if (is_string($fld->DbValue) && strlen($fld->DbValue) > Config("DATA_STRING_MAX_LENGTH")) {
                     $values[$fld->Param] = substr($fld->DbValue, 0, Config("DATA_STRING_MAX_LENGTH"));
                 } else {
-                    $values[$fld->Param] = $fld->DbValue;
+                    $values[$fld->Param] = $fld->HtmlTag == "FILE" ? $fld->Upload->DbValue : $fld->DbValue;
                 }
             }
         }

@@ -588,7 +588,7 @@ class CalificacionAdd extends Calificacion
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "CalificacionList") {
@@ -823,10 +823,10 @@ class CalificacionAdd extends Calificacion
             $this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Yes";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // descor
@@ -855,7 +855,8 @@ class CalificacionAdd extends Calificacion
             $this->descripcion->PlaceHolder = RemoveHtml($this->descripcion->caption());
 
             // activo
-            $this->activo->EditValue = $this->activo->options(false);
+            $this->activo->setupEditAttributes();
+            $this->activo->EditValue = $this->activo->options(true);
             $this->activo->PlaceHolder = RemoveHtml($this->activo->caption());
 
             // Add refer script
@@ -900,7 +901,7 @@ class CalificacionAdd extends Calificacion
                 }
             }
             if ($this->activo->Visible && $this->activo->Required) {
-                if ($this->activo->FormValue == "") {
+                if (!$this->activo->IsDetailKey && EmptyValue($this->activo->FormValue)) {
                     $this->activo->addErrorMessage(str_replace("%s", $this->activo->caption(), $this->activo->RequiredErrorMessage));
                 }
             }
@@ -982,11 +983,7 @@ class CalificacionAdd extends Calificacion
         $this->descripcion->setDbValueDef($rsnew, $this->descripcion->CurrentValue, false);
 
         // activo
-        $tmpBool = $this->activo->CurrentValue;
-        if ($tmpBool != "1" && $tmpBool != "0") {
-            $tmpBool = !empty($tmpBool) ? "1" : "0";
-        }
-        $this->activo->setDbValueDef($rsnew, $tmpBool, strval($this->activo->CurrentValue) == "");
+        $this->activo->setDbValueDef($rsnew, $this->activo->CurrentValue, strval($this->activo->CurrentValue) == "");
         return $rsnew;
     }
 

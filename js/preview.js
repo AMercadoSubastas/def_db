@@ -1,5 +1,5 @@
 /*!
- * Detail Preview for PHPMaker v2024.4.0
+ * Detail Preview for PHPMaker v24.13.0
  * Copyright (c) e.World Technology Limited. All rights reserved.
  */
 (function ($, ew) {
@@ -67,7 +67,6 @@
       .first().tab("show"); // Show the first tab
       $cell.children().slideDown(500); // Match AdminLTE ExpandableTable
     }
-
     ew.setupTable($tbl[0], true);
     // ew.fixLayoutHeight();
   };
@@ -77,7 +76,7 @@
     var _bootstrap$Tooltip$ge;
     if (bootstrap.Popover.getInstance(btn)) return;
     let $parent = $(btn.closest(".ew-list-option-body, .ew-multi-column-list-option-table, .ew-multi-column-list-option-card"));
-    (_bootstrap$Tooltip$ge = bootstrap.Tooltip.getInstance(btn)) == null ? void 0 : _bootstrap$Tooltip$ge.dispose(); // Dispose tooltip, if any
+    (_bootstrap$Tooltip$ge = bootstrap.Tooltip.getInstance(btn)) == null || _bootstrap$Tooltip$ge.dispose(); // Dispose tooltip, if any
     btn = btn.closest(ew.PREVIEW_SELECTOR);
     if (!btn) return;
     if (!btn.classList.contains("ew-preview-btn")) btn.classList.add("ew-preview-btn");
@@ -106,14 +105,13 @@
       }) // Setup tabs
       .first().tab("show"); // Show the first tab
     });
-
     if (ew.PREVIEW_POPOVER_TRIGGER != "click") {
       btn.addEventListener(ew.PREVIEW_POPOVER_TRIGGER, function () {
         var _bootstrap$Popover$ge;
         if (this.getAttribute("aria-describedby"))
           // Showing
           return;
-        (_bootstrap$Popover$ge = bootstrap.Popover.getInstance(this)) == null ? void 0 : _bootstrap$Popover$ge.show();
+        (_bootstrap$Popover$ge = bootstrap.Popover.getInstance(this)) == null || _bootstrap$Popover$ge.show();
       });
     }
   };
@@ -121,7 +119,7 @@
   // Setup preview modal
   let detailModal = function (i, btn) {
     var _bootstrap$Tooltip$ge2;
-    (_bootstrap$Tooltip$ge2 = bootstrap.Tooltip.getInstance(btn)) == null ? void 0 : _bootstrap$Tooltip$ge2.dispose(); // Dispose tooltip, if any
+    (_bootstrap$Tooltip$ge2 = bootstrap.Tooltip.getInstance(btn)) == null || _bootstrap$Tooltip$ge2.dispose(); // Dispose tooltip, if any
     btn = btn.closest(ew.PREVIEW_SELECTOR);
     if (!btn) return;
     if (!btn.classList.contains("ew-preview-btn")) btn.classList.add("ew-preview-btn");
@@ -134,7 +132,7 @@
   // Setup preview offcanvas
   let detailOffcanvas = function (i, btn) {
     var _bootstrap$Tooltip$ge3;
-    (_bootstrap$Tooltip$ge3 = bootstrap.Tooltip.getInstance(btn)) == null ? void 0 : _bootstrap$Tooltip$ge3.dispose(); // Dispose tooltip, if any
+    (_bootstrap$Tooltip$ge3 = bootstrap.Tooltip.getInstance(btn)) == null || _bootstrap$Tooltip$ge3.dispose(); // Dispose tooltip, if any
     btn = btn.closest(ew.PREVIEW_SELECTOR);
     if (!btn) return;
     if (!btn.classList.contains("ew-preview-btn")) btn.classList.add("ew-preview-btn");
@@ -253,9 +251,9 @@
       }
     }).then(() => {
       var _getActivePopover2, _bootstrap$Modal$getI;
-      (_getActivePopover2 = getActivePopover()) == null ? void 0 : _getActivePopover2.update(); // Update popover
+      (_getActivePopover2 = getActivePopover()) == null || _getActivePopover2.update(); // Update popover
       let modal = document.querySelector("#ew-preview-dialog");
-      if (modal != null && modal.classList.contains("show")) (_bootstrap$Modal$getI = bootstrap.Modal.getInstance(modal)) == null ? void 0 : _bootstrap$Modal$getI.handleUpdate(); // Update modal
+      if (modal != null && modal.classList.contains("show")) (_bootstrap$Modal$getI = bootstrap.Modal.getInstance(modal)) == null || _bootstrap$Modal$getI.handleUpdate(); // Update modal
     });
   };
 
@@ -305,7 +303,7 @@
       var _getActivePopover3;
       if (!evt.target.closest(".ew-preview-popover"))
         // Outside popover
-        (_getActivePopover3 = getActivePopover()) == null ? void 0 : _getActivePopover3.hide(); // Outside popover
+        (_getActivePopover3 = getActivePopover()) == null || _getActivePopover3.hide(); // Outside popover
     });
     // Modal
     if (!document.getElementById("ew-preview-dialog")) $("body").append(ew.PREVIEW_MODAL_HTML);

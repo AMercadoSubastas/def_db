@@ -639,7 +639,7 @@ class DetfacEdit extends Detfac
                     }
 
                     // Handle UseAjaxActions with return page
-                    if ($this->IsModal && $this->UseAjaxActions) {
+                    if ($this->IsModal && $this->UseAjaxActions && !$this->getCurrentMasterTable()) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "DetfacList") {
                             Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL
@@ -1888,11 +1888,11 @@ class DetfacEdit extends Detfac
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), $this->fechahora->ReadOnly);
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // porciva
         $this->porciva->setDbValueDef($rsnew, $this->porciva->CurrentValue, $this->porciva->ReadOnly);

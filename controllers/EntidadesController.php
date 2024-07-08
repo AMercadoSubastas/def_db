@@ -49,4 +49,11 @@ class EntidadesController extends ControllerBase
     {
         return $this->runPage($request, $response, $args, "EntidadesDelete");
     }
+
+    // query
+    #[Map(["GET","POST","OPTIONS"], "/EntidadesQuery", [PermissionMiddleware::class], "query.entidades")]
+    public function query(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "EntidadesSearch", "EntidadesQuery");
+    }
 }

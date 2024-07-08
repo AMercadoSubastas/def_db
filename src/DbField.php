@@ -148,6 +148,7 @@ class DbField
         $this->BasicSearchExpression = $fldbsexp;
         $this->Type = $fldtype;
         $this->Size = $fldsize;
+        $this->Raw = !Config("REMOVE_XSS");
         $this->setDataType(FieldDataType($fldtype));
         $this->DateTimeFormat = $flddtfmt;
         $this->Upload = $upload ? new HttpUpload($this) : null;
@@ -526,20 +527,35 @@ class DbField
         return $arwrk;
     }
 
+    // Upload path
+    public function uploadPath()
+    {
+        return UploadPath(false, ($this->HrefPath != "") ? $this->HrefPath : $this->UploadPath);
+    }
+
+    // Get s3 bucket
+    public function getS3Bucket()
+    {
+        if (preg_match('/^s3:\/\/([^\/]+)/i', $this->uploadPath(), $m)) {
+            return $m[1];
+        } else {
+            return "";
+        }
+    }
+
     // Href path
     public function hrefPath()
     {
-        $path = UploadPath(false, ($this->HrefPath != "") ? $this->HrefPath : $this->UploadPath);
-        if (preg_match('/^s3:\/\/([^\/]+)/i', $path, $m)) {
+        if ($bucket = $this->getS3Bucket()) {
             $options = stream_context_get_options(stream_context_get_default());
             $client = @$options["s3"]["client"];
             if ($client) {
-                $r = Random();
-                $path = $client->getObjectUrl($m[1], $r);
+                $r = strval(Random());
+                $path = $client->getObjectUrl($bucket, $r);
                 return explode($r, $path)[0];
             }
         }
-        return $path;
+        return $this->uploadPath();
     }
 
     // Physical upload path
@@ -559,14 +575,18 @@ class DbField
     {
         global $Language;
         $empty = true;
-        $curValue = (CurrentPage()->RowType == RowType::SEARCH) ? (StartsString("y", $name) ? $this->AdvancedSearch->SearchValue2 : $this->AdvancedSearch->SearchValue) : $this->CurrentValue;
+        $isSearch = CurrentPage()->RowType == RowType::SEARCH;
+        $curValue = $isSearch ? (StartsString("y", $name) ? $this->AdvancedSearch->SearchValue2 : $this->AdvancedSearch->SearchValue) : $this->CurrentValue;
+        $useFilter = $this->UseFilter && $isSearch;
         $str = "";
         $multiple ??= $this->isMultiSelect();
         if ($multiple) {
-            $armulti = (strval($curValue) != "") ? explode(Config("MULTIPLE_OPTION_SEPARATOR"), strval($curValue)) : [];
+            $armulti = (strval($curValue) != "")
+                ? explode($useFilter ? Config("FILTER_OPTION_SEPARATOR") : Config("MULTIPLE_OPTION_SEPARATOR"), strval($curValue))
+                : [];
             $cnt = count($armulti);
         }
-        if (is_array($this->EditValue) && !$this->UseFilter) { // Skip checking for filter fields
+        if (is_array($this->EditValue) && !$useFilter) { // Skip checking for filter fields
             $ar = $this->EditValue;
             if ($multiple) {
                 $rowcnt = count($ar);
@@ -760,7 +780,7 @@ class DbField
             if (in_array($this->HtmlTag, ["TEXT", "PASSWORD", "TEXTAREA"])) { // Elements support readonly
                 $editattrs["readonly"] = true;
             } else { // Elements do not support readonly
-                $editattrs["disabled"] = true;
+                // $editattrs["disabled"] = true;
                 $editattrs["data-readonly"] = "1";
                 $editattrs->appendClass("disabled");
             }

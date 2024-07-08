@@ -217,13 +217,15 @@ class Formapago extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'RADIO' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->activo->addMethod("getDefault", fn() => 1);
         $this->activo->InputTextType = "text";
         $this->activo->Raw = true;
         $this->activo->Nullable = false; // NOT NULL field
-        $this->activo->setDataType(DataType::BOOLEAN);
+        $this->activo->setSelectMultiple(false); // Select one
+        $this->activo->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->activo->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
         global $CurrentLanguage;
         switch ($CurrentLanguage) {
             case "en-US":
@@ -235,7 +237,7 @@ class Formapago extends DbTable
         }
         $this->activo->OptionCount = 2;
         $this->activo->DefaultErrorMessage = $Language->phrase("IncorrectField");
-        $this->activo->SearchOperators = ["=", "<>"];
+        $this->activo->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['activo'] = &$this->activo;
 
         // Add Doctrine Cache
@@ -1073,14 +1075,7 @@ class Formapago extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys
@@ -1180,10 +1175,10 @@ class Formapago extends DbTable
         $this->usuario->ViewValue = FormatNumber($this->usuario->ViewValue, $this->usuario->formatPattern());
 
         // activo
-        if (ConvertToBool($this->activo->CurrentValue)) {
-            $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Sí";
+        if (strval($this->activo->CurrentValue) != "") {
+            $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
         } else {
-            $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+            $this->activo->ViewValue = null;
         }
 
         // codnum
@@ -1244,7 +1239,8 @@ class Formapago extends DbTable
         // usuario
 
         // activo
-        $this->activo->EditValue = $this->activo->options(false);
+        $this->activo->setupEditAttributes();
+        $this->activo->EditValue = $this->activo->options(true);
         $this->activo->PlaceHolder = RemoveHtml($this->activo->caption());
 
         // Call Row Rendered event

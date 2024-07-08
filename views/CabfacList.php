@@ -35,7 +35,7 @@ ew.PREVIEW_NAV_STYLE ??= "tabs"; // tabs/pills/underline
 ew.PREVIEW_MODAL_CLASS ??= "modal modal-fullscreen-sm-down";
 ew.PREVIEW_ROW ??= true;
 ew.PREVIEW_SINGLE_ROW ??= false;
-ew.PREVIEW || ew.ready("head", ew.PATH_BASE + "js/preview.js?v=24.4.0", "preview");
+ew.PREVIEW || ew.ready("head", ew.PATH_BASE + "js/preview.min.js?v=24.13.0", "preview");
 </script>
 <script>
 loadjs.ready("head", function () {
@@ -479,7 +479,10 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
         <td data-name="emitido"<?= $Page->emitido->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_cabfac_emitido" class="el_cabfac_emitido">
 <span<?= $Page->emitido->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($Page->emitido->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
+<div class="form-check form-switch d-inline-block">
+    <input type="checkbox" id="x_emitido_<?= $Page->RowCount ?>" class="form-check-input" value="<?= $Page->emitido->getViewValue() ?>" disabled<?php if (ConvertToBool($Page->emitido->CurrentValue)) { ?> checked<?php } ?>>
+    <label class="form-check-label" for="x_emitido_<?= $Page->RowCount ?>"></label>
+</div>
 </span>
 </span>
 </td>

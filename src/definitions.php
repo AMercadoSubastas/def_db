@@ -15,6 +15,7 @@ use Doctrine\DBAL\Platforms;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\Events;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Mime\MimeTypes;
@@ -87,6 +88,7 @@ return [
     "cartvalores" => \DI\create(Cartvalores::class),
     "concafact" => \DI\create(Concafact::class),
     "concafactven" => \DI\create(Concafactven::class),
+    "cotiz" => \DI\create(Cotiz::class),
     "detfac" => \DI\create(Detfac::class),
     "detrecibo" => \DI\create(Detrecibo::class),
     "detremi" => \DI\create(Detremi::class),
@@ -158,13 +160,13 @@ return [
     "a_fcxconciB" => \DI\create(AFcxconciB::class),
     "v_lista_facncA" => \DI\create(VListaFacncA::class),
     "v_lista_facncB" => \DI\create(VListaFacncB::class),
-    "v_ancA4" => \DI\create(VAncA4::class),
-    "v_ancB4" => \DI\create(VAncB4::class),
+    "v_ancA2" => \DI\create(VAncA2::class),
+    "v_ancB2" => \DI\create(VAncB2::class),
     "v_ancA6" => \DI\create(VAncA6::class),
     "v_ancB6" => \DI\create(VAncB6::class),
     "l_recibo_reemision" => \DI\create(LReciboReemision::class),
-    "v_andA4" => \DI\create(VAndA4::class),
-    "v_andB4" => \DI\create(VAndB4::class),
+    "v_andA2" => \DI\create(VAndA2::class),
+    "v_andB2" => \DI\create(VAndB2::class),
     "v_andA6" => \DI\create(VAndA6::class),
     "v_andB6" => \DI\create(VAndB6::class),
     "l_citicompras" => \DI\create(LCiticompras::class),
@@ -198,15 +200,17 @@ return [
     "l_comisxremjurist" => \DI\create(LComisxremjurist::class),
     "l_vtasxjuris_consolidado" => \DI\create(LVtasxjurisConsolidado::class),
     "l_retenciones_div" => \DI\create(LRetencionesDiv::class),
-    "v_afcxloteA10" => \DI\create(VAfcxloteA10::class),
-    "v_afcxconcA10" => \DI\create(VAfcxconcA10::class),
+    "v_afcxloteA5" => \DI\create(VAfcxloteA5::class),
+    "v_afcxconcA5" => \DI\create(VAfcxconcA5::class),
     "afcxlot" => \DI\create(Afcxlot::class),
-    "l_WafcxlotA10" => \DI\create(LWafcxlotA10::class),
-    "v_wafcautxconcA10" => \DI\create(VWafcautxconcA10::class),
-    "v_wancA10" => \DI\create(VWancA10::class),
+    "l_WafcxlotA5" => \DI\create(LWafcxlotA5::class),
+    "v_wafcautxconcA5" => \DI\create(VWafcautxconcA5::class),
+    "v_wancA5" => \DI\create(VWancA5::class),
     "v_wcbteint" => \DI\create(VWcbteint::class),
     "v_wcbteintdev" => \DI\create(VWcbteintdev::class),
     "l_facncint" => \DI\create(LFacncint::class),
+    "lista_ctacte_int" => \DI\create(ListaCtacteInt::class),
+    "lista_ctacte_cli_tot" => \DI\create(ListaCtacteCliTot::class),
 
     // User table
     "usertable" => \DI\get("usuarios"),

@@ -1,6 +1,10 @@
-<ew-language date="2023/11/8" id="en-US" desc="English" author="e.World Technology Limited">
+<ew-language date="2024/7/3" id="en-US" author="e.World Technology Limited">
   <project>
     <phrase id="bodytitle" value="Sistema de Subastas Interno" />
+    <phrase id="footertext" value="Sector IT Grupoadrianmercado" />
+    <menu id="341">
+      <phrase id="menutext" value="FC por lote A2" />
+    </menu>
     <menu id="337">
       <phrase id="menutext" value="lotes 05" />
     </menu>
@@ -143,6 +147,9 @@
     <menu id="24">
       <phrase id="menutext" value="Monedas" />
     </menu>
+    <menu id="339">
+      <phrase id="menutext" value="Cotización" />
+    </menu>
     <menu id="37">
       <phrase id="menutext" value="Usuarios" />
     </menu>
@@ -260,14 +267,17 @@
     <menu id="336">
       <phrase id="menutext" value="CBTES X0001" />
     </menu>
+    <menu id="338">
+      <phrase id="menutext" value="Cuenta Corriente Saldos a favor por Cliente" />
+    </menu>
     <menu id="189">
-      <phrase id="menutext" value="Generación de comprobante de saldo a favor" />
+      <phrase id="menutext" value="Generación de comprobante de Garantías por CC" />
     </menu>
     <menu id="190">
       <phrase id="menutext" value="Generación de comprobante interno de devolución" />
     </menu>
     <menu id="191">
-      <phrase id="menutext" value="Reemisión de comprobantes  de saldos de señas y devoluciones" />
+      <phrase id="menutext" value="Reemisión de comprobantes de saldos de Garantías y devoluciones" />
     </menu>
     <menu id="180">
       <phrase id="menutext" value="Liquidaciones" />
@@ -386,6 +396,9 @@
     <menu id="125">
       <phrase id="menutext" value="Cuenta Corriente por Cliente" />
     </menu>
+    <menu id="340">
+      <phrase id="menutext" value="Saldos de clientes a una fecha" />
+    </menu>
     <menu id="183">
       <phrase id="menutext" value="CITI ELECTRÓNICO" />
     </menu>
@@ -476,7 +489,7 @@
     <table id="bancos">
       <phrase id="tblcaption" value="Bancos" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="codbanco">
         <phrase id="fldcaption" value="Código de Banco" />
@@ -498,7 +511,7 @@
     <table id="cabfac">
       <phrase id="tblcaption" value="Cabfac" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -507,7 +520,7 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro de Cbte" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="fecval">
         <phrase id="fldcaption" value="Fecha Valor" />
@@ -661,7 +674,7 @@
     <table id="cabrecibo">
       <phrase id="tblcaption" value="Cabecera de Facturas" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -670,7 +683,7 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro de Cbte" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="cantcbtes">
         <phrase id="fldcaption" value="Cant. de Cbtes" />
@@ -707,7 +720,7 @@
     <table id="cabremi">
       <phrase id="tblcaption" value="Cabecera de Recibos" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="Codigo númerico" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Cbtes" />
@@ -716,7 +729,7 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro de Cbtes" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="cantrengs">
         <phrase id="fldcaption" value="Renglones" />
@@ -764,7 +777,7 @@
         <phrase id="fldcaption" value="Fecha/hora" />
       </field>
       <field id="usuario">
-        <phrase id="fldcaption" value="usuario" />
+        <phrase id="fldcaption" value="Usuario" />
       </field>
       <field id="tcomprel">
         <phrase id="fldcaption" value="Tipo Cbte Relacionado" />
@@ -779,13 +792,13 @@
         <phrase id="fldcaption" value="Usuario Mod" />
       </field>
       <field id="fechaultmod">
-        <phrase id="fldcaption" value="fechaultmod" />
+        <phrase id="fldcaption" value="Ultima Modificaión" />
       </field>
     </table>
     <table id="calificacion">
       <phrase id="tblcaption" value="Calificacion" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descor">
         <phrase id="fldcaption" value="Desc Corta." />
@@ -794,17 +807,20 @@
         <phrase id="fldcaption" value="Descripcion" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
-        <phrase id="fldtagcaption1" value="Yes" />
+        <phrase id="fldtagcaption1" value="Si" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
     </table>
     <table id="cartvalores">
       <phrase id="tblcaption" value="Cartera de Valores" />
+      <chart id="chart1">
+        <phrase id="chartcaption" value="Chart1" />
+      </chart>
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="C. Numerico" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -813,7 +829,7 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
+        <phrase id="fldcaption" value="N. Comprobante" />
       </field>
       <field id="codban">
         <phrase id="fldcaption" value="Banco" />
@@ -889,7 +905,7 @@
         <phrase id="fldcaption" value="Númber del Cbte de Salida" />
       </field>
       <field id="codrem">
-        <phrase id="fldcaption" value="Subasta" />
+        <phrase id="fldcaption" value="ID Subasta" />
       </field>
       <field id="cotiz">
         <phrase id="fldcaption" value="Cotización" />
@@ -910,7 +926,7 @@
     <table id="concafact">
       <phrase id="tblcaption" value="Conceptos de Facturas de Compras" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="nroconc">
         <phrase id="fldcaption" value="Nro de Concepto" />
@@ -931,7 +947,7 @@
         <phrase id="fldcaption" value="Fecha/Hora" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Si" />
         <phrase id="fldtagvalue2" value="0" />
@@ -957,7 +973,7 @@
     <table id="concafactven">
       <phrase id="tblcaption" value="Conceptos de Facturas de Ventas" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="nroconc">
         <phrase id="fldcaption" value="Nro de Concepto" />
@@ -1004,7 +1020,7 @@
     <table id="contactos">
       <phrase id="tblcaption" value="Contactos" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="nombre">
         <phrase id="fldcaption" value="Nombre" />
@@ -1043,7 +1059,7 @@
         <phrase id="fldcaption" value="Cod de Mail" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Yes" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1057,10 +1073,39 @@
         <phrase id="fldtagcaption2" value="RELEV" />
       </field>
     </table>
+    <table id="cotiz">
+      <phrase id="tblcaption" value="Cotización" />
+      <field id="codnum">
+        <phrase id="fldcaption" value="ID" />
+      </field>
+      <field id="codmon">
+        <phrase id="fldcaption" value="Moneda" />
+      </field>
+      <field id="fecha">
+        <phrase id="fldcaption" value="Fecha" />
+      </field>
+      <field id="valor">
+        <phrase id="fldcaption" value="Valor" />
+      </field>
+      <field id="definitiva">
+        <phrase id="fldcaption" value="Definitiva" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="Si" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="No" />
+      </field>
+      <field id="activo">
+        <phrase id="fldcaption" value="Activo?" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="Si" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="No" />
+      </field>
+    </table>
     <table id="detfac">
       <phrase id="tblcaption" value="Detalle de Facturas" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -1069,31 +1114,31 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
+        <phrase id="fldcaption" value="N. Comprobante" />
       </field>
       <field id="nreng">
-        <phrase id="fldcaption" value="nreng" />
+        <phrase id="fldcaption" value="Renglones" />
       </field>
       <field id="codrem">
-        <phrase id="fldcaption" value="codrem" />
+        <phrase id="fldcaption" value="ID Subasta" />
       </field>
       <field id="codlote">
-        <phrase id="fldcaption" value="codlote" />
+        <phrase id="fldcaption" value="ID Lote" />
       </field>
       <field id="descrip">
-        <phrase id="fldcaption" value="descrip" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="neto">
-        <phrase id="fldcaption" value="neto" />
+        <phrase id="fldcaption" value="Neto" />
       </field>
       <field id="bruto">
-        <phrase id="fldcaption" value="bruto" />
+        <phrase id="fldcaption" value="Bruto" />
       </field>
       <field id="iva">
-        <phrase id="fldcaption" value="iva" />
+        <phrase id="fldcaption" value="IVA" />
       </field>
       <field id="imp">
-        <phrase id="fldcaption" value="imp" />
+        <phrase id="fldcaption" value="Impuesto" />
       </field>
       <field id="comcob">
         <phrase id="fldcaption" value="comcob" />
@@ -1102,13 +1147,13 @@
         <phrase id="fldcaption" value="compag" />
       </field>
       <field id="fechahora">
-        <phrase id="fldcaption" value="fechahora" />
+        <phrase id="fldcaption" value="Fecha/Hora" />
       </field>
       <field id="usuario">
-        <phrase id="fldcaption" value="usuario" />
+        <phrase id="fldcaption" value="Usuario" />
       </field>
       <field id="porciva">
-        <phrase id="fldcaption" value="porciva" />
+        <phrase id="fldcaption" value="% IVA" />
       </field>
       <field id="tieneresol">
         <phrase id="fldcaption" value="tieneresol" />
@@ -1133,7 +1178,7 @@
     <table id="detrecibo">
       <phrase id="tblcaption" value="Detalle de Recibos" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -1142,10 +1187,10 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
+        <phrase id="fldcaption" value="N. Comprobante" />
       </field>
       <field id="nreng">
-        <phrase id="fldcaption" value="nreng" />
+        <phrase id="fldcaption" value="Renglones" />
       </field>
       <field id="tcomprel">
         <phrase id="fldcaption" value="tcomprel" />
@@ -1172,7 +1217,7 @@
     <table id="detremi">
       <phrase id="tblcaption" value="Detalle de Remitos" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -1181,43 +1226,43 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
+        <phrase id="fldcaption" value="N.Comprobante" />
       </field>
       <field id="nreng">
-        <phrase id="fldcaption" value="nreng" />
+        <phrase id="fldcaption" value="Renglones" />
       </field>
       <field id="codlote">
-        <phrase id="fldcaption" value="codlote" />
+        <phrase id="fldcaption" value="ID Lote" />
       </field>
       <field id="desclote">
-        <phrase id="fldcaption" value="desclote" />
+        <phrase id="fldcaption" value="Descripción del Lote" />
       </field>
       <field id="descorlote">
-        <phrase id="fldcaption" value="descorlote" />
+        <phrase id="fldcaption" value="Descripción corta del Lote" />
       </field>
       <field id="estado">
-        <phrase id="fldcaption" value="estado" />
+        <phrase id="fldcaption" value="Estado" />
       </field>
       <field id="fechahora">
         <phrase id="fldcaption" value="fechahora" />
       </field>
       <field id="usuario">
-        <phrase id="fldcaption" value="usuario" />
+        <phrase id="fldcaption" value="Usuario" />
       </field>
     </table>
     <table id="dir_remates">
       <phrase id="tblcaption" value="Direcciones de Remate" />
       <field id="codigo">
-        <phrase id="fldcaption" value="codigo" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="codrem">
-        <phrase id="fldcaption" value="codrem" />
+        <phrase id="fldcaption" value="ID Subasta" />
       </field>
       <field id="secuencia">
-        <phrase id="fldcaption" value="secuencia" />
+        <phrase id="fldcaption" value="Secuencia" />
       </field>
       <field id="direccion">
-        <phrase id="fldcaption" value="direccion" />
+        <phrase id="fldcaption" value="Dirección" />
       </field>
       <field id="codpais">
         <phrase id="fldcaption" value="País" />
@@ -1229,10 +1274,10 @@
         <phrase id="fldcaption" value="Localidad" />
       </field>
       <field id="usuarioalta">
-        <phrase id="fldcaption" value="usuarioalta" />
+        <phrase id="fldcaption" value="Usuario Alta" />
       </field>
       <field id="fechaalta">
-        <phrase id="fldcaption" value="fechaalta" />
+        <phrase id="fldcaption" value="Fecha de Alta" />
       </field>
       <field id="usuariomod">
         <phrase id="fldcaption" value="usuariomod" />
@@ -1244,7 +1289,7 @@
     <table id="entidades">
       <phrase id="tblcaption" value="Entidades" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="razsoc">
         <phrase id="fldcaption" value="Razón Social" />
@@ -1294,7 +1339,7 @@
         <phrase id="fldcaption" value="Fecha de Alta" />
       </field>
       <field id="usuario">
-        <phrase id="fldcaption" value="usuario" />
+        <phrase id="fldcaption" value="Usuario" />
       </field>
       <field id="contacto">
         <phrase id="fldcaption" value="Contacto" />
@@ -1309,7 +1354,7 @@
         <phrase id="fldcaption" value="Fecha/Hora" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1322,7 +1367,7 @@
         <phrase id="fldcaption" value="Tipo de Industria" />
       </field>
       <field id="usuarioultmod">
-        <phrase id="fldcaption" value="usuarioultmod" />
+        <phrase id="fldcaption" value="Ultimo Usuario" />
       </field>
       <field id="fecultmod">
         <phrase id="fldcaption" value="Fecha Mod." />
@@ -1331,7 +1376,7 @@
     <table id="formapago">
       <phrase id="tblcaption" value="Formas de Pago" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descripcion">
         <phrase id="fldcaption" value="Descripción" />
@@ -1343,7 +1388,7 @@
         <phrase id="fldcaption" value="Usuario" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1353,7 +1398,7 @@
     <table id="impfac">
       <phrase id="tblcaption" value="Impuesto de Facturass" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -1362,7 +1407,7 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
+        <phrase id="fldcaption" value="N. Comprobante" />
       </field>
       <field id="nreng">
         <phrase id="fldcaption" value="Renglon" />
@@ -1383,22 +1428,22 @@
         <phrase id="fldcaption" value="codimp" />
       </field>
       <field id="secuencia">
-        <phrase id="fldcaption" value="secuencia" />
+        <phrase id="fldcaption" value="Secuencia" />
       </field>
       <field id="monto_min">
-        <phrase id="fldcaption" value="monto min" />
+        <phrase id="fldcaption" value="Monto Mínimo" />
       </field>
       <field id="monto_max">
-        <phrase id="fldcaption" value="monto max" />
+        <phrase id="fldcaption" value="Monto máximo" />
       </field>
       <field id="porcentaje">
-        <phrase id="fldcaption" value="porcentaje" />
+        <phrase id="fldcaption" value="Porcentaje" />
       </field>
       <field id="monto_fijo">
-        <phrase id="fldcaption" value="monto fijo" />
+        <phrase id="fldcaption" value="Monto Fijo" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1408,26 +1453,26 @@
     <table id="impuestos">
       <phrase id="tblcaption" value="Impuestos" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="porcen">
-        <phrase id="fldcaption" value="porcen" />
+        <phrase id="fldcaption" value="Porcentaje" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripcción" />
       </field>
       <field id="rangos">
-        <phrase id="fldcaption" value="rangos" />
+        <phrase id="fldcaption" value="Rangos" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="montomin">
-        <phrase id="fldcaption" value="montomin" />
+        <phrase id="fldcaption" value="Monto Mínimo" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1437,7 +1482,7 @@
     <table id="liquidacion">
       <phrase id="tblcaption" value="Liquidacion" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
@@ -1446,7 +1491,7 @@
         <phrase id="fldcaption" value="Serie" />
       </field>
       <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
+        <phrase id="fldcaption" value="N. Comprobante" />
       </field>
       <field id="cliente">
         <phrase id="fldcaption" value="Cliente" />
@@ -1536,7 +1581,7 @@
         <phrase id="fldcaption" value="Nro de Documento" />
       </field>
       <field id="cotiz">
-        <phrase id="fldcaption" value="cotiz" />
+        <phrase id="fldcaption" value="Cotización" />
       </field>
       <field id="usuarioultmod">
         <phrase id="fldcaption" value="usuarioultmod" />
@@ -1548,7 +1593,7 @@
     <table id="localidades">
       <phrase id="tblcaption" value="Localidades" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="codpais">
         <phrase id="fldcaption" value="País" />
@@ -1560,7 +1605,7 @@
         <phrase id="fldcaption" value="Descripcion" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1572,7 +1617,7 @@
       <phrase id="tblpagecaption1" value="Básico" />
       <phrase id="tblpagecaption2" value="Extendido" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="codigo numerico" />
         <phrase id="fldtagvalue1" value="7 días hábiles" />
         <phrase id="fldtagcaption1" value="7 días hábiles" />
         <phrase id="fldtagvalue2" value="10 días hábiles" />
@@ -1593,7 +1638,7 @@
         <phrase id="fldtagcaption9" value="120 Hs hábiles" />
       </field>
       <field id="codrem">
-        <phrase id="fldcaption" value="Subasta" />
+        <phrase id="fldcaption" value="ID Subasta" />
       </field>
       <field id="codcli">
         <phrase id="fldcaption" value="Cliente" />
@@ -1657,22 +1702,23 @@
         <phrase id="fldcaption" value="Secuencia" />
       </field>
       <field id="codintlote">
-        <phrase id="fldcaption" value="Cod interno Lote" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="codintnum">
         <phrase id="fldcaption" value="Cond interno Numerico" />
       </field>
       <field id="codintsublote">
-        <phrase id="fldcaption" value="codintsublote" />
-      </field>
-      <field id="dir_secuencia">
-        <phrase id="fldcaption" value="Diercción de Exposición" />
+        <phrase id="fldcaption" value="Cod int sub Lote" />
       </field>
       <field id="usuarioultmod">
         <phrase id="fldcaption" value="usuarioultmod" />
       </field>
       <field id="fecultmod">
         <phrase id="fldcaption" value="fecultmod" />
+      </field>
+      <field id="dir_secuencia">
+        <phrase id="fldcaption" value="codprov" />
+        <phrase id="flderrmsg" value="Seleccione la provincia porfavor.." />
       </field>
     </table>
     <table id="lotes_05">
@@ -1756,16 +1802,16 @@
     <table id="medpago">
       <phrase id="tblcaption" value="Medios de Pago" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descrip">
-        <phrase id="fldcaption" value="descrip" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="moneda">
-        <phrase id="fldcaption" value="moneda" />
+        <phrase id="fldcaption" value="Moneda" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1775,16 +1821,16 @@
     <table id="monedas">
       <phrase id="tblcaption" value="Monedas" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descor">
-        <phrase id="fldcaption" value="descor" />
+        <phrase id="fldcaption" value="Descripción Corta" />
       </field>
       <field id="descrip">
-        <phrase id="fldcaption" value="descrip" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1794,13 +1840,13 @@
     <table id="niveles">
       <phrase id="tblcaption" value="Niveles" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1810,13 +1856,13 @@
     <table id="paises">
       <phrase id="tblcaption" value="Paises" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1826,16 +1872,16 @@
     <table id="provincias">
       <phrase id="tblcaption" value="Provincias" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="codpais">
         <phrase id="fldcaption" value="País" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1848,6 +1894,10 @@
       <chart id="chart1">
         <phrase id="chartcaption" value="Chart 1" />
       </chart>
+      <field id="ncomp">
+        <phrase id="fldcaption" value="ID Subasta" />
+        <phrase id="fldtitle" value="ID" />
+      </field>
       <field id="codnum">
         <phrase id="fldcaption" value="codnum" />
       </field>
@@ -1857,14 +1907,11 @@
       <field id="serie">
         <phrase id="fldcaption" value="Serie" />
       </field>
-      <field id="ncomp">
-        <phrase id="fldcaption" value="Nro. del Cbte" />
-      </field>
       <field id="codcli">
         <phrase id="fldcaption" value="Cliente" />
       </field>
       <field id="direccion">
-        <phrase id="fldcaption" value="direccion" />
+        <phrase id="fldcaption" value="Dirección" />
       </field>
       <field id="codpais">
         <phrase id="fldcaption" value="País" />
@@ -1944,19 +1991,19 @@
         <phrase id="fldtagcaption9" value="24 Hs hábiles" />
       </field>
       <field id="usuarioultmod">
-        <phrase id="fldcaption" value="usuarioultmod" />
+        <phrase id="fldcaption" value="Usuario Mod." />
       </field>
       <field id="fecultmod">
-        <phrase id="fldcaption" value="fecultmod" />
+        <phrase id="fldcaption" value="Fecha U. Modif" />
       </field>
       <field id="servicios">
-        <phrase id="fldcaption" value="servicios" />
+        <phrase id="fldcaption" value="Servicios" />
       </field>
       <field id="gastos">
-        <phrase id="fldcaption" value="gastos" />
+        <phrase id="fldcaption" value="Gastos" />
       </field>
       <field id="tasa">
-        <phrase id="fldcaption" value="tasa" />
+        <phrase id="fldcaption" value="Tasa" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Yes" />
         <phrase id="fldtagvalue2" value="0" />
@@ -1966,10 +2013,10 @@
     <table id="remateweb">
       <phrase id="tblcaption" value="Subastas web" />
       <field id="idremate">
-        <phrase id="fldcaption" value="Id Remate" />
+        <phrase id="fldcaption" value="ID Subasta" />
       </field>
       <field id="remate">
-        <phrase id="fldcaption" value="Remate" />
+        <phrase id="fldcaption" value="Subastas" />
       </field>
       <field id="fecharemate">
         <phrase id="fldcaption" value="Fecha Remate" />
@@ -1990,16 +2037,16 @@
     <table id="rubros">
       <phrase id="tblcaption" value="Rubros" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="codimp">
-        <phrase id="fldcaption" value="codimp" />
+        <phrase id="fldcaption" value="Cod Imp" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -2009,42 +2056,42 @@
     <table id="series">
       <phrase id="tblcaption" value="Series" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="tipcomp">
         <phrase id="fldcaption" value="Tipo de Comprobante" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="nrodesde">
-        <phrase id="fldcaption" value="nrodesde" />
+        <phrase id="fldcaption" value="Número Desde" />
       </field>
       <field id="nrohasta">
-        <phrase id="fldcaption" value="nrohasta" />
+        <phrase id="fldcaption" value="Número Hasta" />
       </field>
       <field id="nroact">
         <phrase id="fldcaption" value="nroact" />
       </field>
       <field id="mascara">
-        <phrase id="fldcaption" value="mascara" />
+        <phrase id="fldcaption" value="Mascara" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="automatica">
-        <phrase id="fldcaption" value="automatica" />
+        <phrase id="fldcaption" value="Automatica" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="fechatope">
-        <phrase id="fldcaption" value="fechatope" />
+        <phrase id="fldcaption" value="Fecha Tope" />
       </field>
     </table>
     <table id="sucbancos">
@@ -2075,58 +2122,58 @@
     <table id="tipcomp">
       <phrase id="tblcaption" value="Tipos de Comprobantes" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="esfactura">
-        <phrase id="fldcaption" value="esfactura" />
+        <phrase id="fldcaption" value="Es Factura" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="esprovedor">
-        <phrase id="fldcaption" value="esprovedor" />
+        <phrase id="fldcaption" value="Es Provedor" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="codafip">
-        <phrase id="fldcaption" value="codafip" />
+        <phrase id="fldcaption" value="Cod Afip" />
       </field>
       <field id="usuarioalta">
         <phrase id="fldcaption" value="usuarioalta" />
       </field>
       <field id="fechaalta">
-        <phrase id="fldcaption" value="fechaalta" />
+        <phrase id="fldcaption" value="Fecha Alta" />
       </field>
       <field id="usuariomod">
-        <phrase id="fldcaption" value="usuariomod" />
+        <phrase id="fldcaption" value="Ultima Modificación" />
       </field>
       <field id="fechaultmod">
-        <phrase id="fldcaption" value="fechaultmod" />
+        <phrase id="fldcaption" value="Fecha Ult Modificación" />
       </field>
     </table>
     <table id="tipoenti">
       <phrase id="tblcaption" value="Tipos de Entidades" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descripcion">
-        <phrase id="fldcaption" value="descripcion" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -2136,39 +2183,39 @@
     <table id="tipoindustria">
       <phrase id="tblcaption" value="Tipos de Industria" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="nomre">
-        <phrase id="fldcaption" value="nombre" />
+        <phrase id="fldcaption" value="Nombre" />
       </field>
     </table>
     <table id="tipoiva">
       <phrase id="tblcaption" value="Tipos de Iva" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="descor">
-        <phrase id="fldcaption" value="descor" />
+        <phrase id="fldcaption" value="Descripción Corta" />
       </field>
       <field id="descrip">
-        <phrase id="fldcaption" value="descrip" />
+        <phrase id="fldcaption" value="Descripción" />
       </field>
       <field id="discrimina">
-        <phrase id="fldcaption" value="discrimina" />
+        <phrase id="fldcaption" value="Discrimina" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
@@ -2178,19 +2225,19 @@
     <table id="usuarios">
       <phrase id="tblcaption" value="Usuarios" />
       <field id="codnum">
-        <phrase id="fldcaption" value="codnum" />
+        <phrase id="fldcaption" value="ID" />
       </field>
       <field id="usuario">
-        <phrase id="fldcaption" value="usuario" />
+        <phrase id="fldcaption" value="Usuario" />
       </field>
       <field id="nombre">
-        <phrase id="fldcaption" value="nombre" />
+        <phrase id="fldcaption" value="Nombre" />
       </field>
       <field id="clave">
-        <phrase id="fldcaption" value="clave" />
+        <phrase id="fldcaption" value="Clave" />
       </field>
       <field id="nivel">
-        <phrase id="fldcaption" value="nivel" />
+        <phrase id="fldcaption" value="Nivel" />
         <phrase id="fldtagvalue1" value="-2" />
         <phrase id="fldtagcaption1" value="Anonymous" />
         <phrase id="fldtagvalue2" value="-1" />
@@ -2209,21 +2256,21 @@
         <phrase id="fldtagcaption8" value="Gerencia" />
       </field>
       <field id="activo">
-        <phrase id="fldcaption" value="activo" />
+        <phrase id="fldcaption" value="Activo?" />
         <phrase id="fldtagvalue1" value="1" />
         <phrase id="fldtagcaption1" value="Sí" />
         <phrase id="fldtagvalue2" value="0" />
         <phrase id="fldtagcaption2" value="No" />
       </field>
       <field id="_email">
-        <phrase id="fldcaption" value="email" />
+        <phrase id="fldcaption" value="Email" />
       </field>
       <field id="perfil">
-        <phrase id="fldcaption" value="perfil" />
+        <phrase id="fldcaption" value="Perfil" />
       </field>
     </table>
     <table id="userlevelpermissions">
-      <phrase id="tblcaption" value="userlevelpermissions" />
+      <phrase id="tblcaption" value="Permisos de Usuario" />
       <field id="userlevelid">
         <phrase id="fldcaption" value="userlevelid" />
       </field>
@@ -2235,7 +2282,7 @@
       </field>
     </table>
     <table id="userlevels">
-      <phrase id="tblcaption" value="userlevels" />
+      <phrase id="tblcaption" value="Niveles de Usuario" />
       <field id="userlevelid">
         <phrase id="fldcaption" value="userlevelid" />
         <phrase id="fldtagvalue1" value="4" />
@@ -2372,10 +2419,10 @@
     <table id="v_lista_facncb">
       <phrase id="tblcaption" value="Reemisión de Facturas Electrónicas Tipo B" />
     </table>
-    <table id="v_anca4">
+    <table id="v_anca2">
       <phrase id="tblcaption" value="Nota de Credito A0002" />
     </table>
-    <table id="v_ancb4">
+    <table id="v_ancb2">
       <phrase id="tblcaption" value="Nota de Credito B0002" />
     </table>
     <table id="v_anca6">
@@ -2387,10 +2434,10 @@
     <table id="l_recibo_reemision">
       <phrase id="tblcaption" value="Reemisión de Recibos de Cobranza" />
     </table>
-    <table id="v_anda4">
+    <table id="v_anda2">
       <phrase id="tblcaption" value="Nota de Debito A0002" />
     </table>
-    <table id="v_andb4">
+    <table id="v_andb2">
       <phrase id="tblcaption" value="Nota de Debito B0002" />
     </table>
     <table id="v_anda6">
@@ -2495,22 +2542,22 @@
     <table id="l_retenciones_div">
       <phrase id="tblcaption" value="Retenciones por Divisiòn" />
     </table>
-    <table id="v_afcxlotea10">
+    <table id="v_afcxlotea5">
       <phrase id="tblcaption" value="Facturas por Lotes MiPyMEs A0005" />
     </table>
-    <table id="v_afcxconca10">
+    <table id="v_afcxconca5">
       <phrase id="tblcaption" value="Facturas por Conceptos MiPyMEs A0005" />
     </table>
     <table id="afcxlot">
       <phrase id="tblcaption" value="Factura Automática por Lotes" />
     </table>
-    <table id="l_wafcxlota10">
+    <table id="l_wafcxlota5">
       <phrase id="tblcaption" value="MiPyMe A0005" />
     </table>
-    <table id="v_wafcautxconca10">
+    <table id="v_wafcautxconca5">
       <phrase id="tblcaption" value="MiPyMe A0005" />
     </table>
-    <table id="v_wanca10">
+    <table id="v_wanca5">
       <phrase id="tblcaption" value="Nota de Crédito A005" />
     </table>
     <table id="v_wcbteint">
@@ -2521,6 +2568,15 @@
     </table>
     <table id="l_facncint">
       <phrase id="tblcaption" value="Reemisión de comprobantes  de saldos de señas y devoluciones" />
+    </table>
+    <table id="lista_ctacte_int">
+      <phrase id="tblcaption" value="Cuenta Corriente Saldos a favor por Cliente" />
+    </table>
+    <table id="lista_ctacte_cli_tot">
+      <phrase id="tblcaption" value="Saldos de clientes a una fecha" />
+    </table>
+    <table id="v_wafcautxlota">
+      <phrase id="tblcaption" value="FC por lote A2" />
     </table>
   </project>
 </ew-language>

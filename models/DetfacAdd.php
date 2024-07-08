@@ -607,8 +607,8 @@ class DetfacAdd extends Detfac
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
-                    if ($this->IsModal && $this->UseAjaxActions) {
+                    // Handle UseAjaxActions with return page
+                    if ($this->IsModal && $this->UseAjaxActions && !$this->getCurrentMasterTable()) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "DetfacList") {
                             Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL
@@ -1828,11 +1828,11 @@ class DetfacAdd extends Detfac
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), false);
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, false);
 
         // porciva
         $this->porciva->setDbValueDef($rsnew, $this->porciva->CurrentValue, false);

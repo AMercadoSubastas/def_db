@@ -36,8 +36,7 @@ use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Hautelook\Phpass\PasswordHash;
 use PHPMailer\PHPMailer\PHPMailer;
-use libphonenumber\PhoneNumberFormat;
-use libphonenumber\PhoneNumberUtil;
+
 use Detection\MobileDetect;
 
 // Custom types
@@ -588,6 +587,16 @@ function IsGet()
 function IsPost()
 {
     return SameText(RequestMethod(), "POST");
+}
+
+/**
+ * Is OPTIONS request
+ *
+ * @return bool
+ */
+function IsOptions()
+{
+    return SameText(RequestMethod(), "OPTIONS");
 }
 
 /**
@@ -1265,7 +1274,7 @@ function GetFileImage($fld, $val, $width = 0, $height = 0, $crop = false)
     $image = "";
     $file = "";
     if ($fld->DataType == DataType::BLOB) {
-        $image = $val;
+        $image = is_resource($val) ? stream_get_contents($val) : $val;
     } elseif ($fld->UploadMultiple) {
         $file = $fld->physicalUploadPath() . (explode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $val ?? "")[0]);
     } else {
@@ -1326,7 +1335,7 @@ function GetFileUploadUrl($fld, $val, $options = [])
                 $fn .= "?resize=1&width=" . $fld->ImageWidth . "&height=" . $fld->ImageHeight . ($crop ? "&crop=1" : "");
             }
         } else {
-            $encrypt ??= Config("ENCRYPT_FILE_PATH");
+            $encrypt ??= Config("ENCRYPT_FILE_PATH") || !EmptyString($fld->getS3Bucket());
             $path = ($encrypt || $resize) ? $fld->physicalUploadPath() : $fld->hrefPath();
             $key = $sessionId . Config("ENCRYPTION_KEY");
             if ($encrypt) {
@@ -1385,17 +1394,18 @@ function GetFileViewTag(&$fld, $val, $tooltip = false)
             $wrknames = [$val];
             $wrkfiles = [$fld->htmlDecode($fld->Upload->DbValue)];
         }
-        $multiple = (count($wrkfiles) > 1);
+        $wrkfiles = array_filter($wrkfiles);
+        $multiple = count($wrkfiles) > 1;
         $href = $tooltip ? "" : $fld->HrefValue;
         $isLazy = $tooltip ? false : IsLazy();
         $tags = [];
         $wrkcnt = 0;
         $showBase64Image = $Page?->isExport("html");
         $skipImage = $Page && ($Page->isExport("excel") && !Config("USE_PHPEXCEL") || $Page->isExport("word") && !Config("USE_PHPWORD"));
-        $showTempImage = $Page && ($Page->TableType == "REPORT" &&
-            ($Page->isExport("excel") && Config("USE_PHPEXCEL") ||
-            $Page->isExport("word") && Config("USE_PHPWORD")) ||
-            $Page->TableType != "REPORT" && ($Page->Export == "pdf" || $Page->Export == "email"));
+        $showTempImage = $Page && ($Page->TableType == "REPORT"
+            && ($Page->isExport("excel") && Config("USE_PHPEXCEL")
+            || $Page->isExport("word") && Config("USE_PHPWORD"))
+            || $Page->TableType != "REPORT" && ($Page->Export == "pdf" || $Page->Export == "email"));
         foreach ($wrkfiles as $wrkfile) {
             $tag = "";
             if ($showTempImage) {
@@ -1449,10 +1459,11 @@ function GetFileViewTag(&$fld, $val, $tooltip = false)
                 $isPdf = SameText($ext, "pdf");
                 if ($url != "") {
                     $fld->LinkAttrs->removeClass("ew-lightbox"); // Remove colorbox class
+                    unset($fld->LinkAttrs["title"]); // Remove title
                     if ($fld->UploadMultiple && ContainsString($href, "%u")) {
                         $fld->HrefValue = str_replace("%u", $url, $href);
                     }
-                    $isEmbedPdf = Config("EMBED_PDF") && !($Page && $Page->isExport() && !$Page->isExport("print")); // Skip Embed PDF for export
+                    $isEmbedPdf = $isPdf && Config("EMBED_PDF") && !($Page && $Page->isExport() && !$Page->isExport("print")); // Skip Embed PDF for export
                     if ($isEmbedPdf) {
                         $pdfFile = $fld->physicalUploadPath() . $wrkfile;
                         $tag = "<a" . $fld->linkAttributes() . ">" . $name . "</a>";
@@ -1770,6 +1781,17 @@ function EntityManager($dbid = "")
 }
 
 /**
+ * Get event manager
+ *
+ * @param string $dbid Database ID
+ * @return EventManager
+ */
+function EventManager($dbid = "")
+{
+    return Conn($dbid)->getEventManager();
+}
+
+/**
  * Get user entity manager
  *
  * @return EntityManager
@@ -1787,6 +1809,28 @@ function GetUserEntityManager()
 function GetUserRepository()
 {
     return GetUserEntityManager()->getRepository(Config("USER_TABLE_ENTITY_CLASS"));
+}
+
+/**
+ * Get entity class name by table name
+ *
+ * @param string $tablename Table name
+ * @return string Entity class name
+ */
+function GetEntityClass($tablename)
+{
+    $finder = Finder::create()->files()->in(__DIR__ . "/Entity");
+    foreach ($finder as $file) { // Delete files
+        $name = $file->getBaseName(".php");
+        $class = new \ReflectionClass(PROJECT_NAMESPACE . "Entity\\" . $name);
+        $attributes = $class->getAttributes();
+        foreach ($attributes as $attribute) {
+            if ($attribute->getName() == "Doctrine\\ORM\\Mapping\\Table" && $attribute->newInstance()->name == $tablename) {
+                return PROJECT_NAMESPACE . "Entity\\" . $name;
+            }
+        }
+    }
+    return null;
 }
 
 /**
@@ -1886,8 +1930,10 @@ function ConnectDb($info)
                 \PDO::MYSQL_ATTR_SSL_CIPHER,
                 \PDO::MYSQL_ATTR_SSL_KEY
             ];
-            if (defined("PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT") &&
-                Collection::make($info["driverOptions"] ?? [])->keys()->contains(fn ($v) => in_array($v, $keys))) { // SSL
+            if (
+                defined("PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT") &&
+                Collection::make($info["driverOptions"] ?? [])->keys()->contains(fn ($v) => in_array($v, $keys))
+            ) { // SSL
                 $info["driverOptions"][\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] ??= false;
             }
         } elseif ($info["driver"] == "mysqli") {
@@ -1905,10 +1951,17 @@ function ConnectDb($info)
         $info["driverOptions"] ??= []; // See https://docs.microsoft.com/en-us/sql/connect/php/connection-options?view=sql-server-ver16
         // Use TransactionIsolation = SQLSRV_TXN_READ_UNCOMMITTED to avoid record locking
         // https://docs.microsoft.com/en-us/sql/t-sql/statements/set-transaction-isolation-level-transact-sql?view=sql-server-ver15
-        $info["driverOptions"]["TransactionIsolation"] = 1; // SQLSRV_TXN_READ_UNCOMMITTED
         $info["driverOptions"]["TrustServerCertificate"] = 1;
-        if (IS_UTF8) {
-            $info["driverOptions"]["CharacterSet"] = "UTF-8";
+        if ($info["driver"] == "sqlsrv") {
+            $info["driverOptions"]["TransactionIsolation"] = 1; // SQLSRV_TXN_READ_UNCOMMITTED
+            if (IS_UTF8) {
+                $info["driverOptions"]["CharacterSet"] = "UTF-8";
+            }
+        } elseif ($info["driver"] == "pdo_sqlsrv") {
+            $info["driverOptions"]["TransactionIsolation"] = "READ_UNCOMMITTED"; // PDO::SQLSRV_TXN_READ_UNCOMMITTED
+            //if (IS_UTF8) { // Not supported for pdo_sqlsrv
+                //$info["driverOptions"]["CharacterSet"] = "UTF-8";
+            //}
         }
     } elseif ($dbtype == "SQLITE") {
         $info["driver"] = "pdo_sqlite";
@@ -1934,10 +1987,8 @@ function ConnectDb($info)
         $config->setSQLLogger($sqlLogger);
     }
 
-    // Event manager
-    $evm = new EventManager();
-
     // Connect
+    $evm = new EventManager();
     if ($dbtype == "MYSQL" || $dbtype == "POSTGRESQL" || $dbtype == "ORACLE") {
         $dbtimezone = @$info["timezone"] ?: Config("DB_TIME_ZONE");
         if ($dbtype == "ORACLE") {
@@ -1974,9 +2025,9 @@ function ConnectDb($info)
         } else { // Relative to app root
             $info["path"] = ServerMapPath($relpath) . $dbname;
         }
-        $conn = DriverManager::getConnection($info, $config);
+        $conn = DriverManager::getConnection($info, $config, $evm);
     } elseif ($dbtype == "MSSQL") {
-        $conn = DriverManager::getConnection($info, $config);
+        $conn = DriverManager::getConnection($info, $config, $evm);
         // $conn->executeStatement("SET DATEFORMAT ymd"); // Set date format
     }
     $platform = $conn->getDatabasePlatform();
@@ -2052,12 +2103,15 @@ function LikeOrNotLike($opr, $pat, $dbid = "")
 {
     $dbtype = GetConnectionType($dbid);
     $opr = " " . $opr . " "; // " LIKE " or " NOT LIKE "
+    $pat = "'" . $pat . "'"; // Note: $pat already adjusted for "'" in AdjustSqlForLike
     if ($dbtype == "POSTGRESQL" && Config("USE_ILIKE_FOR_POSTGRESQL")) {
         return str_replace(" LIKE ", " ILIKE ", $opr) . $pat;
     } elseif ($dbtype == "MYSQL" && Config("LIKE_COLLATION_FOR_MYSQL") != "") {
         return $opr . $pat . " COLLATE " . Config("LIKE_COLLATION_FOR_MYSQL");
     } elseif ($dbtype == "MSSQL" && Config("LIKE_COLLATION_FOR_MSSQL") != "") {
         return " COLLATE " . Config("LIKE_COLLATION_FOR_MSSQL") . $opr . $pat;
+    } elseif ($dbtype == "SQLITE" || $dbtype == "ORACLE") {
+        $pat .= " ESCAPE '\'"; // Add ESCAPE character
     }
     return $opr . $pat;
 }
@@ -2078,9 +2132,9 @@ function GetMultiSearchSql($fld, $fldOpr, $fldVal, $dbid)
     if (in_array($fldOpr, ["IS NULL", "IS NOT NULL", "IS EMPTY", "IS NOT EMPTY"])) {
         return SearchFilter($fld->Expression, $fldOpr, $fldVal, $fldDataType, $dbid);
     } else {
-        $sep = Config("MULTIPLE_OPTION_SEPARATOR");
-        $arVal = explode($sep, $fldVal);
         if ($fld->UseFilter) { // Use filter
+            $sep = Config("FILTER_OPTION_SEPARATOR");
+            $arVal = explode($sep, $fldVal);
             $ar = [];
             foreach ($arVal as $val) {
                 $val = trim($val);
@@ -2088,6 +2142,8 @@ function GetMultiSearchSql($fld, $fldOpr, $fldVal, $dbid)
             }
             return implode(" OR ", $ar);
         } else {
+            $sep = Config("MULTIPLE_OPTION_SEPARATOR");
+            $arVal = explode($sep, $fldVal);
             $wrk = "";
             $dbtype = GetConnectionType($dbid);
             $searchOption = Config("SEARCH_MULTI_VALUE_OPTION");
@@ -2142,9 +2198,9 @@ function GetMultiSearchSqlFilter($fldExpression, $fldOpr, $fldVal, $dbid, $sep)
         $likeOpr = "NOT LIKE";
     }
     $sql = $fldExpression . " " . $opr . " '" . AdjustSql($fldVal, $dbid) . "' " . $cond . " ";
-    $sql .= $fldExpression . LikeOrNotLike($likeOpr, QuotedValue(Wildcard($fldVal . $sep, "STARTS WITH"), DataType::STRING, $dbid), $dbid) . " " . $cond . " " .
-        $fldExpression . LikeOrNotLike($likeOpr, QuotedValue(Wildcard($sep . $fldVal . $sep, "LIKE"), DataType::STRING, $dbid), $dbid) . " " . $cond . " " .
-        $fldExpression . LikeOrNotLike($likeOpr, QuotedValue(Wildcard($sep . $fldVal, "ENDS WITH"), DataType::STRING, $dbid), $dbid);
+    $sql .= $fldExpression . LikeOrNotLike($likeOpr, Wildcard($fldVal . $sep, "STARTS WITH", $dbid), $dbid) . " " . $cond . " " .
+        $fldExpression . LikeOrNotLike($likeOpr, Wildcard($sep . $fldVal . $sep, "LIKE", $dbid), $dbid) . " " . $cond . " " .
+        $fldExpression . LikeOrNotLike($likeOpr, Wildcard($sep . $fldVal, "ENDS WITH", $dbid), $dbid);
     return $sql;
 }
 
@@ -2192,7 +2248,7 @@ function DropDownFilter($fld, $fldVal, $fldOpr, $dbid = "", $fldVal2 = "")
         } elseif (($fld->isMultiSelect() || $fld->UseFilter) && IsMultiSearchOperator($fldOpr) && !EmptyValue($fldVal)) {
             $wrk = GetMultiSearchSql($fld, $fldOpr, trim($fldVal), $dbid);
         } elseif ($fldOpr == "BETWEEN" && !EmptyValue($fldVal) && !EmptyValue($fldVal2)) {
-            $wrk = $fldExpression ." " . $fldOpr . " " . QuotedValue($fldVal, $fldDataType, $dbid) . " AND " . QuotedValue($fldVal2, $fldDataType, $dbid);
+            $wrk = $fldExpression . " " . $fldOpr . " " . QuotedValue($fldVal, $fldDataType, $dbid) . " AND " . QuotedValue($fldVal2, $fldDataType, $dbid);
         } else {
             if (!EmptyValue($fldVal)) {
                 if ($fldDataType == DataType::DATE && $fldOpr != "") {
@@ -2315,9 +2371,9 @@ function SearchFilter($fldExpression, $fldOpr, $fldVal, $fldType, $dbid)
     } elseif ($fldOpr == "IN" || $fldOpr == "NOT IN") {
         $filter .= " " . $fldOpr . " (" . implode(", ", array_map(fn($v) => QuotedValue($v, $fldType, $dbid), explode(Config("IN_OPERATOR_VALUE_SEPARATOR"), $fldVal))) . ")";
     } elseif (in_array($fldOpr, ["STARTS WITH", "LIKE", "ENDS WITH"])) {
-        $filter .= Like(QuotedValue(Wildcard($fldVal, $fldOpr), DataType::STRING, $dbid), $dbid);
+        $filter .= Like(Wildcard($fldVal, $fldOpr, $dbid), $dbid);
     } elseif (in_array($fldOpr, ["NOT STARTS WITH", "NOT LIKE", "NOT ENDS WITH"])) {
-        $filter .= NotLike(QuotedValue(Wildcard($fldVal, $fldOpr), DataType::STRING, $dbid), $dbid);
+        $filter .= NotLike(Wildcard($fldVal, $fldOpr, $dbid), $dbid);
     } else { // Default is equal
         $filter .= " = " . QuotedValue($fldVal, $fldType, $dbid);
     }
@@ -2375,7 +2431,9 @@ function ConvertSearchOperator($fldOpr, $fld, $fldVal)
  */
 function IsNumericSearchValue($fldVal, $fldOpr, $fld)
 {
-    if (($fld->isMultiSelect() || $fld->UseFilter) && is_string($fldVal) && ContainsString($fldVal, Config("MULTIPLE_OPTION_SEPARATOR"))) {
+    if ($fld->UseFilter && is_string($fldVal) && ContainsString($fldVal, Config("FILTER_OPTION_SEPARATOR"))) {
+        return implode(Config("FILTER_OPTION_SEPARATOR"), array_map("is_numeric", explode(Config("FILTER_OPTION_SEPARATOR"), $fldVal)));
+    } elseif ($fld->isMultiSelect() && is_string($fldVal) && ContainsString($fldVal, Config("MULTIPLE_OPTION_SEPARATOR"))) {
         return implode(Config("MULTIPLE_OPTION_SEPARATOR"), array_map("is_numeric", explode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal)));
     } elseif (($fldOpr == "IN" || $fldOpr == "NOT IN") && ContainsString($fldVal, Config("IN_OPERATOR_VALUE_SEPARATOR"))) {
         return implode(Config("IN_OPERATOR_VALUE_SEPARATOR"), array_map("is_numeric", explode(Config("IN_OPERATOR_VALUE_SEPARATOR"), $fldVal)));
@@ -2428,7 +2486,9 @@ function ConvertSearchValue($fldVal, $fldOpr, $fld)
         }
         return $val;
     };
-    if (($fld->isMultiSelect() || $fld->UseFilter) && is_string($fldVal) && ContainsString($fldVal, Config("MULTIPLE_OPTION_SEPARATOR"))) {
+    if ($fld->UseFilter && is_string($fldVal) && ContainsString($fldVal, Config("FILTER_OPTION_SEPARATOR"))) {
+        return implode(Config("FILTER_OPTION_SEPARATOR"), array_map($convert, explode(Config("FILTER_OPTION_SEPARATOR"), $fldVal)));
+    } elseif ($fld->isMultiSelect() && is_string($fldVal) && ContainsString($fldVal, Config("MULTIPLE_OPTION_SEPARATOR"))) {
         return implode(Config("MULTIPLE_OPTION_SEPARATOR"), array_map($convert, explode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal)));
     } elseif (($fldOpr == "IN" || $fldOpr == "NOT IN") && ContainsString($fldVal, Config("IN_OPERATOR_VALUE_SEPARATOR"))) {
         return implode(Config("IN_OPERATOR_VALUE_SEPARATOR"), array_map($convert, explode(Config("IN_OPERATOR_VALUE_SEPARATOR"), $fldVal)));
@@ -2518,16 +2578,17 @@ function QuotedValue($value, $fldType, $dbid = "")
  *
  * @param mixed $value Value
  * @param string $likeOpr LIKE operator
+ * @param string $dbid Database ID
  * @return string
  */
-function Wildcard($value, $likeOpr = "")
+function Wildcard($value, $likeOpr = "", $dbid = "")
 {
     if (EndsText("STARTS WITH", $likeOpr)) {
-        return AdjustSqlForLike($value) . "%";
+        return AdjustSqlForLike($value, $dbid) . "%";
     } elseif (EndsText("ENDS WITH", $likeOpr)) {
-        return "%" . AdjustSqlForLike($value);
+        return "%" . AdjustSqlForLike($value, $dbid);
     } elseif (EndsText("LIKE", $likeOpr)) {
-        return "%" . AdjustSqlForLike($value) . "%";
+        return "%" . AdjustSqlForLike($value, $dbid) . "%";
     }
     return $value;
 }
@@ -2649,12 +2710,17 @@ function AdjustSql($val, $dbid = "")
 }
 
 // Adjust value for SQL LIKE operator
-function AdjustSqlForLike($val)
+function AdjustSqlForLike($val, $dbid = "")
 {
     $replacementMap = [
-        '_' => '\_',
-        '%' => '\%'
+        "'" => "''",
+        "_" => "\_",
+        "%" => "\%"
     ];
+    $dbtype = GetConnectionType($dbid);
+    if ($dbtype == "MSSQL") {
+        $replacementMap["_"] = "[_]";
+    }
     return strtr($val ?? "", $replacementMap);
 }
 
@@ -3108,23 +3174,12 @@ function FormatSequenceNumber($seq)
  *
  * @param string $phoneNumber Phone number (e.g. US mobile: "(415)555-2671")
  * @param bool|string $region Region code (e.g. "US" / "GB" / "FR"), if false, skip formatting
- * @param string $format Phone number format (PhoneNumberFormat::E164/INTERNATIONAL/NATIONAL/RFC3966)
+ * @param string $format Phone number format (PhoneNumberFormat::E164/INTERNATIONAL/NATIONAL/RFC3966) (0/1/2/3)
  * @return string
  */
-function FormatPhoneNumber($phoneNumber, $region = null, $format = PhoneNumberFormat::E164)
+function FormatPhoneNumber($phoneNumber, $region = null, $format = 0)
 {
-    global $CurrentLanguage;
-    $region ??= Config("SMS_REGION_CODE");
-    if ($region === false) { // Skip formatting
-        return $phoneNumber;
-    }
-    if ($region === null) { // Get region from locale
-        $ar = explode("-", str_replace("_", "-", $CurrentLanguage));
-        $region = count($ar) >= 2 ? $ar[1] : "US";
-    }
-    $phoneNumberUtil = PhoneNumberUtil::getInstance();
-    $phoneNumberObj = $phoneNumberUtil->parse($phoneNumber, $region);
-    return $phoneNumberUtil->format($phoneNumberObj, $format);
+    return $phoneNumber;
 }
 
 /**
@@ -3373,6 +3428,9 @@ function CleanUploadTempPath($fld, $idx = -1)
  */
 function CleanPath($path, $delete = false, string|array $lastModifiedTime = [])
 {
+    if (!is_dir($path)) {
+        return;
+    }
     try {
         $finder = Finder::create()->files()->in($path)->date($lastModifiedTime);
         foreach ($finder as $file) { // Delete files
@@ -3493,10 +3551,10 @@ function RemoveHtml($str)
  * @param string $phoneNumber Phone Number (e.g. US mobile: "(415)555-2671")
  * @param string $content SMS content
  * @param bool|string $region Region code (e.g. "US" / "GB" / "FR"), if false, skip formatting
- * @param string $format Phone number format (PhoneNumberFormat::E164/INTERNATIONAL/NATIONAL/RFC3966)
+ * @param string $format Phone number format (PhoneNumberFormat::E164/INTERNATIONAL/NATIONAL/RFC3966) (0/1/2/3)
  * @return bool|string success or error description
  */
-function SendSms($phoneNumber, $content, $region = null, $format = PhoneNumberFormat::E164)
+function SendSms($phoneNumber, $content, $region = null, $format = 0)
 {
     $smsClass = Config("SMS_CLASS");
     $rc = new \ReflectionClass($smsClass);
@@ -3944,8 +4002,9 @@ function SaveUploadFiles($fld, $fileNames, $resize)
         ? explode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $fld->Upload->FileName)
         : [ $fld->Upload->FileName ];
     if (!EmptyValue($fld->Upload->FileName)) {
-        if (SameString($fld->Upload->FileName, $fileNames)) // Not changed in server event
+        if (SameString($fld->Upload->FileName, $fileNames)) { // Not changed in server event
             $fileNames = "";
+        }
         $newFiles2 = EmptyValue($fileNames) ? [] : ($fld->UploadMultiple
             ? explode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $fileNames)
             : [ $fileNames ]);
@@ -3962,8 +4021,9 @@ function SaveUploadFiles($fld, $fileNames, $resize)
                     $res = $resize
                         ? $fld->Upload->resizeAndSaveToFile($fld->ImageWidth, $fld->ImageHeight, 100, $newFile, true, $i) // Resize
                         : $fld->Upload->saveToFile($newFile, true, $i); // Save
-                    if (!$res)
+                    if (!$res) {
                         return false;
+                    }
                 }
             }
         }
@@ -4023,13 +4083,11 @@ function TempFolder()
         }
         $folders[] = '/tmp';
     }
-    if (ini_get('upload_tmp_dir')) {
-        $folders[] = ini_get('upload_tmp_dir');
+    if (ini_get("upload_tmp_dir")) {
+        $folders[] = ini_get("upload_tmp_dir");
     }
-    foreach ($folders as $folder) {
-        if (is_dir($folder)) {
-            return $folder;
-        }
+    if ($folder = array_find($folders, fn($folder) => is_dir($folder))) {
+        return $folder;
     }
     return null;
 }
@@ -4621,7 +4679,7 @@ function CurrentUserPrimaryKey()
 // Get current user identifier (user ID or user name)
 function CurrentUserIdentifier()
 {
-    global $Profile;
+    global $Language;
     if (Config("LOG_USER_ID")) { // User ID
         $usr = CurrentUserID();
         if (!isset($usr) || EmptyValue($usr)) { // Assume Administrator or Anonymous user
@@ -4669,7 +4727,7 @@ function CurrentUserInfo($fldname)
 // Get current user email
 function CurrentUserEmail()
 {
-    return CurrentUserInfo(Config("USER_EMAIL_FIELD_NAME"));
+    return Config("USER_EMAIL_FIELD_NAME") ? CurrentUserInfo(Config("USER_EMAIL_FIELD_NAME")) : null;
 }
 
 // Get current user image as base 64 string
@@ -5513,7 +5571,7 @@ function ArrayToJson(array $ar)
 function JsonEncode(mixed $val, int $flags = 0, int $depth = 512)
 {
     if ($val === null) {
-        return $val;
+        return "null";
     }
     if (!IS_UTF8) {
         $val = ConvertToUtf8($val); // Convert to UTF-8
@@ -5694,11 +5752,7 @@ function OptionHtml($val)
  */
 function OptionsHtml(array $values)
 {
-    $html = "";
-    foreach ($values as $val) {
-        $html .= OptionHtml($val);
-    }
-    return $html;
+    return implode(array_map(fn($val) => OptionHtml($val), $values));
 }
 
 // Encode value for double-quoted Javascript string
@@ -6002,9 +6056,7 @@ function Execute($sql, $fn = null, $c = null)
     $result = ExecuteQuery($sql, $c);
     if (is_callable($fn)) {
         $rows = ExecuteRows($sql, $c);
-        foreach ($rows as $row) {
-            $fn($row);
-        }
+        array_walk($rows, $fn);
     }
     return $result;
 }
@@ -6961,6 +7013,18 @@ function SetupLoginStatus()
 
     // Dispatch login status event and return the event
     return DispatchEvent($LoginStatus, LoginStatusEvent::NAME);
+}
+
+// Is absolute path (from symfony/filesystem)
+function IsAbsolutePath(string $file): bool
+{
+    return "" !== $file && (strspn($file, "/\\", 0, 1)
+        || (\strlen($file) > 3 && ctype_alpha($file[0])
+            && ":" === $file[1]
+            && strspn($file, "/\\", 2, 1)
+        )
+        || null !== parse_url($file, \PHP_URL_SCHEME)
+    );
 }
 
 // Is remote path
@@ -8292,9 +8356,9 @@ function GetQuickSearchFilterForField($fld, $keywords, $searchType, $dbid)
                 } elseif ($keyword == Config("NOT_NULL_VALUE")) {
                     $wrk = $fld->Expression . " IS NOT NULL";
                 } elseif ($fld->IsVirtual && $fld->Visible) {
-                    $wrk = $fld->VirtualExpression . Like(QuotedValue(Wildcard($keyword, "LIKE"), DataType::STRING, $dbid), $dbid);
+                    $wrk = $fld->VirtualExpression . Like(Wildcard($keyword, "LIKE", $dbid), $dbid);
                 } elseif ($fld->DataType != DataType::NUMBER || is_numeric($keyword)) {
-                    $wrk = $fld->BasicSearchExpression . Like(QuotedValue(Wildcard($keyword, "LIKE"), DataType::STRING, $dbid), $dbid);
+                    $wrk = $fld->BasicSearchExpression . Like(Wildcard($keyword, "LIKE", $dbid), $dbid);
                 }
                 if ($wrk != "") {
                     $arSql[$j] = $wrk;
@@ -8361,7 +8425,7 @@ function GetReportFilter(&$fld, $default = false, $dbid = "")
         }
         // Handle second value
         $wrk2 = "";
-        if ( $fldVal2 != "" && !EmptyValue($fldOpr2) && IsValidOperator($fldOpr2)) {
+        if ($fldVal2 != "" && !EmptyValue($fldOpr2) && IsValidOperator($fldOpr2)) {
             $wrk2 = SearchFilter($fldExpression, $fldOpr2, $fldVal2, $fldDataType, $dbid);
         }
         // Combine SQL

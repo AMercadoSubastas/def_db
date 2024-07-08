@@ -598,7 +598,7 @@ class DirRematesAdd extends DirRemates
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "DirRematesList") {
@@ -1416,19 +1416,19 @@ class DirRematesAdd extends DirRemates
 
         // usuarioalta
         $this->usuarioalta->CurrentValue = $this->usuarioalta->getAutoUpdateValue(); // PHP
-        $this->usuarioalta->setDbValueDef($rsnew, $this->usuarioalta->CurrentValue);
+        $this->usuarioalta->setDbValueDef($rsnew, $this->usuarioalta->CurrentValue, false);
 
         // fechaalta
         $this->fechaalta->CurrentValue = $this->fechaalta->getAutoUpdateValue(); // PHP
-        $this->fechaalta->setDbValueDef($rsnew, UnFormatDateTime($this->fechaalta->CurrentValue, $this->fechaalta->formatPattern()));
+        $this->fechaalta->setDbValueDef($rsnew, UnFormatDateTime($this->fechaalta->CurrentValue, $this->fechaalta->formatPattern()), false);
 
         // usuariomod
         $this->usuariomod->CurrentValue = $this->usuariomod->getAutoUpdateValue(); // PHP
-        $this->usuariomod->setDbValueDef($rsnew, $this->usuariomod->CurrentValue);
+        $this->usuariomod->setDbValueDef($rsnew, $this->usuariomod->CurrentValue, false);
 
         // fechaultmod
         $this->fechaultmod->CurrentValue = $this->fechaultmod->getAutoUpdateValue(); // PHP
-        $this->fechaultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fechaultmod->CurrentValue, $this->fechaultmod->formatPattern()));
+        $this->fechaultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fechaultmod->CurrentValue, $this->fechaultmod->formatPattern()), false);
         return $rsnew;
     }
 

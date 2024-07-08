@@ -53,8 +53,8 @@ class JwtMiddleware implements MiddlewareInterface
                 $expire = $request->getParsedBodyParam(Config("API_LOGIN_EXPIRE"));
                 $permission = $request->getParsedBodyParam(Config("API_LOGIN_PERMISSION"));
             }
-            $expire = ParseInteger($expire); // Get expire time in hours
-            $permission = ParseInteger($permission); // Get allowed permission
+            $expire = ParseInteger($expire ?? 0); // Get expire time in hours
+            $permission = ParseInteger($permission ?? 0); // Get allowed permission
             $minExpiry = $expire ? time() + $expire * 60 * 60 : 0;
             $jwt = $Security->createJwt($minExpiry, $permission);
             $response = $ResponseFactory->createResponse();

@@ -16,11 +16,6 @@ $RematesView = &$Page;
 $Page->showMessage();
 ?>
 <main class="view">
-<?php if (!$Page->IsModal) { ?>
-<?php if (!$Page->isExport()) { ?>
-<?= $Page->Pager->render() ?>
-<?php } ?>
-<?php } ?>
 <form name="frematesview" id="frematesview" class="ew-form ew-view-form overlay-wrapper" action="<?= CurrentPageUrl(false) ?>" method="post" autocomplete="off">
 <?php if (!$Page->isExport()) { ?>
 <script>
@@ -56,13 +51,13 @@ loadjs.ready("head", function () {
 <input type="hidden" name="t" value="remates">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
 <table class="<?= $Page->TableClass ?>">
-<?php if ($Page->codnum->Visible) { // codnum ?>
-    <tr id="r_codnum"<?= $Page->codnum->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_remates_codnum"><?= $Page->codnum->caption() ?></span></td>
-        <td data-name="codnum"<?= $Page->codnum->cellAttributes() ?>>
-<span id="el_remates_codnum">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
+<?php if ($Page->ncomp->Visible) { // ncomp ?>
+    <tr id="r_ncomp"<?= $Page->ncomp->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_remates_ncomp"><?= $Page->ncomp->caption() ?></span></td>
+        <td data-name="ncomp"<?= $Page->ncomp->cellAttributes() ?>>
+<span id="el_remates_ncomp">
+<span<?= $Page->ncomp->viewAttributes() ?>>
+<?= $Page->ncomp->getViewValue() ?></span>
 </span>
 </td>
     </tr>
@@ -85,17 +80,6 @@ loadjs.ready("head", function () {
 <span id="el_remates_serie">
 <span<?= $Page->serie->viewAttributes() ?>>
 <?= $Page->serie->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
-<?php if ($Page->ncomp->Visible) { // ncomp ?>
-    <tr id="r_ncomp"<?= $Page->ncomp->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_remates_ncomp"><?= $Page->ncomp->caption() ?></span></td>
-        <td data-name="ncomp"<?= $Page->ncomp->cellAttributes() ?>>
-<span id="el_remates_ncomp">
-<span<?= $Page->ncomp->viewAttributes() ?>>
-<?= $Page->ncomp->getViewValue() ?></span>
 </span>
 </td>
     </tr>
@@ -359,7 +343,10 @@ loadjs.ready("head", function () {
         <td data-name="tasa"<?= $Page->tasa->cellAttributes() ?>>
 <span id="el_remates_tasa">
 <span<?= $Page->tasa->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($Page->tasa->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
+<div class="form-check form-switch d-inline-block">
+    <input type="checkbox" id="x_tasa_<?= $Page->RowCount ?>" class="form-check-input" value="<?= $Page->tasa->getViewValue() ?>" disabled<?php if (ConvertToBool($Page->tasa->CurrentValue)) { ?> checked<?php } ?>>
+    <label class="form-check-label" for="x_tasa_<?= $Page->RowCount ?>"></label>
+</div>
 </span>
 </span>
 </td>
@@ -375,11 +362,6 @@ loadjs.ready("head", function () {
 <?php include_once "LotesGrid.php" ?>
 <?php } ?>
 </form>
-<?php if (!$Page->IsModal) { ?>
-<?php if (!$Page->isExport()) { ?>
-<?= $Page->Pager->render() ?>
-<?php } ?>
-<?php } ?>
 </main>
 <?php
 $Page->showPageFooter();

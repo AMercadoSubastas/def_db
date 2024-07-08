@@ -489,7 +489,7 @@ class DetreciboGrid extends Detrecibo
     public $StopRecord;
     public $TotalRecords = 0;
     public $RecordRange = 10;
-    public $PageSizes = "10,20,50,-1"; // Page sizes (comma separated)
+    public $PageSizes = "5,10,20,50,-1"; // Page sizes (comma separated)
     public $DefaultSearchWhere = ""; // Default search WHERE clause
     public $SearchWhere = ""; // Search WHERE clause
     public $SearchPanelClass = "ew-search-panel collapse"; // Search Panel class
@@ -503,7 +503,7 @@ class DetreciboGrid extends Detrecibo
     public $KeyCount = 0; // Key count
     public $MultiColumnGridClass = "row-cols-md";
     public $MultiColumnEditClass = "col-12 w-100";
-    public $MultiColumnCardClass = "card h-100 ew-card";
+    public $MultiColumnCardClass = "card h-200 ew-card";
     public $MultiColumnListOptionsPosition = "bottom-start";
     public $DbMasterFilter = ""; // Master filter
     public $DbDetailFilter = ""; // Detail filter
@@ -1086,37 +1086,92 @@ class DetreciboGrid extends Detrecibo
     public function emptyRow()
     {
         global $CurrentForm;
-        if ($CurrentForm->hasValue("x_tcomp") && $CurrentForm->hasValue("o_tcomp") && $this->tcomp->CurrentValue != $this->tcomp->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_tcomp") &&
+            $CurrentForm->hasValue("o_tcomp") &&
+            $this->tcomp->CurrentValue != $this->tcomp->DefaultValue &&
+            !($this->tcomp->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->tcomp->CurrentValue == $this->tcomp->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_serie") && $CurrentForm->hasValue("o_serie") && $this->serie->CurrentValue != $this->serie->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_serie") &&
+            $CurrentForm->hasValue("o_serie") &&
+            $this->serie->CurrentValue != $this->serie->DefaultValue &&
+            !($this->serie->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->serie->CurrentValue == $this->serie->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_ncomp") && $CurrentForm->hasValue("o_ncomp") && $this->ncomp->CurrentValue != $this->ncomp->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_ncomp") &&
+            $CurrentForm->hasValue("o_ncomp") &&
+            $this->ncomp->CurrentValue != $this->ncomp->DefaultValue &&
+            !($this->ncomp->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->ncomp->CurrentValue == $this->ncomp->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_nreng") && $CurrentForm->hasValue("o_nreng") && $this->nreng->CurrentValue != $this->nreng->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_nreng") &&
+            $CurrentForm->hasValue("o_nreng") &&
+            $this->nreng->CurrentValue != $this->nreng->DefaultValue &&
+            !($this->nreng->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->nreng->CurrentValue == $this->nreng->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_tcomprel") && $CurrentForm->hasValue("o_tcomprel") && $this->tcomprel->CurrentValue != $this->tcomprel->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_tcomprel") &&
+            $CurrentForm->hasValue("o_tcomprel") &&
+            $this->tcomprel->CurrentValue != $this->tcomprel->DefaultValue &&
+            !($this->tcomprel->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->tcomprel->CurrentValue == $this->tcomprel->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_serierel") && $CurrentForm->hasValue("o_serierel") && $this->serierel->CurrentValue != $this->serierel->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_serierel") &&
+            $CurrentForm->hasValue("o_serierel") &&
+            $this->serierel->CurrentValue != $this->serierel->DefaultValue &&
+            !($this->serierel->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->serierel->CurrentValue == $this->serierel->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_ncomprel") && $CurrentForm->hasValue("o_ncomprel") && $this->ncomprel->CurrentValue != $this->ncomprel->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_ncomprel") &&
+            $CurrentForm->hasValue("o_ncomprel") &&
+            $this->ncomprel->CurrentValue != $this->ncomprel->DefaultValue &&
+            !($this->ncomprel->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->ncomprel->CurrentValue == $this->ncomprel->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_netocbterel") && $CurrentForm->hasValue("o_netocbterel") && $this->netocbterel->CurrentValue != $this->netocbterel->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_netocbterel") &&
+            $CurrentForm->hasValue("o_netocbterel") &&
+            $this->netocbterel->CurrentValue != $this->netocbterel->DefaultValue &&
+            !($this->netocbterel->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->netocbterel->CurrentValue == $this->netocbterel->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_usuario") && $CurrentForm->hasValue("o_usuario") && $this->usuario->CurrentValue != $this->usuario->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_usuario") &&
+            $CurrentForm->hasValue("o_usuario") &&
+            $this->usuario->CurrentValue != $this->usuario->DefaultValue &&
+            !($this->usuario->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->usuario->CurrentValue == $this->usuario->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_fechahora") && $CurrentForm->hasValue("o_fechahora") && $this->fechahora->CurrentValue != $this->fechahora->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_fechahora") &&
+            $CurrentForm->hasValue("o_fechahora") &&
+            $this->fechahora->CurrentValue != $this->fechahora->DefaultValue &&
+            !($this->fechahora->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->fechahora->CurrentValue == $this->fechahora->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_nrodoc") && $CurrentForm->hasValue("o_nrodoc") && $this->nrodoc->CurrentValue != $this->nrodoc->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_nrodoc") &&
+            $CurrentForm->hasValue("o_nrodoc") &&
+            $this->nrodoc->CurrentValue != $this->nrodoc->DefaultValue &&
+            !($this->nrodoc->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->nrodoc->CurrentValue == $this->nrodoc->getSessionValue())
+        ) {
             return false;
         }
         return true;

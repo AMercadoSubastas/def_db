@@ -505,7 +505,7 @@ class DetfacGrid extends Detfac
     public $StopRecord;
     public $TotalRecords = 0;
     public $RecordRange = 10;
-    public $PageSizes = "10,20,50,-1"; // Page sizes (comma separated)
+    public $PageSizes = "5,10,20,50,-1"; // Page sizes (comma separated)
     public $DefaultSearchWhere = ""; // Default search WHERE clause
     public $SearchWhere = ""; // Search WHERE clause
     public $SearchPanelClass = "ew-search-panel collapse"; // Search Panel class
@@ -519,7 +519,7 @@ class DetfacGrid extends Detfac
     public $KeyCount = 0; // Key count
     public $MultiColumnGridClass = "row-cols-md";
     public $MultiColumnEditClass = "col-12 w-100";
-    public $MultiColumnCardClass = "card h-100 ew-card";
+    public $MultiColumnCardClass = "card h-200 ew-card";
     public $MultiColumnListOptionsPosition = "bottom-start";
     public $DbMasterFilter = ""; // Master filter
     public $DbDetailFilter = ""; // Detail filter
@@ -1108,61 +1108,156 @@ class DetfacGrid extends Detfac
     public function emptyRow()
     {
         global $CurrentForm;
-        if ($CurrentForm->hasValue("x_tcomp") && $CurrentForm->hasValue("o_tcomp") && $this->tcomp->CurrentValue != $this->tcomp->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_tcomp") &&
+            $CurrentForm->hasValue("o_tcomp") &&
+            $this->tcomp->CurrentValue != $this->tcomp->DefaultValue &&
+            !($this->tcomp->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->tcomp->CurrentValue == $this->tcomp->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_serie") && $CurrentForm->hasValue("o_serie") && $this->serie->CurrentValue != $this->serie->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_serie") &&
+            $CurrentForm->hasValue("o_serie") &&
+            $this->serie->CurrentValue != $this->serie->DefaultValue &&
+            !($this->serie->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->serie->CurrentValue == $this->serie->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_ncomp") && $CurrentForm->hasValue("o_ncomp") && $this->ncomp->CurrentValue != $this->ncomp->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_ncomp") &&
+            $CurrentForm->hasValue("o_ncomp") &&
+            $this->ncomp->CurrentValue != $this->ncomp->DefaultValue &&
+            !($this->ncomp->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->ncomp->CurrentValue == $this->ncomp->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_nreng") && $CurrentForm->hasValue("o_nreng") && $this->nreng->CurrentValue != $this->nreng->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_nreng") &&
+            $CurrentForm->hasValue("o_nreng") &&
+            $this->nreng->CurrentValue != $this->nreng->DefaultValue &&
+            !($this->nreng->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->nreng->CurrentValue == $this->nreng->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codrem") && $CurrentForm->hasValue("o_codrem") && $this->codrem->CurrentValue != $this->codrem->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codrem") &&
+            $CurrentForm->hasValue("o_codrem") &&
+            $this->codrem->CurrentValue != $this->codrem->DefaultValue &&
+            !($this->codrem->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codrem->CurrentValue == $this->codrem->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codlote") && $CurrentForm->hasValue("o_codlote") && $this->codlote->CurrentValue != $this->codlote->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codlote") &&
+            $CurrentForm->hasValue("o_codlote") &&
+            $this->codlote->CurrentValue != $this->codlote->DefaultValue &&
+            !($this->codlote->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codlote->CurrentValue == $this->codlote->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_descrip") && $CurrentForm->hasValue("o_descrip") && $this->descrip->CurrentValue != $this->descrip->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_descrip") &&
+            $CurrentForm->hasValue("o_descrip") &&
+            $this->descrip->CurrentValue != $this->descrip->DefaultValue &&
+            !($this->descrip->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->descrip->CurrentValue == $this->descrip->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_neto") && $CurrentForm->hasValue("o_neto") && $this->neto->CurrentValue != $this->neto->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_neto") &&
+            $CurrentForm->hasValue("o_neto") &&
+            $this->neto->CurrentValue != $this->neto->DefaultValue &&
+            !($this->neto->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->neto->CurrentValue == $this->neto->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_bruto") && $CurrentForm->hasValue("o_bruto") && $this->bruto->CurrentValue != $this->bruto->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_bruto") &&
+            $CurrentForm->hasValue("o_bruto") &&
+            $this->bruto->CurrentValue != $this->bruto->DefaultValue &&
+            !($this->bruto->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->bruto->CurrentValue == $this->bruto->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_iva") && $CurrentForm->hasValue("o_iva") && $this->iva->CurrentValue != $this->iva->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_iva") &&
+            $CurrentForm->hasValue("o_iva") &&
+            $this->iva->CurrentValue != $this->iva->DefaultValue &&
+            !($this->iva->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->iva->CurrentValue == $this->iva->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_imp") && $CurrentForm->hasValue("o_imp") && $this->imp->CurrentValue != $this->imp->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_imp") &&
+            $CurrentForm->hasValue("o_imp") &&
+            $this->imp->CurrentValue != $this->imp->DefaultValue &&
+            !($this->imp->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->imp->CurrentValue == $this->imp->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_comcob") && $CurrentForm->hasValue("o_comcob") && $this->comcob->CurrentValue != $this->comcob->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_comcob") &&
+            $CurrentForm->hasValue("o_comcob") &&
+            $this->comcob->CurrentValue != $this->comcob->DefaultValue &&
+            !($this->comcob->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->comcob->CurrentValue == $this->comcob->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_compag") && $CurrentForm->hasValue("o_compag") && $this->compag->CurrentValue != $this->compag->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_compag") &&
+            $CurrentForm->hasValue("o_compag") &&
+            $this->compag->CurrentValue != $this->compag->DefaultValue &&
+            !($this->compag->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->compag->CurrentValue == $this->compag->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_porciva") && $CurrentForm->hasValue("o_porciva") && $this->porciva->CurrentValue != $this->porciva->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_porciva") &&
+            $CurrentForm->hasValue("o_porciva") &&
+            $this->porciva->CurrentValue != $this->porciva->DefaultValue &&
+            !($this->porciva->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->porciva->CurrentValue == $this->porciva->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_tieneresol") && $CurrentForm->hasValue("o_tieneresol") && $this->tieneresol->CurrentValue != $this->tieneresol->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_tieneresol") &&
+            $CurrentForm->hasValue("o_tieneresol") &&
+            $this->tieneresol->CurrentValue != $this->tieneresol->DefaultValue &&
+            !($this->tieneresol->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->tieneresol->CurrentValue == $this->tieneresol->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_concafac") && $CurrentForm->hasValue("o_concafac") && $this->concafac->CurrentValue != $this->concafac->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_concafac") &&
+            $CurrentForm->hasValue("o_concafac") &&
+            $this->concafac->CurrentValue != $this->concafac->DefaultValue &&
+            !($this->concafac->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->concafac->CurrentValue == $this->concafac->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_tcomsal") && $CurrentForm->hasValue("o_tcomsal") && $this->tcomsal->CurrentValue != $this->tcomsal->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_tcomsal") &&
+            $CurrentForm->hasValue("o_tcomsal") &&
+            $this->tcomsal->CurrentValue != $this->tcomsal->DefaultValue &&
+            !($this->tcomsal->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->tcomsal->CurrentValue == $this->tcomsal->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_seriesal") && $CurrentForm->hasValue("o_seriesal") && $this->seriesal->CurrentValue != $this->seriesal->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_seriesal") &&
+            $CurrentForm->hasValue("o_seriesal") &&
+            $this->seriesal->CurrentValue != $this->seriesal->DefaultValue &&
+            !($this->seriesal->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->seriesal->CurrentValue == $this->seriesal->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_ncompsal") && $CurrentForm->hasValue("o_ncompsal") && $this->ncompsal->CurrentValue != $this->ncompsal->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_ncompsal") &&
+            $CurrentForm->hasValue("o_ncompsal") &&
+            $this->ncompsal->CurrentValue != $this->ncompsal->DefaultValue &&
+            !($this->ncompsal->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->ncompsal->CurrentValue == $this->ncompsal->getSessionValue())
+        ) {
             return false;
         }
         return true;
@@ -3347,11 +3442,11 @@ class DetfacGrid extends Detfac
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), $this->fechahora->ReadOnly);
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // porciva
         $this->porciva->setDbValueDef($rsnew, $this->porciva->CurrentValue, $this->porciva->ReadOnly);
@@ -3566,11 +3661,11 @@ class DetfacGrid extends Detfac
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), false);
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, false);
 
         // porciva
         $this->porciva->setDbValueDef($rsnew, $this->porciva->CurrentValue, false);

@@ -119,12 +119,7 @@ class AdvancedSecurity
     public function hasParentUserID($v)
     {
         $ids = is_array($v) ? $v : explode(Config("MULTIPLE_OPTION_SEPARATOR"), strval($v));
-        foreach ($ids as $id) {
-            if (in_array($id, $this->ParentUserID)) {
-                return true;
-            }
-        }
-        return false;
+        return array_any($ids, fn($id) => in_array($id, $this->ParentUserID));
     }
 
     // Current Parent User ID
@@ -252,12 +247,7 @@ class AdvancedSecurity
     public function hasUserLevelID($v)
     {
         $ids = is_array($v) ? $v : explode(Config("MULTIPLE_OPTION_SEPARATOR"), strval($v));
-        foreach ($ids as $id) {
-            if (in_array((int)$id, $this->UserLevelID)) {
-                return true;
-            }
-        }
-        return false;
+        return array_any($ids, fn($id) => in_array((int)$id, $this->UserLevelID));
     }
 
     // Get JWT Token
@@ -1367,7 +1357,7 @@ class AdvancedSecurity
     // Get user email
     public function currentUserEmail()
     {
-        return $this->currentUserInfo(Config("USER_EMAIL_FIELD_NAME"));
+        return Config("USER_EMAIL_FIELD_NAME") ? $this->currentUserInfo(Config("USER_EMAIL_FIELD_NAME")) : null;
     }
 
     // Get current user info

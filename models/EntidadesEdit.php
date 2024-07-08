@@ -2227,7 +2227,7 @@ class EntidadesEdit extends Entidades
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // contacto
         $this->contacto->setDbValueDef($rsnew, $this->contacto->CurrentValue, $this->contacto->ReadOnly);
@@ -2240,7 +2240,7 @@ class EntidadesEdit extends Entidades
 
         // fechahora
         $this->fechahora->CurrentValue = $this->fechahora->getAutoUpdateValue(); // PHP
-        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()));
+        $this->fechahora->setDbValueDef($rsnew, UnFormatDateTime($this->fechahora->CurrentValue, $this->fechahora->formatPattern()), $this->fechahora->ReadOnly);
 
         // activo
         $this->activo->setDbValueDef($rsnew, $this->activo->CurrentValue, $this->activo->ReadOnly);
@@ -2253,11 +2253,11 @@ class EntidadesEdit extends Entidades
 
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, $this->usuarioultmod->ReadOnly);
 
         // fecultmod
         $this->fecultmod->CurrentValue = $this->fecultmod->getAutoUpdateValue(); // PHP
-        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()));
+        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), $this->fecultmod->ReadOnly);
         return $rsnew;
     }
 

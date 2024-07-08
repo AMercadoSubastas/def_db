@@ -582,7 +582,7 @@ class EntidadesList extends Entidades
     public $StopRecord;
     public $TotalRecords = 0;
     public $RecordRange = 10;
-    public $PageSizes = "10,20,50,-1"; // Page sizes (comma separated)
+    public $PageSizes = "5,10,20,50,-1"; // Page sizes (comma separated)
     public $DefaultSearchWhere = ""; // Default search WHERE clause
     public $SearchWhere = ""; // Search WHERE clause
     public $SearchPanelClass = "ew-search-panel collapse"; // Search Panel class
@@ -596,7 +596,7 @@ class EntidadesList extends Entidades
     public $KeyCount = 0; // Key count
     public $MultiColumnGridClass = "row-cols-md";
     public $MultiColumnEditClass = "col-12 w-100";
-    public $MultiColumnCardClass = "card h-100 ew-card";
+    public $MultiColumnCardClass = "card h-200 ew-card";
     public $MultiColumnListOptionsPosition = "bottom-start";
     public $DbMasterFilter = ""; // Master filter
     public $DbDetailFilter = ""; // Detail filter
@@ -803,14 +803,23 @@ class EntidadesList extends Entidades
 
         // Get default search criteria
         AddFilter($this->DefaultSearchWhere, $this->basicSearchWhere(true));
+        AddFilter($this->DefaultSearchWhere, $this->advancedSearchWhere(true));
 
         // Get basic search values
         $this->loadBasicSearchValues();
+
+        // Get and validate search values for advanced search
+        if (EmptyValue($this->UserAction)) { // Skip if user action
+            $this->loadSearchValues();
+        }
 
         // Process filter list
         if ($this->processFilterList()) {
             $this->terminate();
             return;
+        }
+        if (!$this->validateSearch()) {
+            // Nothing to do
         }
 
         // Restore search parms from Session if not searching / reset / export
@@ -829,6 +838,14 @@ class EntidadesList extends Entidades
             $srchBasic = $this->basicSearchWhere();
         }
 
+        // Get advanced search criteria
+        if (!$this->hasInvalidFields()) {
+            $srchAdvanced = $this->advancedSearchWhere();
+        }
+
+        // Get query builder criteria
+        $query = $DashboardReport ? "" : $this->queryBuilderWhere();
+
         // Restore display records
         if ($this->Command != "json" && $this->getRecordsPerPage() != "") {
             $this->DisplayRecords = $this->getRecordsPerPage(); // Restore from Session
@@ -844,6 +861,16 @@ class EntidadesList extends Entidades
             if ($this->BasicSearch->Keyword != "") {
                 $srchBasic = $this->basicSearchWhere(); // Save to session
             }
+
+            // Load advanced search from default
+            if ($this->loadAdvancedSearchDefault()) {
+                $srchAdvanced = $this->advancedSearchWhere(); // Save to session
+            }
+        }
+
+        // Restore search settings from Session
+        if (!$this->hasInvalidFields()) {
+            $this->loadAdvancedSearch();
         }
 
         // Build search criteria
@@ -1108,6 +1135,12 @@ class EntidadesList extends Entidades
             $filterList = Concat($filterList, $wrk, ",");
         }
 
+        // Query Builder rules
+        $rules = $this->queryBuilderRules();
+        if ($rules) {
+            $filterList = Concat($filterList, "\"" . Config("TABLE_RULES") . "\":\"" . JsEncode($rules) . "\"", ",");
+        }
+
         // Return filter list in JSON
         if ($filterList != "") {
             $filterList = "\"data\":{" . $filterList . "}";
@@ -1343,6 +1376,150 @@ class EntidadesList extends Entidades
         $this->fecultmod->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
+        if ($filter[Config("TABLE_RULES")] ?? false) {
+            $this->Command = "query"; // Set command for query builder
+            $this->setSessionRules($filter[Config("TABLE_RULES")]);
+        }
+    }
+
+    // Advanced search WHERE clause based on QueryString
+    public function advancedSearchWhere($default = false)
+    {
+        global $Security;
+        $where = "";
+        if (!$Security->canSearch()) {
+            return "";
+        }
+        $this->buildSearchSql($where, $this->codnum, $default, false); // codnum
+        $this->buildSearchSql($where, $this->razsoc, $default, false); // razsoc
+        $this->buildSearchSql($where, $this->calle, $default, false); // calle
+        $this->buildSearchSql($where, $this->numero, $default, false); // numero
+        $this->buildSearchSql($where, $this->pisodto, $default, false); // pisodto
+        $this->buildSearchSql($where, $this->codpais, $default, false); // codpais
+        $this->buildSearchSql($where, $this->codprov, $default, false); // codprov
+        $this->buildSearchSql($where, $this->codloc, $default, false); // codloc
+        $this->buildSearchSql($where, $this->codpost, $default, false); // codpost
+        $this->buildSearchSql($where, $this->tellinea, $default, false); // tellinea
+        $this->buildSearchSql($where, $this->telcelu, $default, false); // telcelu
+        $this->buildSearchSql($where, $this->tipoent, $default, false); // tipoent
+        $this->buildSearchSql($where, $this->tipoiva, $default, false); // tipoiva
+        $this->buildSearchSql($where, $this->cuit, $default, false); // cuit
+        $this->buildSearchSql($where, $this->fecalta, $default, false); // fecalta
+        $this->buildSearchSql($where, $this->usuario, $default, false); // usuario
+        $this->buildSearchSql($where, $this->contacto, $default, false); // contacto
+        $this->buildSearchSql($where, $this->mailcont, $default, false); // mailcont
+        $this->buildSearchSql($where, $this->cargo, $default, false); // cargo
+        $this->buildSearchSql($where, $this->fechahora, $default, false); // fechahora
+        $this->buildSearchSql($where, $this->activo, $default, false); // activo
+        $this->buildSearchSql($where, $this->pagweb, $default, false); // pagweb
+        $this->buildSearchSql($where, $this->tipoind, $default, false); // tipoind
+        $this->buildSearchSql($where, $this->usuarioultmod, $default, false); // usuarioultmod
+        $this->buildSearchSql($where, $this->fecultmod, $default, false); // fecultmod
+
+        // Set up search command
+        if (!$default && $where != "" && in_array($this->Command, ["", "reset", "resetall"])) {
+            $this->Command = "search";
+        }
+        if (!$default && $this->Command == "search") {
+            $this->codnum->AdvancedSearch->save(); // codnum
+            $this->razsoc->AdvancedSearch->save(); // razsoc
+            $this->calle->AdvancedSearch->save(); // calle
+            $this->numero->AdvancedSearch->save(); // numero
+            $this->pisodto->AdvancedSearch->save(); // pisodto
+            $this->codpais->AdvancedSearch->save(); // codpais
+            $this->codprov->AdvancedSearch->save(); // codprov
+            $this->codloc->AdvancedSearch->save(); // codloc
+            $this->codpost->AdvancedSearch->save(); // codpost
+            $this->tellinea->AdvancedSearch->save(); // tellinea
+            $this->telcelu->AdvancedSearch->save(); // telcelu
+            $this->tipoent->AdvancedSearch->save(); // tipoent
+            $this->tipoiva->AdvancedSearch->save(); // tipoiva
+            $this->cuit->AdvancedSearch->save(); // cuit
+            $this->fecalta->AdvancedSearch->save(); // fecalta
+            $this->usuario->AdvancedSearch->save(); // usuario
+            $this->contacto->AdvancedSearch->save(); // contacto
+            $this->mailcont->AdvancedSearch->save(); // mailcont
+            $this->cargo->AdvancedSearch->save(); // cargo
+            $this->fechahora->AdvancedSearch->save(); // fechahora
+            $this->activo->AdvancedSearch->save(); // activo
+            $this->pagweb->AdvancedSearch->save(); // pagweb
+            $this->tipoind->AdvancedSearch->save(); // tipoind
+            $this->usuarioultmod->AdvancedSearch->save(); // usuarioultmod
+            $this->fecultmod->AdvancedSearch->save(); // fecultmod
+
+            // Clear rules for QueryBuilder
+            $this->setSessionRules("");
+        }
+        return $where;
+    }
+
+    // Query builder rules
+    public function queryBuilderRules()
+    {
+        return Post("rules") ?? $this->getSessionRules();
+    }
+
+    // Quey builder WHERE clause
+    public function queryBuilderWhere($fieldName = "")
+    {
+        global $Security;
+        if (!$Security->canSearch()) {
+            return "";
+        }
+
+        // Get rules by query builder
+        $rules = $this->queryBuilderRules();
+
+        // Decode and parse rules
+        $where = $rules ? $this->parseRules(json_decode($rules, true), $fieldName) : "";
+
+        // Clear other search and save rules to session
+        if ($where && $fieldName == "") { // Skip if get query for specific field
+            $this->resetSearchParms();
+            $this->setSessionRules($rules);
+        }
+
+        // Return query
+        return $where;
+    }
+
+    // Build search SQL
+    protected function buildSearchSql(&$where, $fld, $default, $multiValue)
+    {
+        $fldParm = $fld->Param;
+        $fldVal = $default ? $fld->AdvancedSearch->SearchValueDefault : $fld->AdvancedSearch->SearchValue;
+        $fldOpr = $default ? $fld->AdvancedSearch->SearchOperatorDefault : $fld->AdvancedSearch->SearchOperator;
+        $fldCond = $default ? $fld->AdvancedSearch->SearchConditionDefault : $fld->AdvancedSearch->SearchCondition;
+        $fldVal2 = $default ? $fld->AdvancedSearch->SearchValue2Default : $fld->AdvancedSearch->SearchValue2;
+        $fldOpr2 = $default ? $fld->AdvancedSearch->SearchOperator2Default : $fld->AdvancedSearch->SearchOperator2;
+        $fldVal = ConvertSearchValue($fldVal, $fldOpr, $fld);
+        $fldVal2 = ConvertSearchValue($fldVal2, $fldOpr2, $fld);
+        $fldOpr = ConvertSearchOperator($fldOpr, $fld, $fldVal);
+        $fldOpr2 = ConvertSearchOperator($fldOpr2, $fld, $fldVal2);
+        $wrk = "";
+        $sep = $fld->UseFilter ? Config("FILTER_OPTION_SEPARATOR") : Config("MULTIPLE_OPTION_SEPARATOR");
+        if (is_array($fldVal)) {
+            $fldVal = implode($sep, $fldVal);
+        }
+        if (is_array($fldVal2)) {
+            $fldVal2 = implode($sep, $fldVal2);
+        }
+        if (Config("SEARCH_MULTI_VALUE_OPTION") == 1 && !$fld->UseFilter || !IsMultiSearchOperator($fldOpr)) {
+            $multiValue = false;
+        }
+        if ($multiValue) {
+            $wrk = $fldVal != "" ? GetMultiSearchSql($fld, $fldOpr, $fldVal, $this->Dbid) : ""; // Field value 1
+            $wrk2 = $fldVal2 != "" ? GetMultiSearchSql($fld, $fldOpr2, $fldVal2, $this->Dbid) : ""; // Field value 2
+            AddFilter($wrk, $wrk2, $fldCond);
+        } else {
+            $wrk = GetSearchSql($fld, $fldVal, $fldOpr, $fldCond, $fldVal2, $fldOpr2, $this->Dbid);
+        }
+        if ($this->SearchOption == "AUTO" && in_array($this->BasicSearch->getType(), ["AND", "OR"])) {
+            $cond = $this->BasicSearch->getType();
+        } else {
+            $cond = SameText($this->SearchOption, "OR") ? "OR" : "AND";
+        }
+        AddFilter($where, $wrk, $cond);
     }
 
     // Show list of filters
@@ -1354,6 +1531,231 @@ class EntidadesList extends Entidades
         $filterList = "";
         $captionClass = $this->isExport("email") ? "ew-filter-caption-email" : "ew-filter-caption";
         $captionSuffix = $this->isExport("email") ? ": " : "";
+
+        // Field codnum
+        $filter = $this->queryBuilderWhere("codnum");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codnum, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codnum->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field razsoc
+        $filter = $this->queryBuilderWhere("razsoc");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->razsoc, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->razsoc->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field calle
+        $filter = $this->queryBuilderWhere("calle");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->calle, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->calle->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field numero
+        $filter = $this->queryBuilderWhere("numero");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->numero, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->numero->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field pisodto
+        $filter = $this->queryBuilderWhere("pisodto");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->pisodto, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->pisodto->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codpais
+        $filter = $this->queryBuilderWhere("codpais");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codpais, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codpais->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codprov
+        $filter = $this->queryBuilderWhere("codprov");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codprov, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codprov->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codloc
+        $filter = $this->queryBuilderWhere("codloc");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codloc, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codloc->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codpost
+        $filter = $this->queryBuilderWhere("codpost");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codpost, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codpost->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tellinea
+        $filter = $this->queryBuilderWhere("tellinea");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tellinea, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tellinea->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field telcelu
+        $filter = $this->queryBuilderWhere("telcelu");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->telcelu, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->telcelu->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tipoent
+        $filter = $this->queryBuilderWhere("tipoent");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tipoent, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tipoent->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tipoiva
+        $filter = $this->queryBuilderWhere("tipoiva");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tipoiva, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tipoiva->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field cuit
+        $filter = $this->queryBuilderWhere("cuit");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->cuit, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->cuit->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fecalta
+        $filter = $this->queryBuilderWhere("fecalta");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fecalta, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fecalta->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field usuario
+        $filter = $this->queryBuilderWhere("usuario");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->usuario, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->usuario->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field contacto
+        $filter = $this->queryBuilderWhere("contacto");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->contacto, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->contacto->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field mailcont
+        $filter = $this->queryBuilderWhere("mailcont");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->mailcont, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->mailcont->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field cargo
+        $filter = $this->queryBuilderWhere("cargo");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->cargo, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->cargo->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fechahora
+        $filter = $this->queryBuilderWhere("fechahora");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fechahora, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fechahora->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field activo
+        $filter = $this->queryBuilderWhere("activo");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->activo, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->activo->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field pagweb
+        $filter = $this->queryBuilderWhere("pagweb");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->pagweb, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->pagweb->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tipoind
+        $filter = $this->queryBuilderWhere("tipoind");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tipoind, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tipoind->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field usuarioultmod
+        $filter = $this->queryBuilderWhere("usuarioultmod");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->usuarioultmod, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->usuarioultmod->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fecultmod
+        $filter = $this->queryBuilderWhere("fecultmod");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fecultmod, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fecultmod->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
         if ($this->BasicSearch->Keyword != "") {
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $Language->phrase("BasicSearchKeyword") . "</span>" . $captionSuffix . $this->BasicSearch->Keyword . "</div>";
         }
@@ -1420,6 +1822,81 @@ class EntidadesList extends Entidades
         if ($this->BasicSearch->issetSession()) {
             return true;
         }
+        if ($this->codnum->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->razsoc->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->calle->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->numero->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->pisodto->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codpais->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codprov->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codloc->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codpost->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tellinea->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->telcelu->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tipoent->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tipoiva->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->cuit->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fecalta->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->usuario->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->contacto->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->mailcont->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->cargo->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fechahora->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->activo->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->pagweb->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tipoind->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->usuarioultmod->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fecultmod->AdvancedSearch->issetSession()) {
+            return true;
+        }
         return false;
     }
 
@@ -1432,6 +1909,12 @@ class EntidadesList extends Entidades
 
         // Clear basic search parameters
         $this->resetBasicSearchParms();
+
+        // Clear advanced search parameters
+        $this->resetAdvancedSearchParms();
+
+        // Clear queryBuilder
+        $this->setSessionRules("");
     }
 
     // Load advanced search default values
@@ -1446,6 +1929,36 @@ class EntidadesList extends Entidades
         $this->BasicSearch->unsetSession();
     }
 
+    // Clear all advanced search parameters
+    protected function resetAdvancedSearchParms()
+    {
+        $this->codnum->AdvancedSearch->unsetSession();
+        $this->razsoc->AdvancedSearch->unsetSession();
+        $this->calle->AdvancedSearch->unsetSession();
+        $this->numero->AdvancedSearch->unsetSession();
+        $this->pisodto->AdvancedSearch->unsetSession();
+        $this->codpais->AdvancedSearch->unsetSession();
+        $this->codprov->AdvancedSearch->unsetSession();
+        $this->codloc->AdvancedSearch->unsetSession();
+        $this->codpost->AdvancedSearch->unsetSession();
+        $this->tellinea->AdvancedSearch->unsetSession();
+        $this->telcelu->AdvancedSearch->unsetSession();
+        $this->tipoent->AdvancedSearch->unsetSession();
+        $this->tipoiva->AdvancedSearch->unsetSession();
+        $this->cuit->AdvancedSearch->unsetSession();
+        $this->fecalta->AdvancedSearch->unsetSession();
+        $this->usuario->AdvancedSearch->unsetSession();
+        $this->contacto->AdvancedSearch->unsetSession();
+        $this->mailcont->AdvancedSearch->unsetSession();
+        $this->cargo->AdvancedSearch->unsetSession();
+        $this->fechahora->AdvancedSearch->unsetSession();
+        $this->activo->AdvancedSearch->unsetSession();
+        $this->pagweb->AdvancedSearch->unsetSession();
+        $this->tipoind->AdvancedSearch->unsetSession();
+        $this->usuarioultmod->AdvancedSearch->unsetSession();
+        $this->fecultmod->AdvancedSearch->unsetSession();
+    }
+
     // Restore all search parameters
     protected function restoreSearchParms()
     {
@@ -1453,6 +1966,33 @@ class EntidadesList extends Entidades
 
         // Restore basic search values
         $this->BasicSearch->load();
+
+        // Restore advanced search values
+        $this->codnum->AdvancedSearch->load();
+        $this->razsoc->AdvancedSearch->load();
+        $this->calle->AdvancedSearch->load();
+        $this->numero->AdvancedSearch->load();
+        $this->pisodto->AdvancedSearch->load();
+        $this->codpais->AdvancedSearch->load();
+        $this->codprov->AdvancedSearch->load();
+        $this->codloc->AdvancedSearch->load();
+        $this->codpost->AdvancedSearch->load();
+        $this->tellinea->AdvancedSearch->load();
+        $this->telcelu->AdvancedSearch->load();
+        $this->tipoent->AdvancedSearch->load();
+        $this->tipoiva->AdvancedSearch->load();
+        $this->cuit->AdvancedSearch->load();
+        $this->fecalta->AdvancedSearch->load();
+        $this->usuario->AdvancedSearch->load();
+        $this->contacto->AdvancedSearch->load();
+        $this->mailcont->AdvancedSearch->load();
+        $this->cargo->AdvancedSearch->load();
+        $this->fechahora->AdvancedSearch->load();
+        $this->activo->AdvancedSearch->load();
+        $this->pagweb->AdvancedSearch->load();
+        $this->tipoind->AdvancedSearch->load();
+        $this->usuarioultmod->AdvancedSearch->load();
+        $this->fecultmod->AdvancedSearch->load();
     }
 
     // Set up sort parameters
@@ -1725,22 +2265,19 @@ class EntidadesList extends Entidades
                         $icon = ($listAction->Icon != "") ? "<i class=\"" . HtmlEncode(str_replace(" ew-icon", "", $listAction->Icon)) . "\" data-caption=\"" . $title . "\"></i> " : "";
                         $link = $disabled
                             ? "<li><div class=\"alert alert-light\">" . $icon . " " . $caption . "</div></li>"
-                            : "<li><button type=\"button\" class=\"dropdown-item ew-action ew-list-action\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fentidadeslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttrs() . ">" . $icon . " " . $caption . "</button></li>";
+                            : "<li><button type=\"button\" class=\"dropdown-item ew-action ew-list-action\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fentidadeslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttributes() . ">" . $icon . " " . $caption . "</button></li>";
                         $links[] = $link;
                         if ($body == "") { // Setup first button
                             $body = $disabled
                             ? "<div class=\"alert alert-light\">" . $icon . " " . $caption . "</div>"
-                            : "<button type=\"button\" class=\"btn btn-default ew-action ew-list-action\" title=\"" . $title . "\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fentidadeslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttrs() . ">" . $icon . " " . $caption . "</button>";
+                            : "<button type=\"button\" class=\"btn btn-default ew-action ew-list-action\" title=\"" . $title . "\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fentidadeslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttributes() . ">" . $icon . " " . $caption . "</button>";
                         }
                     }
                 }
             }
             if (count($links) > 1) { // More than one buttons, use dropdown
                 $body = "<button type=\"button\" class=\"dropdown-toggle btn btn-default ew-actions\" title=\"" . HtmlTitle($Language->phrase("ListActionButton")) . "\" data-bs-toggle=\"dropdown\">" . $Language->phrase("ListActionButton") . "</button>";
-                $content = "";
-                foreach ($links as $link) {
-                    $content .= "<li>" . $link . "</li>";
-                }
+                $content = implode(array_map(fn($link) => "<li>" . $link . "</li>", $links));
                 $body .= "<ul class=\"dropdown-menu" . ($opt->OnLeft ? "" : " dropdown-menu-right") . "\">" . $content . "</ul>";
                 $body = "<div class=\"btn-group btn-group-sm\">" . $body . "</div>";
             }
@@ -1902,7 +2439,7 @@ class EntidadesList extends Entidades
                 $item = &$option->add("custom_" . $listAction->Action);
                 $caption = $listAction->Caption;
                 $icon = ($listAction->Icon != "") ? '<i class="' . HtmlEncode($listAction->Icon) . '" data-caption="' . HtmlEncode($caption) . '"></i>' . $caption : $caption;
-                $item->Body = '<button type="button" class="btn btn-default ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" data-ew-action="submit" form="fentidadeslist"' . $listAction->toDataAttrs() . '>' . $icon . '</button>';
+                $item->Body = '<button type="button" class="btn btn-default ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" data-ew-action="submit" form="fentidadeslist"' . $listAction->toDataAttributes() . '>' . $icon . '</button>';
                 $item->Visible = $listAction->Allowed;
             }
         }
@@ -1980,7 +2517,9 @@ class EntidadesList extends Entidades
                 }
                 if ($processed) {
                     if ($this->UseTransaction) { // Commit transaction
-                        $conn->commit();
+                        if ($conn->isTransactionActive()) {
+                            $conn->commit();
+                        }
                     }
                     if ($this->getSuccessMessage() == "") {
                         $this->setSuccessMessage($listAction->SuccessMessage);
@@ -1990,7 +2529,9 @@ class EntidadesList extends Entidades
                     }
                 } else {
                     if ($this->UseTransaction) { // Rollback transaction
-                        $conn->rollback();
+                        if ($conn->isTransactionActive()) {
+                            $conn->rollback();
+                        }
                     }
                     if ($this->getFailureMessage() == "") {
                         $this->setFailureMessage($listAction->FailureMessage);
@@ -2154,6 +2695,221 @@ class EntidadesList extends Entidades
             $this->Command = "search";
         }
         $this->BasicSearch->setType(Get(Config("TABLE_BASIC_SEARCH_TYPE"), ""), false);
+    }
+
+    // Load search values for validation
+    protected function loadSearchValues()
+    {
+        // Load search values
+        $hasValue = false;
+
+        // Load query builder rules
+        $rules = Post("rules");
+        if ($rules && $this->Command == "") {
+            $this->QueryRules = $rules;
+            $this->Command = "search";
+        }
+
+        // codnum
+        if ($this->codnum->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codnum->AdvancedSearch->SearchValue != "" || $this->codnum->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // razsoc
+        if ($this->razsoc->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->razsoc->AdvancedSearch->SearchValue != "" || $this->razsoc->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // calle
+        if ($this->calle->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->calle->AdvancedSearch->SearchValue != "" || $this->calle->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // numero
+        if ($this->numero->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->numero->AdvancedSearch->SearchValue != "" || $this->numero->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // pisodto
+        if ($this->pisodto->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->pisodto->AdvancedSearch->SearchValue != "" || $this->pisodto->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codpais
+        if ($this->codpais->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codpais->AdvancedSearch->SearchValue != "" || $this->codpais->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codprov
+        if ($this->codprov->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codprov->AdvancedSearch->SearchValue != "" || $this->codprov->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codloc
+        if ($this->codloc->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codloc->AdvancedSearch->SearchValue != "" || $this->codloc->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codpost
+        if ($this->codpost->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codpost->AdvancedSearch->SearchValue != "" || $this->codpost->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tellinea
+        if ($this->tellinea->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tellinea->AdvancedSearch->SearchValue != "" || $this->tellinea->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // telcelu
+        if ($this->telcelu->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->telcelu->AdvancedSearch->SearchValue != "" || $this->telcelu->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tipoent
+        if ($this->tipoent->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tipoent->AdvancedSearch->SearchValue != "" || $this->tipoent->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tipoiva
+        if ($this->tipoiva->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tipoiva->AdvancedSearch->SearchValue != "" || $this->tipoiva->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // cuit
+        if ($this->cuit->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->cuit->AdvancedSearch->SearchValue != "" || $this->cuit->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fecalta
+        if ($this->fecalta->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fecalta->AdvancedSearch->SearchValue != "" || $this->fecalta->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // usuario
+        if ($this->usuario->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->usuario->AdvancedSearch->SearchValue != "" || $this->usuario->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // contacto
+        if ($this->contacto->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->contacto->AdvancedSearch->SearchValue != "" || $this->contacto->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // mailcont
+        if ($this->mailcont->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->mailcont->AdvancedSearch->SearchValue != "" || $this->mailcont->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // cargo
+        if ($this->cargo->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->cargo->AdvancedSearch->SearchValue != "" || $this->cargo->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fechahora
+        if ($this->fechahora->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fechahora->AdvancedSearch->SearchValue != "" || $this->fechahora->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // activo
+        if ($this->activo->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->activo->AdvancedSearch->SearchValue != "" || $this->activo->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // pagweb
+        if ($this->pagweb->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->pagweb->AdvancedSearch->SearchValue != "" || $this->pagweb->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tipoind
+        if ($this->tipoind->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tipoind->AdvancedSearch->SearchValue != "" || $this->tipoind->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // usuarioultmod
+        if ($this->usuarioultmod->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->usuarioultmod->AdvancedSearch->SearchValue != "" || $this->usuarioultmod->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fecultmod
+        if ($this->fecultmod->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fecultmod->AdvancedSearch->SearchValue != "" || $this->fecultmod->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+        return $hasValue;
     }
 
     /**
@@ -2766,6 +3522,56 @@ class EntidadesList extends Entidades
         }
     }
 
+    // Validate search
+    protected function validateSearch()
+    {
+        // Check if validation required
+        if (!Config("SERVER_VALIDATE")) {
+            return true;
+        }
+
+        // Return validate result
+        $validateSearch = !$this->hasInvalidFields();
+
+        // Call Form_CustomValidate event
+        $formCustomError = "";
+        $validateSearch = $validateSearch && $this->formCustomValidate($formCustomError);
+        if ($formCustomError != "") {
+            $this->setFailureMessage($formCustomError);
+        }
+        return $validateSearch;
+    }
+
+    // Load advanced search
+    public function loadAdvancedSearch()
+    {
+        $this->codnum->AdvancedSearch->load();
+        $this->razsoc->AdvancedSearch->load();
+        $this->calle->AdvancedSearch->load();
+        $this->numero->AdvancedSearch->load();
+        $this->pisodto->AdvancedSearch->load();
+        $this->codpais->AdvancedSearch->load();
+        $this->codprov->AdvancedSearch->load();
+        $this->codloc->AdvancedSearch->load();
+        $this->codpost->AdvancedSearch->load();
+        $this->tellinea->AdvancedSearch->load();
+        $this->telcelu->AdvancedSearch->load();
+        $this->tipoent->AdvancedSearch->load();
+        $this->tipoiva->AdvancedSearch->load();
+        $this->cuit->AdvancedSearch->load();
+        $this->fecalta->AdvancedSearch->load();
+        $this->usuario->AdvancedSearch->load();
+        $this->contacto->AdvancedSearch->load();
+        $this->mailcont->AdvancedSearch->load();
+        $this->cargo->AdvancedSearch->load();
+        $this->fechahora->AdvancedSearch->load();
+        $this->activo->AdvancedSearch->load();
+        $this->pagweb->AdvancedSearch->load();
+        $this->tipoind->AdvancedSearch->load();
+        $this->usuarioultmod->AdvancedSearch->load();
+        $this->fecultmod->AdvancedSearch->load();
+    }
+
     // Get export HTML tag
     protected function getExportTag($type, $custom = false)
     {
@@ -2891,6 +3697,15 @@ class EntidadesList extends Entidades
             $item->Body = "<a class=\"btn btn-default ew-show-all\" role=\"button\" title=\"" . $Language->phrase("ShowAll") . "\" data-caption=\"" . $Language->phrase("ShowAll") . "\" data-ew-action=\"refresh\" data-url=\"" . $pageUrl . "cmd=reset\">" . $Language->phrase("ShowAllBtn") . "</a>";
         }
         $item->Visible = ($this->SearchWhere != $this->DefaultSearchWhere && $this->SearchWhere != "0=101");
+
+        // Query builder button
+        $item = &$this->SearchOptions->add("querybuilder");
+        if ($this->ModalSearch && !IsMobile()) {
+            $item->Body = "<a class=\"btn btn-default ew-query-builder\" title=\"" . $Language->phrase("QueryBuilder", true) . "\" data-table=\"entidades\" data-caption=\"" . $Language->phrase("QueryBuilder", true) . "\" data-ew-action=\"modal\" data-url=\"EntidadesQuery\" data-btn=\"SearchBtn\">" . $Language->phrase("QueryBuilder", false) . "</a>";
+        } else {
+            $item->Body = "<a class=\"btn btn-default ew-query-builder\" title=\"" . $Language->phrase("QueryBuilder", true) . "\" data-caption=\"" . $Language->phrase("QueryBuilder", true) . "\" href=\"EntidadesQuery\">" . $Language->phrase("QueryBuilder", false) . "</a>";
+        }
+        $item->Visible = true;
 
         // Button group for search
         $this->SearchOptions->UseDropDownButton = false;

@@ -117,7 +117,7 @@
                 '/delete/{table}[/{params:.*}]',
                 '/register',
                 '/file/{table}/{param}[/{key:.*}]',
-                '/export/{param}[/{table}[/{key:.*}]]',
+                '/export[/{param}[/{table}[/{key:.*}]]]',
                 '/upload',
                 '/jupload',
                 '/session',

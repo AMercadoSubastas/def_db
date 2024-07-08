@@ -110,14 +110,45 @@ loadjs.ready("head", function () {
 <?php } ?>
 <?php if ($Page->activo->Visible) { // activo ?>
     <div id="r_activo"<?= $Page->activo->rowAttributes() ?>>
-        <label id="elh_calificacion_activo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->activo->caption() ?><?= $Page->activo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <label id="elh_calificacion_activo" for="x_activo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->activo->caption() ?><?= $Page->activo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->activo->cellAttributes() ?>>
 <span id="el_calificacion_activo">
-<div class="form-check d-inline-block">
-    <input type="checkbox" class="form-check-input<?= $Page->activo->isInvalidClass() ?>" data-table="calificacion" data-field="x_activo" data-boolean name="x_activo" id="x_activo" value="1"<?= ConvertToBool($Page->activo->CurrentValue) ? " checked" : "" ?><?= $Page->activo->editAttributes() ?> aria-describedby="x_activo_help">
+    <select
+        id="x_activo"
+        name="x_activo"
+        class="form-select ew-select<?= $Page->activo->isInvalidClass() ?>"
+        <?php if (!$Page->activo->IsNativeSelect) { ?>
+        data-select2-id="fcalificacionedit_x_activo"
+        <?php } ?>
+        data-table="calificacion"
+        data-field="x_activo"
+        data-value-separator="<?= $Page->activo->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->activo->getPlaceHolder()) ?>"
+        <?= $Page->activo->editAttributes() ?>>
+        <?= $Page->activo->selectOptionListHtml("x_activo") ?>
+    </select>
+    <?= $Page->activo->getCustomMessage() ?>
     <div class="invalid-feedback"><?= $Page->activo->getErrorMessage() ?></div>
-</div>
-<?= $Page->activo->getCustomMessage() ?>
+<?php if (!$Page->activo->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fcalificacionedit", function() {
+    var options = { name: "x_activo", selectId: "fcalificacionedit_x_activo" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fcalificacionedit.lists.activo?.lookupOptions.length) {
+        options.data = { id: "x_activo", form: "fcalificacionedit" };
+    } else {
+        options.ajax = { id: "x_activo", form: "fcalificacionedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.calificacion.fields.activo.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 </div></div>
     </div>

@@ -32,7 +32,7 @@ loadjs.ready(["wrapper", "head"], function () {
             ["porcen", [fields.porcen.visible && fields.porcen.required ? ew.Validators.required(fields.porcen.caption) : null, ew.Validators.float], fields.porcen.isInvalid],
             ["descripcion", [fields.descripcion.visible && fields.descripcion.required ? ew.Validators.required(fields.descripcion.caption) : null], fields.descripcion.isInvalid],
             ["rangos", [fields.rangos.visible && fields.rangos.required ? ew.Validators.required(fields.rangos.caption) : null], fields.rangos.isInvalid],
-            ["montomin", [fields.montomin.visible && fields.montomin.required ? ew.Validators.required(fields.montomin.caption) : null, ew.Validators.float], fields.montomin.isInvalid],
+            ["montomin", [fields.montomin.visible && fields.montomin.required ? ew.Validators.required(fields.montomin.caption) : null, ew.Validators.integer], fields.montomin.isInvalid],
             ["activo", [fields.activo.visible && fields.activo.required ? ew.Validators.required(fields.activo.caption) : null], fields.activo.isInvalid]
         ])
 
@@ -156,31 +156,45 @@ loadjs.ready("head", function () {
 <?php } ?>
 <?php if ($Page->activo->Visible) { // activo ?>
     <div id="r_activo"<?= $Page->activo->rowAttributes() ?>>
-        <label id="elh_impuestos_activo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->activo->caption() ?><?= $Page->activo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <label id="elh_impuestos_activo" for="x_activo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->activo->caption() ?><?= $Page->activo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->activo->cellAttributes() ?>>
 <span id="el_impuestos_activo">
-<template id="tp_x_activo">
-    <div class="form-check">
-        <input type="radio" class="form-check-input" data-table="impuestos" data-field="x_activo" name="x_activo" id="x_activo"<?= $Page->activo->editAttributes() ?>>
-        <label class="form-check-label"></label>
-    </div>
-</template>
-<div id="dsl_x_activo" class="ew-item-list"></div>
-<selection-list hidden
-    id="x_activo"
-    name="x_activo"
-    value="<?= HtmlEncode($Page->activo->CurrentValue) ?>"
-    data-type="select-one"
-    data-template="tp_x_activo"
-    data-target="dsl_x_activo"
-    data-repeatcolumn="5"
-    class="form-control<?= $Page->activo->isInvalidClass() ?>"
-    data-table="impuestos"
-    data-field="x_activo"
-    data-value-separator="<?= $Page->activo->displayValueSeparatorAttribute() ?>"
-    <?= $Page->activo->editAttributes() ?>></selection-list>
-<?= $Page->activo->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->activo->getErrorMessage() ?></div>
+    <select
+        id="x_activo"
+        name="x_activo"
+        class="form-select ew-select<?= $Page->activo->isInvalidClass() ?>"
+        <?php if (!$Page->activo->IsNativeSelect) { ?>
+        data-select2-id="fimpuestosedit_x_activo"
+        <?php } ?>
+        data-table="impuestos"
+        data-field="x_activo"
+        data-value-separator="<?= $Page->activo->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->activo->getPlaceHolder()) ?>"
+        <?= $Page->activo->editAttributes() ?>>
+        <?= $Page->activo->selectOptionListHtml("x_activo") ?>
+    </select>
+    <?= $Page->activo->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->activo->getErrorMessage() ?></div>
+<?php if (!$Page->activo->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fimpuestosedit", function() {
+    var options = { name: "x_activo", selectId: "fimpuestosedit_x_activo" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fimpuestosedit.lists.activo?.lookupOptions.length) {
+        options.data = { id: "x_activo", form: "fimpuestosedit" };
+    } else {
+        options.ajax = { id: "x_activo", form: "fimpuestosedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.impuestos.fields.activo.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 </div></div>
     </div>

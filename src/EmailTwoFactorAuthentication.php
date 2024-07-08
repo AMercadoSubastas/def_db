@@ -25,11 +25,11 @@ class EmailTwoFactorAuthentication extends AbstractTwoFactorAuthentication imple
 
         // Create OTP and save in user profile
         $profile = Profile();
-        $profile->setUserName(CurrentUserName())->loadFromStorage();
+        $profile->setUserName($usr)->loadFromStorage();
         $secret = $profile->getUserSecret(); // Get user secret
         $code = Random(Config("TWO_FACTOR_AUTHENTICATION_PASS_CODE_LENGTH")); // Generate OTP
         $encryptedCode = Encrypt($code, $secret); // Encrypt OTP
-        $otpAccount = $oldAccount == $emailAddress ? "" : $emailAddress; // Save email address if changed
+        $otpAccount = $oldAccount == $emailAddress && !Config("OTP_ONLY") ? "" : $emailAddress; // Save email address if changed / OTP only
         $profile->setOneTimePassword($otpAccount, $encryptedCode);
 
         // Send OTP email

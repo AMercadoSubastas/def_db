@@ -1,0 +1,19 @@
+
+
+<!-- url:http://45.173.2.84/Bejerman-SDK-WS/EFlexSDK_Service.svc -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:loc="http://localhost:57213/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <loc:EFlexSDK_WSRegistro>
+            <loc:xUsuario>IMPC</loc:xUsuario>
+            <loc:xClave>AmS#23+$</loc:xClave>
+            <loc:xCodEmpresa>AMS</loc:xCodEmpresa>
+            <loc:xPtoTrabajo>IMP</loc:xPtoTrabajo>
+            <loc:xCodSucursal/>
+        </loc:EFlexSDK_WSRegistro>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+<!-- SOAPAction: "http://localhost:57213/IEFlexSDK_Service/EFlexSDK_WSRegistro" -->

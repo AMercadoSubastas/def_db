@@ -28,35 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "entidades")]
 class Entidade extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'razsoc' => 'razsoc',
-        'calle' => 'calle',
-        'numero' => 'numero',
-        'pisodto' => 'pisodto',
-        'codpais' => 'codpais',
-        'codprov' => 'codprov',
-        'codloc' => 'codloc',
-        'codpost' => 'codpost',
-        'tellinea' => 'tellinea',
-        'telcelu' => 'telcelu',
-        'tipoent' => 'tipoent',
-        'tipoiva' => 'tipoiva',
-        'cuit' => 'cuit',
-        'calif' => 'calif',
-        'fecalta' => 'fecalta',
-        'usuario' => 'usuario',
-        'contacto' => 'contacto',
-        'mailcont' => 'mailcont',
-        'cargo' => 'cargo',
-        'fechahora' => 'fechahora',
-        'activo' => 'activo',
-        'pagweb' => 'pagweb',
-        'tipoind' => 'tipoind',
-        'usuarioultmod' => 'usuarioultmod',
-        'fecultmod' => 'fecultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -96,7 +67,7 @@ class Entidade extends AbstractEntity
     private int $tipoent;
 
     #[Column(type: "integer")]
-    private int $tipoiva = 1;
+    private int $tipoiva;
 
     #[Column(type: "string", nullable: true)]
     private ?string $cuit;
@@ -122,8 +93,8 @@ class Entidade extends AbstractEntity
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fechahora;
 
-    #[Column(type: "boolean")]
-    private bool $activo = true;
+    #[Column(type: "integer")]
+    private int $activo;
 
     #[Column(type: "string", nullable: true)]
     private ?string $pagweb;
@@ -136,6 +107,12 @@ class Entidade extends AbstractEntity
 
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fecultmod;
+
+    public function __construct()
+    {
+        $this->tipoiva = 1;
+        $this->activo = 1;
+    }
 
     public function getCodnum(): int
     {
@@ -368,12 +345,12 @@ class Entidade extends AbstractEntity
         return $this;
     }
 
-    public function getActivo(): bool
+    public function getActivo(): int
     {
         return $this->activo;
     }
 
-    public function setActivo(bool $value): static
+    public function setActivo(int $value): static
     {
         $this->activo = $value;
         return $this;

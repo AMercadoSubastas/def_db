@@ -333,6 +333,15 @@ class DbChart
             $sqlChartSelect = $this->SqlSelect;
         }
         $pageFilter = $Page?->Filter ?? "";
+        if ($this->Table->TableType == "REPORT") { // Page_Selecting for reports
+            if (method_exists($Page, "pageSelecting")) {
+                $Page->pageSelecting($pageFilter);
+            }
+        } else { // Recordset_Selecting for tables
+            if (method_exists($Page, "recordsetSelecting")) {
+                $Page->recordsetSelecting($pageFilter);
+            }
+        }
         $dbType = GetConnectionType($this->Table->Dbid);
         if ($this->Table->SourceTableIsCustomView) {
             $sqlChartBase = "(" . $this->buildReportSql($sqlSelect, $this->Table->getSqlFrom(), $this->Table->getSqlWhere(), $this->Table->getSqlGroupBy(), $this->Table->getSqlHaving(), ($dbType == "MSSQL") ? $this->Table->getSqlOrderBy() : "", $pageFilter, "")->getSQL() . ") TMP_TABLE";

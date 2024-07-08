@@ -48,6 +48,8 @@ $isDebug = IsDebug();
 
 // Set warnings and notices as errors
 if ($isDebug && Config("REPORT_ALL_ERRORS")) {
+    ini_set("display_errors", 1);
+    ini_set("display_startup_errors", 1);
     error_reporting(E_ALL);
     set_error_handler(function ($severity, $message, $file, $line) {
         if (error_reporting() & $severity) {
@@ -115,7 +117,7 @@ $app->addRoutingMiddleware();
 // Set route cache file
 if (Config("USE_ROUTE_CACHE") && !IsRemote(Config("LOG_PATH"))) {
     $routeCollector = $app->getRouteCollector();
-    $cacheFolder = Config("CACHE_FOLDER");
+    $cacheFolder = $RELATIVE_PATH . Config("CACHE_FOLDER");
     if (CreateFolder($cacheFolder)) {
         $routeCollector->setCacheFile($cacheFolder . "/" . Config("ROUTE_CACHE_FILE"));
     }

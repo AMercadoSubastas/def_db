@@ -28,16 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "imprangos")]
 class Imprango extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codimp' => 'codimp',
-        'secuencia' => 'secuencia',
-        'monto_min' => 'montoMin',
-        'monto_max' => 'montoMax',
-        'porcentaje' => 'porcentaje',
-        'monto_fijo' => 'montoFijo',
-        'activo' => 'activo',
-    ];
-
     #[Id]
     #[Column(type: "integer")]
     private int $codimp;
@@ -47,10 +37,10 @@ class Imprango extends AbstractEntity
     private int $secuencia;
 
     #[Column(name: "monto_min", type: "float")]
-    private float $montoMin = 0;
+    private float $montoMin;
 
     #[Column(name: "monto_max", type: "float")]
-    private float $montoMax = 0;
+    private float $montoMax;
 
     #[Column(type: "float", nullable: true)]
     private ?float $porcentaje;
@@ -58,13 +48,16 @@ class Imprango extends AbstractEntity
     #[Column(name: "monto_fijo", type: "float", nullable: true)]
     private ?float $montoFijo;
 
-    #[Column(type: "boolean")]
-    private bool $activo = true;
+    #[Column(type: "integer")]
+    private int $activo;
 
     public function __construct(int $codimp, int $secuencia)
     {
         $this->codimp = $codimp;
         $this->secuencia = $secuencia;
+        $this->montoMin = 0;
+        $this->montoMax = 0;
+        $this->activo = 1;
     }
 
     public function getCodimp(): int
@@ -133,12 +126,12 @@ class Imprango extends AbstractEntity
         return $this;
     }
 
-    public function getActivo(): bool
+    public function getActivo(): int
     {
         return $this->activo;
     }
 
-    public function setActivo(bool $value): static
+    public function setActivo(int $value): static
     {
         $this->activo = $value;
         return $this;

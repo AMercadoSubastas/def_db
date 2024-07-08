@@ -28,22 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "cabrecibo")]
 class Cabrecibo extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'cantcbtes' => 'cantcbtes',
-        'fecha' => 'fecha',
-        'usuario' => 'usuario',
-        'fechahora' => 'fechahora',
-        'cliente' => 'cliente',
-        'imptot' => 'imptot',
-        'emitido' => 'emitido',
-        'usuarioultmod' => 'usuarioultmod',
-        'fecultmod' => 'fecultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -77,13 +61,18 @@ class Cabrecibo extends AbstractEntity
     private string $imptot;
 
     #[Column(type: "boolean")]
-    private bool $emitido = false;
+    private bool $emitido;
 
     #[Column(type: "integer", nullable: true)]
     private ?int $usuarioultmod;
 
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fecultmod;
+
+    public function __construct()
+    {
+        $this->emitido = false;
+    }
 
     public function getCodnum(): int
     {

@@ -28,34 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "cabremi")]
 class Cabremi extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'cantrengs' => 'cantrengs',
-        'comprador' => 'comprador',
-        'fecharemi' => 'fecharemi',
-        'observaciones' => 'observaciones',
-        'calle' => 'calle',
-        'numero' => 'numero',
-        'pisodto' => 'pisodto',
-        'codpais' => 'codpais',
-        'codprov' => 'codprov',
-        'codloc' => 'codloc',
-        'codpost' => 'codpost',
-        'patente' => 'patente',
-        'patremolque' => 'patremolque',
-        'cuit' => 'cuit',
-        'fechahora' => 'fechahora',
-        'usuario' => 'usuario',
-        'tcomprel' => 'tcomprel',
-        'serierel' => 'serierel',
-        'ncomprel' => 'ncomprel',
-        'usuarioultmod' => 'usuarioultmod',
-        'fechaultmod' => 'fechaultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]

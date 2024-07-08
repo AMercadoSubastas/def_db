@@ -104,7 +104,7 @@ $Page->showMessage();
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->clave->cellAttributes() ?>>
 <span id="el_usuarios_clave">
 <div class="input-group">
-    <input type="password" name="x_clave" id="x_clave" autocomplete="new-password" data-field="x_clave" size="40" maxlength="255" placeholder="<?= HtmlEncode($Page->clave->getPlaceHolder()) ?>"<?= $Page->clave->editAttributes() ?> aria-describedby="x_clave_help">
+    <input type="password" name="x_clave" id="x_clave" autocomplete="new-password" data-table="usuarios" data-field="x_clave" size="40" maxlength="255" placeholder="<?= HtmlEncode($Page->clave->getPlaceHolder()) ?>"<?= $Page->clave->editAttributes() ?> aria-describedby="x_clave_help">
     <button type="button" class="btn btn-default ew-toggle-password rounded-end" data-ew-action="password"><i class="fa-solid fa-eye"></i></button>
 </div>
 <?= $Page->clave->getCustomMessage() ?>
@@ -167,31 +167,45 @@ loadjs.ready("fusuariosadd", function() {
 <?php } ?>
 <?php if ($Page->activo->Visible) { // activo ?>
     <div id="r_activo"<?= $Page->activo->rowAttributes() ?>>
-        <label id="elh_usuarios_activo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->activo->caption() ?><?= $Page->activo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <label id="elh_usuarios_activo" for="x_activo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->activo->caption() ?><?= $Page->activo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->activo->cellAttributes() ?>>
 <span id="el_usuarios_activo">
-<template id="tp_x_activo">
-    <div class="form-check">
-        <input type="radio" class="form-check-input" data-table="usuarios" data-field="x_activo" name="x_activo" id="x_activo"<?= $Page->activo->editAttributes() ?>>
-        <label class="form-check-label"></label>
-    </div>
-</template>
-<div id="dsl_x_activo" class="ew-item-list"></div>
-<selection-list hidden
-    id="x_activo"
-    name="x_activo"
-    value="<?= HtmlEncode($Page->activo->CurrentValue) ?>"
-    data-type="select-one"
-    data-template="tp_x_activo"
-    data-target="dsl_x_activo"
-    data-repeatcolumn="5"
-    class="form-control<?= $Page->activo->isInvalidClass() ?>"
-    data-table="usuarios"
-    data-field="x_activo"
-    data-value-separator="<?= $Page->activo->displayValueSeparatorAttribute() ?>"
-    <?= $Page->activo->editAttributes() ?>></selection-list>
-<?= $Page->activo->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->activo->getErrorMessage() ?></div>
+    <select
+        id="x_activo"
+        name="x_activo"
+        class="form-select ew-select<?= $Page->activo->isInvalidClass() ?>"
+        <?php if (!$Page->activo->IsNativeSelect) { ?>
+        data-select2-id="fusuariosadd_x_activo"
+        <?php } ?>
+        data-table="usuarios"
+        data-field="x_activo"
+        data-value-separator="<?= $Page->activo->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->activo->getPlaceHolder()) ?>"
+        <?= $Page->activo->editAttributes() ?>>
+        <?= $Page->activo->selectOptionListHtml("x_activo") ?>
+    </select>
+    <?= $Page->activo->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->activo->getErrorMessage() ?></div>
+<?php if (!$Page->activo->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fusuariosadd", function() {
+    var options = { name: "x_activo", selectId: "fusuariosadd_x_activo" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fusuariosadd.lists.activo?.lookupOptions.length) {
+        options.data = { id: "x_activo", form: "fusuariosadd" };
+    } else {
+        options.ajax = { id: "x_activo", form: "fusuariosadd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.usuarios.fields.activo.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 </div></div>
     </div>

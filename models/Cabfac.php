@@ -278,10 +278,10 @@ class Cabfac extends DbTable
             'x_fecval', // Variable name
             'fecval', // Name
             '`fecval`', // Expression
-            CastDateFieldForLike("`fecval`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecval`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecval`', // Virtual expression
             false, // Is virtual
@@ -294,7 +294,7 @@ class Cabfac extends DbTable
         $this->fecval->Raw = true;
         $this->fecval->Nullable = false; // NOT NULL field
         $this->fecval->Required = true; // Required field
-        $this->fecval->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecval->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecval->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecval'] = &$this->fecval;
 
@@ -304,10 +304,10 @@ class Cabfac extends DbTable
             'x_fecdoc', // Variable name
             'fecdoc', // Name
             '`fecdoc`', // Expression
-            CastDateFieldForLike("`fecdoc`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecdoc`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecdoc`', // Virtual expression
             false, // Is virtual
@@ -320,7 +320,7 @@ class Cabfac extends DbTable
         $this->fecdoc->Raw = true;
         $this->fecdoc->Nullable = false; // NOT NULL field
         $this->fecdoc->Required = true; // Required field
-        $this->fecdoc->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecdoc->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecdoc->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecdoc'] = &$this->fecdoc;
 
@@ -330,10 +330,10 @@ class Cabfac extends DbTable
             'x_fecreg', // Variable name
             'fecreg', // Name
             '`fecreg`', // Expression
-            CastDateFieldForLike("`fecreg`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecreg`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecreg`', // Virtual expression
             false, // Is virtual
@@ -346,7 +346,7 @@ class Cabfac extends DbTable
         $this->fecreg->Raw = true;
         $this->fecreg->Nullable = false; // NOT NULL field
         $this->fecreg->Required = true; // Required field
-        $this->fecreg->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecreg->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecreg->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecreg'] = &$this->fecreg;
 
@@ -418,10 +418,10 @@ class Cabfac extends DbTable
             'x_fecvenc', // Variable name
             'fecvenc', // Name
             '`fecvenc`', // Expression
-            CastDateFieldForLike("`fecvenc`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecvenc`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecvenc`', // Virtual expression
             false, // Is virtual
@@ -434,7 +434,7 @@ class Cabfac extends DbTable
         $this->fecvenc->Raw = true;
         $this->fecvenc->Nullable = false; // NOT NULL field
         $this->fecvenc->Required = true; // Required field
-        $this->fecvenc->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecvenc->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecvenc->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecvenc'] = &$this->fecvenc;
 
@@ -1028,10 +1028,10 @@ class Cabfac extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 17, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            17, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -1044,7 +1044,7 @@ class Cabfac extends DbTable
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
         $this->fechahora->Nullable = false; // NOT NULL field
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(17), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -1302,10 +1302,10 @@ class Cabfac extends DbTable
             'x_CAEFchVto', // Variable name
             'CAEFchVto', // Name
             '`CAEFchVto`', // Expression
-            CastDateFieldForLike("`CAEFchVto`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`CAEFchVto`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`CAEFchVto`', // Virtual expression
             false, // Is virtual
@@ -1316,7 +1316,7 @@ class Cabfac extends DbTable
         );
         $this->CAEFchVto->InputTextType = "text";
         $this->CAEFchVto->Raw = true;
-        $this->CAEFchVto->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->CAEFchVto->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->CAEFchVto->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['CAEFchVto'] = &$this->CAEFchVto;
 
@@ -1373,10 +1373,10 @@ class Cabfac extends DbTable
             'x_fecultmod', // Variable name
             'fecultmod', // Name
             '`fecultmod`', // Expression
-            CastDateFieldForLike("`fecultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecultmod`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecultmod`', // Virtual expression
             false, // Is virtual
@@ -1388,7 +1388,7 @@ class Cabfac extends DbTable
         $this->fecultmod->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fecultmod->InputTextType = "text";
         $this->fecultmod->Raw = true;
-        $this->fecultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecultmod->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecultmod'] = &$this->fecultmod;
 
@@ -2365,14 +2365,7 @@ class Cabfac extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

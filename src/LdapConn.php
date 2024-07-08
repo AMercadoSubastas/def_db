@@ -12,8 +12,9 @@ use LdapRecord\Query\Builder;
  */
 class LdapConn
 {
-    public Connection $Conn;
     private bool $Auth = false;
+    public Connection $Conn;
+    public string $User = "";
 
     /**
      * Constructor
@@ -48,8 +49,8 @@ class LdapConn
         } catch (BindException $e) {
             $error = $e->getDetailedError();
             LogError($error->getErrorCode() . ": " . $error->getErrorMessage());
-            if (Config("DEBUG")) {
-                Log($error->getDiagnosticMessage());
+            if (Config("DEBUG") && ($message = $error->getDiagnosticMessage())) {
+                Log($message);
             }
         }
         return $this->Auth;

@@ -39,18 +39,6 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->codnum->Visible) { // codnum ?>
-    <?php if (!$Page->codnum->Sortable || !$Page->sortUrl($Page->codnum)) { ?>
-        <th class="<?= $Page->codnum->headerCellClass() ?>"><?= $Page->codnum->caption() ?></th>
-    <?php } else { ?>
-        <th class="<?= $Page->codnum->headerCellClass() ?>"><div role="button" data-table="lotes" data-sort="<?= HtmlEncode($Page->codnum->Name) ?>" data-sort-type="1" data-sort-order="<?= $Page->codnum->getNextSort() ?>">
-            <div class="ew-table-header-btn">
-                <span class="ew-table-header-caption"><?= $Page->codnum->caption() ?></span>
-                <span class="ew-table-header-sort"><?= $Page->codnum->getSortIcon() ?></span>
-            </div>
-        </th>
-    <?php } ?>
-<?php } ?>
 <?php if ($Page->codrem->Visible) { // codrem ?>
     <?php if (!$Page->codrem->Sortable || !$Page->sortUrl($Page->codrem)) { ?>
         <th class="<?= $Page->codrem->headerCellClass() ?>"><?= $Page->codrem->caption() ?></th>
@@ -315,18 +303,6 @@ $Page->ListOptions->render("header", "left");
         </th>
     <?php } ?>
 <?php } ?>
-<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
-    <?php if (!$Page->dir_secuencia->Sortable || !$Page->sortUrl($Page->dir_secuencia)) { ?>
-        <th class="<?= $Page->dir_secuencia->headerCellClass() ?>"><?= $Page->dir_secuencia->caption() ?></th>
-    <?php } else { ?>
-        <th class="<?= $Page->dir_secuencia->headerCellClass() ?>"><div role="button" data-table="lotes" data-sort="<?= HtmlEncode($Page->dir_secuencia->Name) ?>" data-sort-type="1" data-sort-order="<?= $Page->dir_secuencia->getNextSort() ?>">
-            <div class="ew-table-header-btn">
-                <span class="ew-table-header-caption"><?= $Page->dir_secuencia->caption() ?></span>
-                <span class="ew-table-header-sort"><?= $Page->dir_secuencia->getSortIcon() ?></span>
-            </div>
-        </th>
-    <?php } ?>
-<?php } ?>
 <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
     <?php if (!$Page->usuarioultmod->Sortable || !$Page->sortUrl($Page->usuarioultmod)) { ?>
         <th class="<?= $Page->usuarioultmod->headerCellClass() ?>"><?= $Page->usuarioultmod->caption() ?></th>
@@ -347,6 +323,18 @@ $Page->ListOptions->render("header", "left");
             <div class="ew-table-header-btn">
                 <span class="ew-table-header-caption"><?= $Page->fecultmod->caption() ?></span>
                 <span class="ew-table-header-sort"><?= $Page->fecultmod->getSortIcon() ?></span>
+            </div>
+        </th>
+    <?php } ?>
+<?php } ?>
+<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
+    <?php if (!$Page->dir_secuencia->Sortable || !$Page->sortUrl($Page->dir_secuencia)) { ?>
+        <th class="<?= $Page->dir_secuencia->headerCellClass() ?>"><?= $Page->dir_secuencia->caption() ?></th>
+    <?php } else { ?>
+        <th class="<?= $Page->dir_secuencia->headerCellClass() ?>"><div role="button" data-table="lotes" data-sort="<?= HtmlEncode($Page->dir_secuencia->Name) ?>" data-sort-type="1" data-sort-order="<?= $Page->dir_secuencia->getNextSort() ?>">
+            <div class="ew-table-header-btn">
+                <span class="ew-table-header-caption"><?= $Page->dir_secuencia->caption() ?></span>
+                <span class="ew-table-header-sort"><?= $Page->dir_secuencia->getSortIcon() ?></span>
             </div>
         </th>
     <?php } ?>
@@ -391,13 +379,6 @@ while ($Page->fetch()) {
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <!-- codnum -->
-        <td<?= $Page->codnum->cellAttributes() ?>>
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
-</td>
-<?php } ?>
 <?php if ($Page->codrem->Visible) { // codrem ?>
         <!-- codrem -->
         <td<?= $Page->codrem->cellAttributes() ?>>
@@ -552,13 +533,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <?= $Page->codintsublote->getViewValue() ?></span>
 </td>
 <?php } ?>
-<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
-        <!-- dir_secuencia -->
-        <td<?= $Page->dir_secuencia->cellAttributes() ?>>
-<span<?= $Page->dir_secuencia->viewAttributes() ?>>
-<?= $Page->dir_secuencia->getViewValue() ?></span>
-</td>
-<?php } ?>
 <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
         <!-- usuarioultmod -->
         <td<?= $Page->usuarioultmod->cellAttributes() ?>>
@@ -571,6 +545,13 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
         <td<?= $Page->fecultmod->cellAttributes() ?>>
 <span<?= $Page->fecultmod->viewAttributes() ?>>
 <?= $Page->fecultmod->getViewValue() ?></span>
+</td>
+<?php } ?>
+<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
+        <!-- dir_secuencia -->
+        <td<?= $Page->dir_secuencia->cellAttributes() ?>>
+<span<?= $Page->dir_secuencia->viewAttributes() ?>>
+<?= $Page->dir_secuencia->getViewValue() ?></span>
 </td>
 <?php } ?>
 <?php

@@ -2479,7 +2479,7 @@ class LiquidacionEdit extends Liquidacion
 
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, $this->usuarioultmod->ReadOnly);
 
         // fecultmod
         $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), $this->fecultmod->ReadOnly);

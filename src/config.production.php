@@ -6,7 +6,7 @@
 
 return [
     "Databases" => [
-        "DB" => ["id" => "DB", "type" => "MYSQL", "qs" => "`", "qe" => "`", "host" => "vm3.adrianmercado.com.ar", "port" => "3306", "user" => "remate_user", "password" => "gsmzlxersgYuWhR", "dbname" => "amremate"]
+        "DB" => ["id" => "DB", "type" => "MYSQL", "qs" => "`", "qe" => "`", "host" => "vm3.adrianmercado.com.ar", "port" => "3306", "user" => "am_test_user", "password" => "IV20pRY3VkAcIcs", "dbname" => "am_test"]
     ],
     "SMTP" => [
         "PHPMAILER_MAILER" => "smtp", // PHPMailer mailer

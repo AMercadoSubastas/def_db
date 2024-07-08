@@ -475,10 +475,10 @@ class Liquidacion extends DbTable
             'x_fecharem', // Variable name
             'fecharem', // Name
             '`fecharem`', // Expression
-            CastDateFieldForLike("`fecharem`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecharem`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecharem`', // Virtual expression
             false, // Is virtual
@@ -491,7 +491,7 @@ class Liquidacion extends DbTable
         $this->fecharem->Raw = true;
         $this->fecharem->Nullable = false; // NOT NULL field
         $this->fecharem->Required = true; // Required field
-        $this->fecharem->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecharem->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecharem->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecharem'] = &$this->fecharem;
 
@@ -550,7 +550,7 @@ class Liquidacion extends DbTable
             '`totremate`', // Expression
             '`totremate`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totremate`', // Virtual expression
@@ -577,7 +577,7 @@ class Liquidacion extends DbTable
             '`totneto1`', // Expression
             '`totneto1`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totneto1`', // Virtual expression
@@ -604,7 +604,7 @@ class Liquidacion extends DbTable
             '`totiva21`', // Expression
             '`totiva21`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totiva21`', // Virtual expression
@@ -631,7 +631,7 @@ class Liquidacion extends DbTable
             '`subtot1`', // Expression
             '`subtot1`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`subtot1`', // Virtual expression
@@ -658,7 +658,7 @@ class Liquidacion extends DbTable
             '`totneto2`', // Expression
             '`totneto2`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totneto2`', // Virtual expression
@@ -685,7 +685,7 @@ class Liquidacion extends DbTable
             '`totiva105`', // Expression
             '`totiva105`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totiva105`', // Virtual expression
@@ -712,7 +712,7 @@ class Liquidacion extends DbTable
             '`subtot2`', // Expression
             '`subtot2`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`subtot2`', // Virtual expression
@@ -739,7 +739,7 @@ class Liquidacion extends DbTable
             '`totacuenta`', // Expression
             '`totacuenta`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totacuenta`', // Virtual expression
@@ -766,7 +766,7 @@ class Liquidacion extends DbTable
             '`totgastos`', // Expression
             '`totgastos`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totgastos`', // Virtual expression
@@ -793,7 +793,7 @@ class Liquidacion extends DbTable
             '`totvarios`', // Expression
             '`totvarios`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`totvarios`', // Virtual expression
@@ -820,7 +820,7 @@ class Liquidacion extends DbTable
             '`saldoafav`', // Expression
             '`saldoafav`', // Basic search expression
             131, // Type
-            14, // Size
+            16, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`saldoafav`', // Virtual expression
@@ -845,10 +845,10 @@ class Liquidacion extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -860,7 +860,7 @@ class Liquidacion extends DbTable
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
         $this->fechahora->Nullable = false; // NOT NULL field
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -894,10 +894,10 @@ class Liquidacion extends DbTable
             'x_fechaliq', // Variable name
             'fechaliq', // Name
             '`fechaliq`', // Expression
-            CastDateFieldForLike("`fechaliq`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechaliq`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fechaliq`', // Virtual expression
             false, // Is virtual
@@ -910,7 +910,7 @@ class Liquidacion extends DbTable
         $this->fechaliq->Raw = true;
         $this->fechaliq->Nullable = false; // NOT NULL field
         $this->fechaliq->Required = true; // Required field
-        $this->fechaliq->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechaliq->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fechaliq->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fechaliq'] = &$this->fechaliq;
 
@@ -1013,10 +1013,10 @@ class Liquidacion extends DbTable
             'x_fecultmod', // Variable name
             'fecultmod', // Name
             '`fecultmod`', // Expression
-            CastDateFieldForLike("`fecultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecultmod`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecultmod`', // Virtual expression
             false, // Is virtual
@@ -1027,7 +1027,7 @@ class Liquidacion extends DbTable
         );
         $this->fecultmod->InputTextType = "text";
         $this->fecultmod->Raw = true;
-        $this->fecultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecultmod->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecultmod'] = &$this->fecultmod;
 
@@ -1897,14 +1897,7 @@ class Liquidacion extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

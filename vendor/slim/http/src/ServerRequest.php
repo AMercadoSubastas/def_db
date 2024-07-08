@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Slim\Http;
 
 use Closure;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -265,7 +267,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): MessageInterface
     {
         $serverRequest = $this->serverRequest->withAddedHeader($name, $value);
         return new static($serverRequest);
@@ -274,7 +276,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest->withAttribute($name, $value);
         return new static($serverRequest);
@@ -295,7 +297,7 @@ class ServerRequest implements ServerRequestInterface
      * @param  array $attributes New attributes
      * @return static
      */
-    public function withAttributes(array $attributes)
+    public function withAttributes(array $attributes): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest;
 
@@ -309,7 +311,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest->withoutAttribute($name);
         return new static($serverRequest);
@@ -318,7 +320,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): MessageInterface
     {
         $serverRequest = $this->serverRequest->withBody($body);
         return new static($serverRequest);
@@ -327,7 +329,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest->withCookieParams($cookies);
         return new static($serverRequest);
@@ -336,7 +338,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): MessageInterface
     {
         $serverRequest = $this->serverRequest->withHeader($name, $value);
         return new static($serverRequest);
@@ -345,7 +347,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): MessageInterface
     {
         $serverRequest = $this->serverRequest->withoutHeader($name);
         return new static($serverRequest);
@@ -354,7 +356,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withMethod($method)
+    public function withMethod($method): RequestInterface
     {
         $serverRequest = $this->serverRequest->withMethod($method);
         return new static($serverRequest);
@@ -363,7 +365,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withParsedBody($data)
+    public function withParsedBody($data): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest->withParsedBody($data);
         return new static($serverRequest);
@@ -372,7 +374,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): MessageInterface
     {
         $serverRequest = $this->serverRequest->withProtocolVersion($version);
         return new static($serverRequest);
@@ -381,7 +383,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest->withQueryParams($query);
         return new static($serverRequest);
@@ -390,7 +392,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): RequestInterface
     {
         $serverRequest = $this->serverRequest->withRequestTarget($requestTarget);
         return new static($serverRequest);
@@ -399,7 +401,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
         $serverRequest = $this->serverRequest->withUploadedFiles($uploadedFiles);
         return new static($serverRequest);
@@ -408,7 +410,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         $serverRequest = $this->serverRequest->withUri($uri, $preserveHost);
         return new static($serverRequest);

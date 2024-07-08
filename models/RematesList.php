@@ -145,10 +145,10 @@ class RematesList extends Remates
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->ncomp->setVisibility();
+        $this->codnum->Visible = false;
         $this->tcomp->setVisibility();
         $this->serie->setVisibility();
-        $this->ncomp->setVisibility();
         $this->codcli->setVisibility();
         $this->direccion->setVisibility();
         $this->codpais->setVisibility();
@@ -586,7 +586,7 @@ class RematesList extends Remates
     public $SearchWhere = ""; // Search WHERE clause
     public $SearchPanelClass = "ew-search-panel collapse"; // Search Panel class
     public $SearchColumnCount = 0; // For extended search
-    public $SearchFieldsPerRow = 1; // For extended search
+    public $SearchFieldsPerRow = 2; // For extended search
     public $RecordCount = 0; // Record count
     public $InlineRowCount = 0;
     public $StartRowCount = 1;
@@ -595,7 +595,7 @@ class RematesList extends Remates
     public $KeyCount = 0; // Key count
     public $MultiColumnGridClass = "row-cols-md";
     public $MultiColumnEditClass = "col-12 w-100";
-    public $MultiColumnCardClass = "card h-100 ew-card";
+    public $MultiColumnCardClass = "card h-200 ew-card";
     public $MultiColumnListOptionsPosition = "bottom-start";
     public $DbMasterFilter = ""; // Master filter
     public $DbDetailFilter = ""; // Detail filter
@@ -803,14 +803,23 @@ class RematesList extends Remates
 
         // Get default search criteria
         AddFilter($this->DefaultSearchWhere, $this->basicSearchWhere(true));
+        AddFilter($this->DefaultSearchWhere, $this->advancedSearchWhere(true));
 
         // Get basic search values
         $this->loadBasicSearchValues();
+
+        // Get and validate search values for advanced search
+        if (EmptyValue($this->UserAction)) { // Skip if user action
+            $this->loadSearchValues();
+        }
 
         // Process filter list
         if ($this->processFilterList()) {
             $this->terminate();
             return;
+        }
+        if (!$this->validateSearch()) {
+            // Nothing to do
         }
 
         // Restore search parms from Session if not searching / reset / export
@@ -829,6 +838,14 @@ class RematesList extends Remates
             $srchBasic = $this->basicSearchWhere();
         }
 
+        // Get advanced search criteria
+        if (!$this->hasInvalidFields()) {
+            $srchAdvanced = $this->advancedSearchWhere();
+        }
+
+        // Get query builder criteria
+        $query = $DashboardReport ? "" : $this->queryBuilderWhere();
+
         // Restore display records
         if ($this->Command != "json" && $this->getRecordsPerPage() != "") {
             $this->DisplayRecords = $this->getRecordsPerPage(); // Restore from Session
@@ -844,6 +861,16 @@ class RematesList extends Remates
             if ($this->BasicSearch->Keyword != "") {
                 $srchBasic = $this->basicSearchWhere(); // Save to session
             }
+
+            // Load advanced search from default
+            if ($this->loadAdvancedSearchDefault()) {
+                $srchAdvanced = $this->advancedSearchWhere(); // Save to session
+            }
+        }
+
+        // Restore search settings from Session
+        if (!$this->hasInvalidFields()) {
+            $this->loadAdvancedSearch();
         }
 
         // Build search criteria
@@ -1078,10 +1105,9 @@ class RematesList extends Remates
         if (Config("SEARCH_FILTER_OPTION") == "Server") {
             $savedFilterList = Profile()->getSearchFilters("frematessrch");
         }
-        $filterList = Concat($filterList, $this->codnum->AdvancedSearch->toJson(), ","); // Field codnum
+        $filterList = Concat($filterList, $this->ncomp->AdvancedSearch->toJson(), ","); // Field ncomp
         $filterList = Concat($filterList, $this->tcomp->AdvancedSearch->toJson(), ","); // Field tcomp
         $filterList = Concat($filterList, $this->serie->AdvancedSearch->toJson(), ","); // Field serie
-        $filterList = Concat($filterList, $this->ncomp->AdvancedSearch->toJson(), ","); // Field ncomp
         $filterList = Concat($filterList, $this->codcli->AdvancedSearch->toJson(), ","); // Field codcli
         $filterList = Concat($filterList, $this->direccion->AdvancedSearch->toJson(), ","); // Field direccion
         $filterList = Concat($filterList, $this->codpais->AdvancedSearch->toJson(), ","); // Field codpais
@@ -1109,6 +1135,12 @@ class RematesList extends Remates
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
+        }
+
+        // Query Builder rules
+        $rules = $this->queryBuilderRules();
+        if ($rules) {
+            $filterList = Concat($filterList, "\"" . Config("TABLE_RULES") . "\":\"" . JsEncode($rules) . "\"", ",");
         }
 
         // Return filter list in JSON
@@ -1145,13 +1177,13 @@ class RematesList extends Remates
         $filter = json_decode(Post("filter"), true);
         $this->Command = "search";
 
-        // Field codnum
-        $this->codnum->AdvancedSearch->SearchValue = @$filter["x_codnum"];
-        $this->codnum->AdvancedSearch->SearchOperator = @$filter["z_codnum"];
-        $this->codnum->AdvancedSearch->SearchCondition = @$filter["v_codnum"];
-        $this->codnum->AdvancedSearch->SearchValue2 = @$filter["y_codnum"];
-        $this->codnum->AdvancedSearch->SearchOperator2 = @$filter["w_codnum"];
-        $this->codnum->AdvancedSearch->save();
+        // Field ncomp
+        $this->ncomp->AdvancedSearch->SearchValue = @$filter["x_ncomp"];
+        $this->ncomp->AdvancedSearch->SearchOperator = @$filter["z_ncomp"];
+        $this->ncomp->AdvancedSearch->SearchCondition = @$filter["v_ncomp"];
+        $this->ncomp->AdvancedSearch->SearchValue2 = @$filter["y_ncomp"];
+        $this->ncomp->AdvancedSearch->SearchOperator2 = @$filter["w_ncomp"];
+        $this->ncomp->AdvancedSearch->save();
 
         // Field tcomp
         $this->tcomp->AdvancedSearch->SearchValue = @$filter["x_tcomp"];
@@ -1168,14 +1200,6 @@ class RematesList extends Remates
         $this->serie->AdvancedSearch->SearchValue2 = @$filter["y_serie"];
         $this->serie->AdvancedSearch->SearchOperator2 = @$filter["w_serie"];
         $this->serie->AdvancedSearch->save();
-
-        // Field ncomp
-        $this->ncomp->AdvancedSearch->SearchValue = @$filter["x_ncomp"];
-        $this->ncomp->AdvancedSearch->SearchOperator = @$filter["z_ncomp"];
-        $this->ncomp->AdvancedSearch->SearchCondition = @$filter["v_ncomp"];
-        $this->ncomp->AdvancedSearch->SearchValue2 = @$filter["y_ncomp"];
-        $this->ncomp->AdvancedSearch->SearchOperator2 = @$filter["w_ncomp"];
-        $this->ncomp->AdvancedSearch->save();
 
         // Field codcli
         $this->codcli->AdvancedSearch->SearchValue = @$filter["x_codcli"];
@@ -1370,6 +1394,154 @@ class RematesList extends Remates
         $this->tasa->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
+        if ($filter[Config("TABLE_RULES")] ?? false) {
+            $this->Command = "query"; // Set command for query builder
+            $this->setSessionRules($filter[Config("TABLE_RULES")]);
+        }
+    }
+
+    // Advanced search WHERE clause based on QueryString
+    public function advancedSearchWhere($default = false)
+    {
+        global $Security;
+        $where = "";
+        if (!$Security->canSearch()) {
+            return "";
+        }
+        $this->buildSearchSql($where, $this->ncomp, $default, false); // ncomp
+        $this->buildSearchSql($where, $this->tcomp, $default, false); // tcomp
+        $this->buildSearchSql($where, $this->serie, $default, false); // serie
+        $this->buildSearchSql($where, $this->codcli, $default, false); // codcli
+        $this->buildSearchSql($where, $this->direccion, $default, false); // direccion
+        $this->buildSearchSql($where, $this->codpais, $default, false); // codpais
+        $this->buildSearchSql($where, $this->codprov, $default, false); // codprov
+        $this->buildSearchSql($where, $this->codloc, $default, false); // codloc
+        $this->buildSearchSql($where, $this->fecest, $default, false); // fecest
+        $this->buildSearchSql($where, $this->fecreal, $default, false); // fecreal
+        $this->buildSearchSql($where, $this->imptot, $default, false); // imptot
+        $this->buildSearchSql($where, $this->impbase, $default, false); // impbase
+        $this->buildSearchSql($where, $this->estado, $default, false); // estado
+        $this->buildSearchSql($where, $this->cantlotes, $default, false); // cantlotes
+        $this->buildSearchSql($where, $this->horaest, $default, false); // horaest
+        $this->buildSearchSql($where, $this->horareal, $default, false); // horareal
+        $this->buildSearchSql($where, $this->usuario, $default, false); // usuario
+        $this->buildSearchSql($where, $this->fecalta, $default, false); // fecalta
+        $this->buildSearchSql($where, $this->observacion, $default, false); // observacion
+        $this->buildSearchSql($where, $this->tipoind, $default, false); // tipoind
+        $this->buildSearchSql($where, $this->sello, $default, false); // sello
+        $this->buildSearchSql($where, $this->plazoSAP, $default, false); // plazoSAP
+        $this->buildSearchSql($where, $this->usuarioultmod, $default, false); // usuarioultmod
+        $this->buildSearchSql($where, $this->fecultmod, $default, false); // fecultmod
+        $this->buildSearchSql($where, $this->servicios, $default, false); // servicios
+        $this->buildSearchSql($where, $this->gastos, $default, false); // gastos
+        $this->buildSearchSql($where, $this->tasa, $default, false); // tasa
+
+        // Set up search command
+        if (!$default && $where != "" && in_array($this->Command, ["", "reset", "resetall"])) {
+            $this->Command = "search";
+        }
+        if (!$default && $this->Command == "search") {
+            $this->ncomp->AdvancedSearch->save(); // ncomp
+            $this->tcomp->AdvancedSearch->save(); // tcomp
+            $this->serie->AdvancedSearch->save(); // serie
+            $this->codcli->AdvancedSearch->save(); // codcli
+            $this->direccion->AdvancedSearch->save(); // direccion
+            $this->codpais->AdvancedSearch->save(); // codpais
+            $this->codprov->AdvancedSearch->save(); // codprov
+            $this->codloc->AdvancedSearch->save(); // codloc
+            $this->fecest->AdvancedSearch->save(); // fecest
+            $this->fecreal->AdvancedSearch->save(); // fecreal
+            $this->imptot->AdvancedSearch->save(); // imptot
+            $this->impbase->AdvancedSearch->save(); // impbase
+            $this->estado->AdvancedSearch->save(); // estado
+            $this->cantlotes->AdvancedSearch->save(); // cantlotes
+            $this->horaest->AdvancedSearch->save(); // horaest
+            $this->horareal->AdvancedSearch->save(); // horareal
+            $this->usuario->AdvancedSearch->save(); // usuario
+            $this->fecalta->AdvancedSearch->save(); // fecalta
+            $this->observacion->AdvancedSearch->save(); // observacion
+            $this->tipoind->AdvancedSearch->save(); // tipoind
+            $this->sello->AdvancedSearch->save(); // sello
+            $this->plazoSAP->AdvancedSearch->save(); // plazoSAP
+            $this->usuarioultmod->AdvancedSearch->save(); // usuarioultmod
+            $this->fecultmod->AdvancedSearch->save(); // fecultmod
+            $this->servicios->AdvancedSearch->save(); // servicios
+            $this->gastos->AdvancedSearch->save(); // gastos
+            $this->tasa->AdvancedSearch->save(); // tasa
+
+            // Clear rules for QueryBuilder
+            $this->setSessionRules("");
+        }
+        return $where;
+    }
+
+    // Query builder rules
+    public function queryBuilderRules()
+    {
+        return Post("rules") ?? $this->getSessionRules();
+    }
+
+    // Quey builder WHERE clause
+    public function queryBuilderWhere($fieldName = "")
+    {
+        global $Security;
+        if (!$Security->canSearch()) {
+            return "";
+        }
+
+        // Get rules by query builder
+        $rules = $this->queryBuilderRules();
+
+        // Decode and parse rules
+        $where = $rules ? $this->parseRules(json_decode($rules, true), $fieldName) : "";
+
+        // Clear other search and save rules to session
+        if ($where && $fieldName == "") { // Skip if get query for specific field
+            $this->resetSearchParms();
+            $this->setSessionRules($rules);
+        }
+
+        // Return query
+        return $where;
+    }
+
+    // Build search SQL
+    protected function buildSearchSql(&$where, $fld, $default, $multiValue)
+    {
+        $fldParm = $fld->Param;
+        $fldVal = $default ? $fld->AdvancedSearch->SearchValueDefault : $fld->AdvancedSearch->SearchValue;
+        $fldOpr = $default ? $fld->AdvancedSearch->SearchOperatorDefault : $fld->AdvancedSearch->SearchOperator;
+        $fldCond = $default ? $fld->AdvancedSearch->SearchConditionDefault : $fld->AdvancedSearch->SearchCondition;
+        $fldVal2 = $default ? $fld->AdvancedSearch->SearchValue2Default : $fld->AdvancedSearch->SearchValue2;
+        $fldOpr2 = $default ? $fld->AdvancedSearch->SearchOperator2Default : $fld->AdvancedSearch->SearchOperator2;
+        $fldVal = ConvertSearchValue($fldVal, $fldOpr, $fld);
+        $fldVal2 = ConvertSearchValue($fldVal2, $fldOpr2, $fld);
+        $fldOpr = ConvertSearchOperator($fldOpr, $fld, $fldVal);
+        $fldOpr2 = ConvertSearchOperator($fldOpr2, $fld, $fldVal2);
+        $wrk = "";
+        $sep = $fld->UseFilter ? Config("FILTER_OPTION_SEPARATOR") : Config("MULTIPLE_OPTION_SEPARATOR");
+        if (is_array($fldVal)) {
+            $fldVal = implode($sep, $fldVal);
+        }
+        if (is_array($fldVal2)) {
+            $fldVal2 = implode($sep, $fldVal2);
+        }
+        if (Config("SEARCH_MULTI_VALUE_OPTION") == 1 && !$fld->UseFilter || !IsMultiSearchOperator($fldOpr)) {
+            $multiValue = false;
+        }
+        if ($multiValue) {
+            $wrk = $fldVal != "" ? GetMultiSearchSql($fld, $fldOpr, $fldVal, $this->Dbid) : ""; // Field value 1
+            $wrk2 = $fldVal2 != "" ? GetMultiSearchSql($fld, $fldOpr2, $fldVal2, $this->Dbid) : ""; // Field value 2
+            AddFilter($wrk, $wrk2, $fldCond);
+        } else {
+            $wrk = GetSearchSql($fld, $fldVal, $fldOpr, $fldCond, $fldVal2, $fldOpr2, $this->Dbid);
+        }
+        if ($this->SearchOption == "AUTO" && in_array($this->BasicSearch->getType(), ["AND", "OR"])) {
+            $cond = $this->BasicSearch->getType();
+        } else {
+            $cond = SameText($this->SearchOption, "OR") ? "OR" : "AND";
+        }
+        AddFilter($where, $wrk, $cond);
     }
 
     // Show list of filters
@@ -1381,6 +1553,240 @@ class RematesList extends Remates
         $filterList = "";
         $captionClass = $this->isExport("email") ? "ew-filter-caption-email" : "ew-filter-caption";
         $captionSuffix = $this->isExport("email") ? ": " : "";
+
+        // Field ncomp
+        $filter = $this->queryBuilderWhere("ncomp");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->ncomp, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->ncomp->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tcomp
+        $filter = $this->queryBuilderWhere("tcomp");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tcomp, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tcomp->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field serie
+        $filter = $this->queryBuilderWhere("serie");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->serie, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->serie->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codcli
+        $filter = $this->queryBuilderWhere("codcli");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codcli, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codcli->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field direccion
+        $filter = $this->queryBuilderWhere("direccion");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->direccion, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->direccion->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codpais
+        $filter = $this->queryBuilderWhere("codpais");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codpais, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codpais->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codprov
+        $filter = $this->queryBuilderWhere("codprov");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codprov, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codprov->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field codloc
+        $filter = $this->queryBuilderWhere("codloc");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->codloc, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->codloc->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fecest
+        $filter = $this->queryBuilderWhere("fecest");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fecest, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fecest->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fecreal
+        $filter = $this->queryBuilderWhere("fecreal");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fecreal, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fecreal->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field imptot
+        $filter = $this->queryBuilderWhere("imptot");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->imptot, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->imptot->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field impbase
+        $filter = $this->queryBuilderWhere("impbase");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->impbase, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->impbase->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field estado
+        $filter = $this->queryBuilderWhere("estado");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->estado, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->estado->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field cantlotes
+        $filter = $this->queryBuilderWhere("cantlotes");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->cantlotes, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->cantlotes->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field horaest
+        $filter = $this->queryBuilderWhere("horaest");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->horaest, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->horaest->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field horareal
+        $filter = $this->queryBuilderWhere("horareal");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->horareal, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->horareal->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field usuario
+        $filter = $this->queryBuilderWhere("usuario");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->usuario, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->usuario->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fecalta
+        $filter = $this->queryBuilderWhere("fecalta");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fecalta, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fecalta->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tipoind
+        $filter = $this->queryBuilderWhere("tipoind");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tipoind, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tipoind->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field sello
+        $filter = $this->queryBuilderWhere("sello");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->sello, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->sello->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field plazoSAP
+        $filter = $this->queryBuilderWhere("plazoSAP");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->plazoSAP, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->plazoSAP->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field usuarioultmod
+        $filter = $this->queryBuilderWhere("usuarioultmod");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->usuarioultmod, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->usuarioultmod->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field fecultmod
+        $filter = $this->queryBuilderWhere("fecultmod");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->fecultmod, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->fecultmod->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field servicios
+        $filter = $this->queryBuilderWhere("servicios");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->servicios, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->servicios->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field gastos
+        $filter = $this->queryBuilderWhere("gastos");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->gastos, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->gastos->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
+
+        // Field tasa
+        $filter = $this->queryBuilderWhere("tasa");
+        if (!$filter) {
+            $this->buildSearchSql($filter, $this->tasa, false, false);
+        }
+        if ($filter != "") {
+            $filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->tasa->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+        }
         if ($this->BasicSearch->Keyword != "") {
             $filterList .= "<div><span class=\"" . $captionClass . "\">" . $Language->phrase("BasicSearchKeyword") . "</span>" . $captionSuffix . $this->BasicSearch->Keyword . "</div>";
         }
@@ -1407,6 +1813,7 @@ class RematesList extends Remates
 
         // Fields to search
         $searchFlds = [];
+        $searchFlds[] = &$this->ncomp;
         $searchFlds[] = &$this->tcomp;
         $searchFlds[] = &$this->direccion;
         $searchFlds[] = &$this->codpais;
@@ -1442,6 +1849,87 @@ class RematesList extends Remates
         if ($this->BasicSearch->issetSession()) {
             return true;
         }
+        if ($this->ncomp->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tcomp->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->serie->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codcli->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->direccion->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codpais->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codprov->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->codloc->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fecest->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fecreal->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->imptot->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->impbase->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->estado->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->cantlotes->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->horaest->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->horareal->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->usuario->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fecalta->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->observacion->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tipoind->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->sello->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->plazoSAP->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->usuarioultmod->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->fecultmod->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->servicios->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->gastos->AdvancedSearch->issetSession()) {
+            return true;
+        }
+        if ($this->tasa->AdvancedSearch->issetSession()) {
+            return true;
+        }
         return false;
     }
 
@@ -1454,6 +1942,12 @@ class RematesList extends Remates
 
         // Clear basic search parameters
         $this->resetBasicSearchParms();
+
+        // Clear advanced search parameters
+        $this->resetAdvancedSearchParms();
+
+        // Clear queryBuilder
+        $this->setSessionRules("");
     }
 
     // Load advanced search default values
@@ -1468,6 +1962,38 @@ class RematesList extends Remates
         $this->BasicSearch->unsetSession();
     }
 
+    // Clear all advanced search parameters
+    protected function resetAdvancedSearchParms()
+    {
+        $this->ncomp->AdvancedSearch->unsetSession();
+        $this->tcomp->AdvancedSearch->unsetSession();
+        $this->serie->AdvancedSearch->unsetSession();
+        $this->codcli->AdvancedSearch->unsetSession();
+        $this->direccion->AdvancedSearch->unsetSession();
+        $this->codpais->AdvancedSearch->unsetSession();
+        $this->codprov->AdvancedSearch->unsetSession();
+        $this->codloc->AdvancedSearch->unsetSession();
+        $this->fecest->AdvancedSearch->unsetSession();
+        $this->fecreal->AdvancedSearch->unsetSession();
+        $this->imptot->AdvancedSearch->unsetSession();
+        $this->impbase->AdvancedSearch->unsetSession();
+        $this->estado->AdvancedSearch->unsetSession();
+        $this->cantlotes->AdvancedSearch->unsetSession();
+        $this->horaest->AdvancedSearch->unsetSession();
+        $this->horareal->AdvancedSearch->unsetSession();
+        $this->usuario->AdvancedSearch->unsetSession();
+        $this->fecalta->AdvancedSearch->unsetSession();
+        $this->observacion->AdvancedSearch->unsetSession();
+        $this->tipoind->AdvancedSearch->unsetSession();
+        $this->sello->AdvancedSearch->unsetSession();
+        $this->plazoSAP->AdvancedSearch->unsetSession();
+        $this->usuarioultmod->AdvancedSearch->unsetSession();
+        $this->fecultmod->AdvancedSearch->unsetSession();
+        $this->servicios->AdvancedSearch->unsetSession();
+        $this->gastos->AdvancedSearch->unsetSession();
+        $this->tasa->AdvancedSearch->unsetSession();
+    }
+
     // Restore all search parameters
     protected function restoreSearchParms()
     {
@@ -1475,6 +2001,35 @@ class RematesList extends Remates
 
         // Restore basic search values
         $this->BasicSearch->load();
+
+        // Restore advanced search values
+        $this->ncomp->AdvancedSearch->load();
+        $this->tcomp->AdvancedSearch->load();
+        $this->serie->AdvancedSearch->load();
+        $this->codcli->AdvancedSearch->load();
+        $this->direccion->AdvancedSearch->load();
+        $this->codpais->AdvancedSearch->load();
+        $this->codprov->AdvancedSearch->load();
+        $this->codloc->AdvancedSearch->load();
+        $this->fecest->AdvancedSearch->load();
+        $this->fecreal->AdvancedSearch->load();
+        $this->imptot->AdvancedSearch->load();
+        $this->impbase->AdvancedSearch->load();
+        $this->estado->AdvancedSearch->load();
+        $this->cantlotes->AdvancedSearch->load();
+        $this->horaest->AdvancedSearch->load();
+        $this->horareal->AdvancedSearch->load();
+        $this->usuario->AdvancedSearch->load();
+        $this->fecalta->AdvancedSearch->load();
+        $this->observacion->AdvancedSearch->load();
+        $this->tipoind->AdvancedSearch->load();
+        $this->sello->AdvancedSearch->load();
+        $this->plazoSAP->AdvancedSearch->load();
+        $this->usuarioultmod->AdvancedSearch->load();
+        $this->fecultmod->AdvancedSearch->load();
+        $this->servicios->AdvancedSearch->load();
+        $this->gastos->AdvancedSearch->load();
+        $this->tasa->AdvancedSearch->load();
     }
 
     // Set up sort parameters
@@ -1492,37 +2047,39 @@ class RematesList extends Remates
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->codnum); // codnum
-            $this->updateSort($this->tcomp); // tcomp
-            $this->updateSort($this->serie); // serie
-            $this->updateSort($this->ncomp); // ncomp
-            $this->updateSort($this->codcli); // codcli
-            $this->updateSort($this->direccion); // direccion
-            $this->updateSort($this->codpais); // codpais
-            $this->updateSort($this->codprov); // codprov
-            $this->updateSort($this->codloc); // codloc
-            $this->updateSort($this->fecest); // fecest
-            $this->updateSort($this->fecreal); // fecreal
-            $this->updateSort($this->imptot); // imptot
-            $this->updateSort($this->impbase); // impbase
-            $this->updateSort($this->estado); // estado
-            $this->updateSort($this->cantlotes); // cantlotes
-            $this->updateSort($this->horaest); // horaest
-            $this->updateSort($this->horareal); // horareal
-            $this->updateSort($this->usuario); // usuario
-            $this->updateSort($this->fecalta); // fecalta
-            $this->updateSort($this->tipoind); // tipoind
-            $this->updateSort($this->sello); // sello
-            $this->updateSort($this->plazoSAP); // plazoSAP
-            $this->updateSort($this->usuarioultmod); // usuarioultmod
-            $this->updateSort($this->fecultmod); // fecultmod
-            $this->updateSort($this->servicios); // servicios
-            $this->updateSort($this->gastos); // gastos
-            $this->updateSort($this->tasa); // tasa
+            $this->updateSort($this->ncomp, $ctrl); // ncomp
+            $this->updateSort($this->tcomp, $ctrl); // tcomp
+            $this->updateSort($this->serie, $ctrl); // serie
+            $this->updateSort($this->codcli, $ctrl); // codcli
+            $this->updateSort($this->direccion, $ctrl); // direccion
+            $this->updateSort($this->codpais, $ctrl); // codpais
+            $this->updateSort($this->codprov, $ctrl); // codprov
+            $this->updateSort($this->codloc, $ctrl); // codloc
+            $this->updateSort($this->fecest, $ctrl); // fecest
+            $this->updateSort($this->fecreal, $ctrl); // fecreal
+            $this->updateSort($this->imptot, $ctrl); // imptot
+            $this->updateSort($this->impbase, $ctrl); // impbase
+            $this->updateSort($this->estado, $ctrl); // estado
+            $this->updateSort($this->cantlotes, $ctrl); // cantlotes
+            $this->updateSort($this->horaest, $ctrl); // horaest
+            $this->updateSort($this->horareal, $ctrl); // horareal
+            $this->updateSort($this->usuario, $ctrl); // usuario
+            $this->updateSort($this->fecalta, $ctrl); // fecalta
+            $this->updateSort($this->tipoind, $ctrl); // tipoind
+            $this->updateSort($this->sello, $ctrl); // sello
+            $this->updateSort($this->plazoSAP, $ctrl); // plazoSAP
+            $this->updateSort($this->usuarioultmod, $ctrl); // usuarioultmod
+            $this->updateSort($this->fecultmod, $ctrl); // fecultmod
+            $this->updateSort($this->servicios, $ctrl); // servicios
+            $this->updateSort($this->gastos, $ctrl); // gastos
+            $this->updateSort($this->tasa, $ctrl); // tasa
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1548,10 +2105,10 @@ class RematesList extends Remates
                 $orderBy = "";
                 $this->setSessionOrderBy($orderBy);
                 $this->setSessionOrderByList($orderBy);
+                $this->ncomp->setSort("");
                 $this->codnum->setSort("");
                 $this->tcomp->setSort("");
                 $this->serie->setSort("");
-                $this->ncomp->setSort("");
                 $this->codcli->setSort("");
                 $this->direccion->setSort("");
                 $this->codpais->setSort("");
@@ -1753,22 +2310,19 @@ class RematesList extends Remates
                         $icon = ($listAction->Icon != "") ? "<i class=\"" . HtmlEncode(str_replace(" ew-icon", "", $listAction->Icon)) . "\" data-caption=\"" . $title . "\"></i> " : "";
                         $link = $disabled
                             ? "<li><div class=\"alert alert-light\">" . $icon . " " . $caption . "</div></li>"
-                            : "<li><button type=\"button\" class=\"dropdown-item ew-action ew-list-action\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fremateslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttrs() . ">" . $icon . " " . $caption . "</button></li>";
+                            : "<li><button type=\"button\" class=\"dropdown-item ew-action ew-list-action\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fremateslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttributes() . ">" . $icon . " " . $caption . "</button></li>";
                         $links[] = $link;
                         if ($body == "") { // Setup first button
                             $body = $disabled
                             ? "<div class=\"alert alert-light\">" . $icon . " " . $caption . "</div>"
-                            : "<button type=\"button\" class=\"btn btn-default ew-action ew-list-action\" title=\"" . $title . "\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fremateslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttrs() . ">" . $icon . " " . $caption . "</button>";
+                            : "<button type=\"button\" class=\"btn btn-default ew-action ew-list-action\" title=\"" . $title . "\" data-caption=\"" . $title . "\" data-ew-action=\"submit\" form=\"fremateslist\" data-key=\"" . $this->keyToJson(true) . "\"" . $listAction->toDataAttributes() . ">" . $icon . " " . $caption . "</button>";
                         }
                     }
                 }
             }
             if (count($links) > 1) { // More than one buttons, use dropdown
                 $body = "<button type=\"button\" class=\"dropdown-toggle btn btn-default ew-actions\" title=\"" . HtmlTitle($Language->phrase("ListActionButton")) . "\" data-bs-toggle=\"dropdown\">" . $Language->phrase("ListActionButton") . "</button>";
-                $content = "";
-                foreach ($links as $link) {
-                    $content .= "<li>" . $link . "</li>";
-                }
+                $content = implode(array_map(fn($link) => "<li>" . $link . "</li>", $links));
                 $body .= "<ul class=\"dropdown-menu" . ($opt->OnLeft ? "" : " dropdown-menu-right") . "\">" . $content . "</ul>";
                 $body = "<div class=\"btn-group btn-group-sm\">" . $body . "</div>";
             }
@@ -1990,10 +2544,9 @@ class RematesList extends Remates
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "codnum");
+            $this->createColumnOption($option, "ncomp");
             $this->createColumnOption($option, "tcomp");
             $this->createColumnOption($option, "serie");
-            $this->createColumnOption($option, "ncomp");
             $this->createColumnOption($option, "codcli");
             $this->createColumnOption($option, "direccion");
             $this->createColumnOption($option, "codpais");
@@ -2104,7 +2657,7 @@ class RematesList extends Remates
                 $item = &$option->add("custom_" . $listAction->Action);
                 $caption = $listAction->Caption;
                 $icon = ($listAction->Icon != "") ? '<i class="' . HtmlEncode($listAction->Icon) . '" data-caption="' . HtmlEncode($caption) . '"></i>' . $caption : $caption;
-                $item->Body = '<button type="button" class="btn btn-default ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" data-ew-action="submit" form="fremateslist"' . $listAction->toDataAttrs() . '>' . $icon . '</button>';
+                $item->Body = '<button type="button" class="btn btn-default ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" data-ew-action="submit" form="fremateslist"' . $listAction->toDataAttributes() . '>' . $icon . '</button>';
                 $item->Visible = $listAction->Allowed;
             }
         }
@@ -2182,7 +2735,9 @@ class RematesList extends Remates
                 }
                 if ($processed) {
                     if ($this->UseTransaction) { // Commit transaction
-                        $conn->commit();
+                        if ($conn->isTransactionActive()) {
+                            $conn->commit();
+                        }
                     }
                     if ($this->getSuccessMessage() == "") {
                         $this->setSuccessMessage($listAction->SuccessMessage);
@@ -2192,7 +2747,9 @@ class RematesList extends Remates
                     }
                 } else {
                     if ($this->UseTransaction) { // Rollback transaction
-                        $conn->rollback();
+                        if ($conn->isTransactionActive()) {
+                            $conn->rollback();
+                        }
                     }
                     if ($this->getFailureMessage() == "") {
                         $this->setFailureMessage($listAction->FailureMessage);
@@ -2358,6 +2915,249 @@ class RematesList extends Remates
         $this->BasicSearch->setType(Get(Config("TABLE_BASIC_SEARCH_TYPE"), ""), false);
     }
 
+    // Load search values for validation
+    protected function loadSearchValues()
+    {
+        // Load search values
+        $hasValue = false;
+
+        // Load query builder rules
+        $rules = Post("rules");
+        if ($rules && $this->Command == "") {
+            $this->QueryRules = $rules;
+            $this->Command = "search";
+        }
+
+        // ncomp
+        if ($this->ncomp->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->ncomp->AdvancedSearch->SearchValue != "" || $this->ncomp->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tcomp
+        if ($this->tcomp->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tcomp->AdvancedSearch->SearchValue != "" || $this->tcomp->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // serie
+        if ($this->serie->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->serie->AdvancedSearch->SearchValue != "" || $this->serie->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codcli
+        if ($this->codcli->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codcli->AdvancedSearch->SearchValue != "" || $this->codcli->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // direccion
+        if ($this->direccion->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->direccion->AdvancedSearch->SearchValue != "" || $this->direccion->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codpais
+        if ($this->codpais->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codpais->AdvancedSearch->SearchValue != "" || $this->codpais->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codprov
+        if ($this->codprov->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codprov->AdvancedSearch->SearchValue != "" || $this->codprov->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // codloc
+        if ($this->codloc->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->codloc->AdvancedSearch->SearchValue != "" || $this->codloc->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fecest
+        if ($this->fecest->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fecest->AdvancedSearch->SearchValue != "" || $this->fecest->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fecreal
+        if ($this->fecreal->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fecreal->AdvancedSearch->SearchValue != "" || $this->fecreal->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // imptot
+        if ($this->imptot->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->imptot->AdvancedSearch->SearchValue != "" || $this->imptot->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // impbase
+        if ($this->impbase->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->impbase->AdvancedSearch->SearchValue != "" || $this->impbase->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // estado
+        if ($this->estado->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->estado->AdvancedSearch->SearchValue != "" || $this->estado->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+        if (is_array($this->estado->AdvancedSearch->SearchValue)) {
+            $this->estado->AdvancedSearch->SearchValue = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $this->estado->AdvancedSearch->SearchValue);
+        }
+        if (is_array($this->estado->AdvancedSearch->SearchValue2)) {
+            $this->estado->AdvancedSearch->SearchValue2 = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $this->estado->AdvancedSearch->SearchValue2);
+        }
+
+        // cantlotes
+        if ($this->cantlotes->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->cantlotes->AdvancedSearch->SearchValue != "" || $this->cantlotes->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // horaest
+        if ($this->horaest->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->horaest->AdvancedSearch->SearchValue != "" || $this->horaest->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // horareal
+        if ($this->horareal->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->horareal->AdvancedSearch->SearchValue != "" || $this->horareal->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // usuario
+        if ($this->usuario->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->usuario->AdvancedSearch->SearchValue != "" || $this->usuario->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fecalta
+        if ($this->fecalta->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fecalta->AdvancedSearch->SearchValue != "" || $this->fecalta->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // observacion
+        if ($this->observacion->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->observacion->AdvancedSearch->SearchValue != "" || $this->observacion->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tipoind
+        if ($this->tipoind->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tipoind->AdvancedSearch->SearchValue != "" || $this->tipoind->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // sello
+        if ($this->sello->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->sello->AdvancedSearch->SearchValue != "" || $this->sello->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // plazoSAP
+        if ($this->plazoSAP->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->plazoSAP->AdvancedSearch->SearchValue != "" || $this->plazoSAP->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // usuarioultmod
+        if ($this->usuarioultmod->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->usuarioultmod->AdvancedSearch->SearchValue != "" || $this->usuarioultmod->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // fecultmod
+        if ($this->fecultmod->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->fecultmod->AdvancedSearch->SearchValue != "" || $this->fecultmod->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // servicios
+        if ($this->servicios->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->servicios->AdvancedSearch->SearchValue != "" || $this->servicios->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // gastos
+        if ($this->gastos->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->gastos->AdvancedSearch->SearchValue != "" || $this->gastos->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+
+        // tasa
+        if ($this->tasa->AdvancedSearch->get()) {
+            $hasValue = true;
+            if (($this->tasa->AdvancedSearch->SearchValue != "" || $this->tasa->AdvancedSearch->SearchValue2 != "") && $this->Command == "") {
+                $this->Command = "search";
+            }
+        }
+        if (is_array($this->tasa->AdvancedSearch->SearchValue)) {
+            $this->tasa->AdvancedSearch->SearchValue = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $this->tasa->AdvancedSearch->SearchValue);
+        }
+        if (is_array($this->tasa->AdvancedSearch->SearchValue2)) {
+            $this->tasa->AdvancedSearch->SearchValue2 = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $this->tasa->AdvancedSearch->SearchValue2);
+        }
+        return $hasValue;
+    }
+
     /**
      * Load result set
      *
@@ -2451,10 +3251,10 @@ class RematesList extends Remates
 
         // Call Row Selected event
         $this->rowSelected($row);
+        $this->ncomp->setDbValue($row['ncomp']);
         $this->codnum->setDbValue($row['codnum']);
         $this->tcomp->setDbValue($row['tcomp']);
         $this->serie->setDbValue($row['serie']);
-        $this->ncomp->setDbValue($row['ncomp']);
         $this->codcli->setDbValue($row['codcli']);
         $this->direccion->setDbValue($row['direccion']);
         $this->codpais->setDbValue($row['codpais']);
@@ -2500,10 +3300,10 @@ class RematesList extends Remates
     protected function newRow()
     {
         $row = [];
+        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codnum'] = $this->codnum->DefaultValue;
         $row['tcomp'] = $this->tcomp->DefaultValue;
         $row['serie'] = $this->serie->DefaultValue;
-        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codcli'] = $this->codcli->DefaultValue;
         $row['direccion'] = $this->direccion->DefaultValue;
         $row['codpais'] = $this->codpais->DefaultValue;
@@ -2568,13 +3368,13 @@ class RematesList extends Remates
 
         // Common render codes for all row types
 
+        // ncomp
+
         // codnum
 
         // tcomp
 
         // serie
-
-        // ncomp
 
         // codcli
 
@@ -2626,6 +3426,10 @@ class RematesList extends Remates
 
         // View row
         if ($this->RowType == RowType::VIEW) {
+            // ncomp
+            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
+            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
+
             // codnum
             $this->codnum->ViewValue = $this->codnum->CurrentValue;
 
@@ -2676,10 +3480,6 @@ class RematesList extends Remates
             } else {
                 $this->serie->ViewValue = null;
             }
-
-            // ncomp
-            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
-            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
 
             // codcli
             $curVal = strval($this->codcli->CurrentValue);
@@ -2877,9 +3677,9 @@ class RematesList extends Remates
                 $this->tasa->ViewValue = $this->tasa->tagCaption(2) != "" ? $this->tasa->tagCaption(2) : "No";
             }
 
-            // codnum
-            $this->codnum->HrefValue = "";
-            $this->codnum->TooltipValue = "";
+            // ncomp
+            $this->ncomp->HrefValue = "";
+            $this->ncomp->TooltipValue = "";
 
             // tcomp
             $this->tcomp->HrefValue = "";
@@ -2889,10 +3689,6 @@ class RematesList extends Remates
             $this->serie->HrefValue = "";
             $this->serie->TooltipValue = "";
 
-            // ncomp
-            $this->ncomp->HrefValue = "";
-            $this->ncomp->TooltipValue = "";
-
             // codcli
             $this->codcli->HrefValue = "";
             $this->codcli->TooltipValue = "";
@@ -2900,6 +3696,9 @@ class RematesList extends Remates
             // direccion
             $this->direccion->HrefValue = "";
             $this->direccion->TooltipValue = "";
+            if (!$this->isExport()) {
+                $this->direccion->ViewValue = $this->highlightValue($this->direccion);
+            }
 
             // codpais
             $this->codpais->HrefValue = "";
@@ -2916,10 +3715,16 @@ class RematesList extends Remates
             // fecest
             $this->fecest->HrefValue = "";
             $this->fecest->TooltipValue = "";
+            if (!$this->isExport()) {
+                $this->fecest->ViewValue = $this->highlightValue($this->fecest);
+            }
 
             // fecreal
             $this->fecreal->HrefValue = "";
             $this->fecreal->TooltipValue = "";
+            if (!$this->isExport()) {
+                $this->fecreal->ViewValue = $this->highlightValue($this->fecreal);
+            }
 
             // imptot
             $this->imptot->HrefValue = "";
@@ -2952,6 +3757,9 @@ class RematesList extends Remates
             // fecalta
             $this->fecalta->HrefValue = "";
             $this->fecalta->TooltipValue = "";
+            if (!$this->isExport()) {
+                $this->fecalta->ViewValue = $this->highlightValue($this->fecalta);
+            }
 
             // tipoind
             $this->tipoind->HrefValue = "";
@@ -2972,6 +3780,9 @@ class RematesList extends Remates
             // fecultmod
             $this->fecultmod->HrefValue = "";
             $this->fecultmod->TooltipValue = "";
+            if (!$this->isExport()) {
+                $this->fecultmod->ViewValue = $this->highlightValue($this->fecultmod);
+            }
 
             // servicios
             $this->servicios->HrefValue = "";
@@ -2984,12 +3795,209 @@ class RematesList extends Remates
             // tasa
             $this->tasa->HrefValue = "";
             $this->tasa->TooltipValue = "";
+        } elseif ($this->RowType == RowType::SEARCH) {
+            // ncomp
+            $this->ncomp->setupEditAttributes();
+            $this->ncomp->EditValue = $this->ncomp->AdvancedSearch->SearchValue;
+            $this->ncomp->PlaceHolder = RemoveHtml($this->ncomp->caption());
+
+            // tcomp
+            $this->tcomp->setupEditAttributes();
+            $this->tcomp->PlaceHolder = RemoveHtml($this->tcomp->caption());
+
+            // serie
+            $this->serie->setupEditAttributes();
+            $this->serie->PlaceHolder = RemoveHtml($this->serie->caption());
+
+            // codcli
+            $this->codcli->setupEditAttributes();
+            $this->codcli->PlaceHolder = RemoveHtml($this->codcli->caption());
+            $this->codcli->setupEditAttributes();
+            $this->codcli->PlaceHolder = RemoveHtml($this->codcli->caption());
+
+            // direccion
+            $this->direccion->setupEditAttributes();
+            if (!$this->direccion->Raw) {
+                $this->direccion->AdvancedSearch->SearchValue = HtmlDecode($this->direccion->AdvancedSearch->SearchValue);
+            }
+            $this->direccion->EditValue = HtmlEncode($this->direccion->AdvancedSearch->SearchValue);
+            $this->direccion->PlaceHolder = RemoveHtml($this->direccion->caption());
+
+            // codpais
+            $this->codpais->setupEditAttributes();
+            $this->codpais->EditValue = $this->codpais->AdvancedSearch->SearchValue;
+            $this->codpais->PlaceHolder = RemoveHtml($this->codpais->caption());
+            $this->codpais->setupEditAttributes();
+            $this->codpais->EditValue2 = $this->codpais->AdvancedSearch->SearchValue2;
+            $this->codpais->PlaceHolder = RemoveHtml($this->codpais->caption());
+
+            // codprov
+            $this->codprov->setupEditAttributes();
+            $this->codprov->EditValue = $this->codprov->AdvancedSearch->SearchValue;
+            $this->codprov->PlaceHolder = RemoveHtml($this->codprov->caption());
+            $this->codprov->setupEditAttributes();
+            $this->codprov->EditValue2 = $this->codprov->AdvancedSearch->SearchValue2;
+            $this->codprov->PlaceHolder = RemoveHtml($this->codprov->caption());
+
+            // codloc
+            $this->codloc->setupEditAttributes();
+            $this->codloc->EditValue = $this->codloc->AdvancedSearch->SearchValue;
+            $this->codloc->PlaceHolder = RemoveHtml($this->codloc->caption());
+            $this->codloc->setupEditAttributes();
+            $this->codloc->EditValue2 = $this->codloc->AdvancedSearch->SearchValue2;
+            $this->codloc->PlaceHolder = RemoveHtml($this->codloc->caption());
+
+            // fecest
+            $this->fecest->setupEditAttributes();
+            $this->fecest->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->fecest->AdvancedSearch->SearchValue, $this->fecest->formatPattern()), $this->fecest->formatPattern()));
+            $this->fecest->PlaceHolder = RemoveHtml($this->fecest->caption());
+
+            // fecreal
+            $this->fecreal->setupEditAttributes();
+            $this->fecreal->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->fecreal->AdvancedSearch->SearchValue, $this->fecreal->formatPattern()), $this->fecreal->formatPattern()));
+            $this->fecreal->PlaceHolder = RemoveHtml($this->fecreal->caption());
+
+            // imptot
+            $this->imptot->setupEditAttributes();
+            $this->imptot->EditValue = $this->imptot->AdvancedSearch->SearchValue;
+            $this->imptot->PlaceHolder = RemoveHtml($this->imptot->caption());
+
+            // impbase
+            $this->impbase->setupEditAttributes();
+            $this->impbase->EditValue = $this->impbase->AdvancedSearch->SearchValue;
+            $this->impbase->PlaceHolder = RemoveHtml($this->impbase->caption());
+
+            // estado
+            $this->estado->EditValue = $this->estado->options(false);
+            $this->estado->PlaceHolder = RemoveHtml($this->estado->caption());
+
+            // cantlotes
+            $this->cantlotes->setupEditAttributes();
+            $this->cantlotes->EditValue = $this->cantlotes->AdvancedSearch->SearchValue;
+            $this->cantlotes->PlaceHolder = RemoveHtml($this->cantlotes->caption());
+
+            // horaest
+            $this->horaest->setupEditAttributes();
+            $this->horaest->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->horaest->AdvancedSearch->SearchValue, $this->horaest->formatPattern()), $this->horaest->formatPattern()));
+            $this->horaest->PlaceHolder = RemoveHtml($this->horaest->caption());
+
+            // horareal
+            $this->horareal->setupEditAttributes();
+            $this->horareal->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->horareal->AdvancedSearch->SearchValue, $this->horareal->formatPattern()), $this->horareal->formatPattern()));
+            $this->horareal->PlaceHolder = RemoveHtml($this->horareal->caption());
+
+            // usuario
+            $this->usuario->setupEditAttributes();
+            $this->usuario->EditValue = $this->usuario->AdvancedSearch->SearchValue;
+            $this->usuario->PlaceHolder = RemoveHtml($this->usuario->caption());
+
+            // fecalta
+            $this->fecalta->setupEditAttributes();
+            $this->fecalta->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->fecalta->AdvancedSearch->SearchValue, $this->fecalta->formatPattern()), $this->fecalta->formatPattern()));
+            $this->fecalta->PlaceHolder = RemoveHtml($this->fecalta->caption());
+
+            // tipoind
+            $this->tipoind->setupEditAttributes();
+            $this->tipoind->EditValue = $this->tipoind->AdvancedSearch->SearchValue;
+            $this->tipoind->PlaceHolder = RemoveHtml($this->tipoind->caption());
+
+            // sello
+            $this->sello->setupEditAttributes();
+            $this->sello->EditValue = $this->sello->options(true);
+            $this->sello->PlaceHolder = RemoveHtml($this->sello->caption());
+
+            // plazoSAP
+            $this->plazoSAP->setupEditAttributes();
+            $this->plazoSAP->EditValue = $this->plazoSAP->options(true);
+            $this->plazoSAP->PlaceHolder = RemoveHtml($this->plazoSAP->caption());
+
+            // usuarioultmod
+            $this->usuarioultmod->setupEditAttributes();
+            $this->usuarioultmod->EditValue = $this->usuarioultmod->AdvancedSearch->SearchValue;
+            $this->usuarioultmod->PlaceHolder = RemoveHtml($this->usuarioultmod->caption());
+
+            // fecultmod
+            $this->fecultmod->setupEditAttributes();
+            $this->fecultmod->EditValue = HtmlEncode(FormatDateTime(UnFormatDateTime($this->fecultmod->AdvancedSearch->SearchValue, $this->fecultmod->formatPattern()), $this->fecultmod->formatPattern()));
+            $this->fecultmod->PlaceHolder = RemoveHtml($this->fecultmod->caption());
+
+            // servicios
+            $this->servicios->setupEditAttributes();
+            $this->servicios->EditValue = $this->servicios->AdvancedSearch->SearchValue;
+            $this->servicios->PlaceHolder = RemoveHtml($this->servicios->caption());
+
+            // gastos
+            $this->gastos->setupEditAttributes();
+            $this->gastos->EditValue = $this->gastos->AdvancedSearch->SearchValue;
+            $this->gastos->PlaceHolder = RemoveHtml($this->gastos->caption());
+
+            // tasa
+            $this->tasa->EditValue = $this->tasa->options(false);
+            $this->tasa->PlaceHolder = RemoveHtml($this->tasa->caption());
+        }
+        if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
+            $this->setupFieldTitles();
         }
 
         // Call Row Rendered event
         if ($this->RowType != RowType::AGGREGATEINIT) {
             $this->rowRendered();
         }
+    }
+
+    // Validate search
+    protected function validateSearch()
+    {
+        // Check if validation required
+        if (!Config("SERVER_VALIDATE")) {
+            return true;
+        }
+        if (!CheckInteger($this->ncomp->AdvancedSearch->SearchValue)) {
+            $this->ncomp->addErrorMessage($this->ncomp->getErrorMessage(false));
+        }
+
+        // Return validate result
+        $validateSearch = !$this->hasInvalidFields();
+
+        // Call Form_CustomValidate event
+        $formCustomError = "";
+        $validateSearch = $validateSearch && $this->formCustomValidate($formCustomError);
+        if ($formCustomError != "") {
+            $this->setFailureMessage($formCustomError);
+        }
+        return $validateSearch;
+    }
+
+    // Load advanced search
+    public function loadAdvancedSearch()
+    {
+        $this->ncomp->AdvancedSearch->load();
+        $this->tcomp->AdvancedSearch->load();
+        $this->serie->AdvancedSearch->load();
+        $this->codcli->AdvancedSearch->load();
+        $this->direccion->AdvancedSearch->load();
+        $this->codpais->AdvancedSearch->load();
+        $this->codprov->AdvancedSearch->load();
+        $this->codloc->AdvancedSearch->load();
+        $this->fecest->AdvancedSearch->load();
+        $this->fecreal->AdvancedSearch->load();
+        $this->imptot->AdvancedSearch->load();
+        $this->impbase->AdvancedSearch->load();
+        $this->estado->AdvancedSearch->load();
+        $this->cantlotes->AdvancedSearch->load();
+        $this->horaest->AdvancedSearch->load();
+        $this->horareal->AdvancedSearch->load();
+        $this->usuario->AdvancedSearch->load();
+        $this->fecalta->AdvancedSearch->load();
+        $this->observacion->AdvancedSearch->load();
+        $this->tipoind->AdvancedSearch->load();
+        $this->sello->AdvancedSearch->load();
+        $this->plazoSAP->AdvancedSearch->load();
+        $this->usuarioultmod->AdvancedSearch->load();
+        $this->fecultmod->AdvancedSearch->load();
+        $this->servicios->AdvancedSearch->load();
+        $this->gastos->AdvancedSearch->load();
+        $this->tasa->AdvancedSearch->load();
     }
 
     // Get export HTML tag
@@ -3117,6 +4125,20 @@ class RematesList extends Remates
             $item->Body = "<a class=\"btn btn-default ew-show-all\" role=\"button\" title=\"" . $Language->phrase("ShowAll") . "\" data-caption=\"" . $Language->phrase("ShowAll") . "\" data-ew-action=\"refresh\" data-url=\"" . $pageUrl . "cmd=reset\">" . $Language->phrase("ShowAllBtn") . "</a>";
         }
         $item->Visible = ($this->SearchWhere != $this->DefaultSearchWhere && $this->SearchWhere != "0=101");
+
+        // Query builder button
+        $item = &$this->SearchOptions->add("querybuilder");
+        if ($this->ModalSearch && !IsMobile()) {
+            $item->Body = "<a class=\"btn btn-default ew-query-builder\" title=\"" . $Language->phrase("QueryBuilder", true) . "\" data-table=\"remates\" data-caption=\"" . $Language->phrase("QueryBuilder", true) . "\" data-ew-action=\"modal\" data-url=\"RematesQuery\" data-btn=\"SearchBtn\">" . $Language->phrase("QueryBuilder", false) . "</a>";
+        } else {
+            $item->Body = "<a class=\"btn btn-default ew-query-builder\" title=\"" . $Language->phrase("QueryBuilder", true) . "\" data-caption=\"" . $Language->phrase("QueryBuilder", true) . "\" href=\"RematesQuery\">" . $Language->phrase("QueryBuilder", false) . "</a>";
+        }
+        $item->Visible = true;
+
+        // Search highlight button
+        $item = &$this->SearchOptions->add("searchhighlight");
+        $item->Body = "<a class=\"btn btn-default ew-highlight active\" role=\"button\" title=\"" . $Language->phrase("Highlight") . "\" data-caption=\"" . $Language->phrase("Highlight") . "\" data-ew-action=\"highlight\" data-form=\"frematessrch\" data-name=\"" . $this->highlightName() . "\">" . $Language->phrase("HighlightBtn") . "</a>";
+        $item->Visible = ($this->SearchWhere != "" && $this->TotalRecords > 0);
 
         // Button group for search
         $this->SearchOptions->UseDropDownButton = false;

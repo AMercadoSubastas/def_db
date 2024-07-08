@@ -56,17 +56,6 @@ loadjs.ready("head", function () {
 <input type="hidden" name="t" value="lotes">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
 <table class="<?= $Page->TableClass ?>">
-<?php if ($Page->codnum->Visible) { // codnum ?>
-    <tr id="r_codnum"<?= $Page->codnum->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_lotes_codnum"><?= $Page->codnum->caption() ?></span></td>
-        <td data-name="codnum"<?= $Page->codnum->cellAttributes() ?>>
-<span id="el_lotes_codnum">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->codrem->Visible) { // codrem ?>
     <tr id="r_codrem"<?= $Page->codrem->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_lotes_codrem"><?= $Page->codrem->caption() ?></span></td>
@@ -309,17 +298,6 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
-    <tr id="r_dir_secuencia"<?= $Page->dir_secuencia->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_lotes_dir_secuencia"><?= $Page->dir_secuencia->caption() ?></span></td>
-        <td data-name="dir_secuencia"<?= $Page->dir_secuencia->cellAttributes() ?>>
-<span id="el_lotes_dir_secuencia">
-<span<?= $Page->dir_secuencia->viewAttributes() ?>>
-<?= $Page->dir_secuencia->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
     <tr id="r_usuarioultmod"<?= $Page->usuarioultmod->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_lotes_usuarioultmod"><?= $Page->usuarioultmod->caption() ?></span></td>
@@ -338,6 +316,17 @@ loadjs.ready("head", function () {
 <span id="el_lotes_fecultmod">
 <span<?= $Page->fecultmod->viewAttributes() ?>>
 <?= $Page->fecultmod->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
+<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
+    <tr id="r_dir_secuencia"<?= $Page->dir_secuencia->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_lotes_dir_secuencia"><?= $Page->dir_secuencia->caption() ?></span></td>
+        <td data-name="dir_secuencia"<?= $Page->dir_secuencia->cellAttributes() ?>>
+<span id="el_lotes_dir_secuencia">
+<span<?= $Page->dir_secuencia->viewAttributes() ?>>
+<?= $Page->dir_secuencia->getViewValue() ?></span>
 </span>
 </td>
     </tr>

@@ -84,10 +84,12 @@ function Page_Loading()
     //Log("Page Loading");
 }
 
-// Page Rendering event
-function Page_Rendering()
-{
-    //Log("Page Rendering");
+function Page_Rendering() {
+    // Agregar jQuery
+    echo '<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>';
+
+    // Agregar SweetAlert
+    echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 }
 
 // Page Unloaded event

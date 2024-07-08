@@ -23,7 +23,6 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["codnum", [fields.codnum.visible && fields.codnum.required ? ew.Validators.required(fields.codnum.caption) : null], fields.codnum.isInvalid],
             ["codrem", [fields.codrem.visible && fields.codrem.required ? ew.Validators.required(fields.codrem.caption) : null], fields.codrem.isInvalid],
             ["codcli", [fields.codcli.visible && fields.codcli.required ? ew.Validators.required(fields.codcli.caption) : null], fields.codcli.isInvalid],
             ["codrubro", [fields.codrubro.visible && fields.codrubro.required ? ew.Validators.required(fields.codrubro.caption) : null], fields.codrubro.isInvalid],
@@ -46,9 +45,9 @@ loadjs.ready(["wrapper", "head"], function () {
             ["codintlote", [fields.codintlote.visible && fields.codintlote.required ? ew.Validators.required(fields.codintlote.caption) : null], fields.codintlote.isInvalid],
             ["codintnum", [fields.codintnum.visible && fields.codintnum.required ? ew.Validators.required(fields.codintnum.caption) : null], fields.codintnum.isInvalid],
             ["codintsublote", [fields.codintsublote.visible && fields.codintsublote.required ? ew.Validators.required(fields.codintsublote.caption) : null], fields.codintsublote.isInvalid],
-            ["dir_secuencia", [fields.dir_secuencia.visible && fields.dir_secuencia.required ? ew.Validators.required(fields.dir_secuencia.caption) : null], fields.dir_secuencia.isInvalid],
             ["usuarioultmod", [fields.usuarioultmod.visible && fields.usuarioultmod.required ? ew.Validators.required(fields.usuarioultmod.caption) : null], fields.usuarioultmod.isInvalid],
-            ["fecultmod", [fields.fecultmod.visible && fields.fecultmod.required ? ew.Validators.required(fields.fecultmod.caption) : null], fields.fecultmod.isInvalid]
+            ["fecultmod", [fields.fecultmod.visible && fields.fecultmod.required ? ew.Validators.required(fields.fecultmod.caption) : null], fields.fecultmod.isInvalid],
+            ["dir_secuencia", [fields.dir_secuencia.visible && fields.dir_secuencia.required ? ew.Validators.required(fields.dir_secuencia.caption) : null], fields.dir_secuencia.isInvalid]
         ])
 
         // Check empty row
@@ -112,9 +111,6 @@ $Grid->renderListOptions();
 // Render list options (header, left)
 $Grid->ListOptions->render("header", "left");
 ?>
-<?php if ($Grid->codnum->Visible) { // codnum ?>
-        <th data-name="codnum" class="<?= $Grid->codnum->headerCellClass() ?>"><div id="elh_lotes_codnum" class="lotes_codnum"><?= $Grid->renderFieldHeader($Grid->codnum) ?></div></th>
-<?php } ?>
 <?php if ($Grid->codrem->Visible) { // codrem ?>
         <th data-name="codrem" class="<?= $Grid->codrem->headerCellClass() ?>"><div id="elh_lotes_codrem" class="lotes_codrem"><?= $Grid->renderFieldHeader($Grid->codrem) ?></div></th>
 <?php } ?>
@@ -181,14 +177,14 @@ $Grid->ListOptions->render("header", "left");
 <?php if ($Grid->codintsublote->Visible) { // codintsublote ?>
         <th data-name="codintsublote" class="<?= $Grid->codintsublote->headerCellClass() ?>"><div id="elh_lotes_codintsublote" class="lotes_codintsublote"><?= $Grid->renderFieldHeader($Grid->codintsublote) ?></div></th>
 <?php } ?>
-<?php if ($Grid->dir_secuencia->Visible) { // dir_secuencia ?>
-        <th data-name="dir_secuencia" class="<?= $Grid->dir_secuencia->headerCellClass() ?>"><div id="elh_lotes_dir_secuencia" class="lotes_dir_secuencia"><?= $Grid->renderFieldHeader($Grid->dir_secuencia) ?></div></th>
-<?php } ?>
 <?php if ($Grid->usuarioultmod->Visible) { // usuarioultmod ?>
         <th data-name="usuarioultmod" class="<?= $Grid->usuarioultmod->headerCellClass() ?>"><div id="elh_lotes_usuarioultmod" class="lotes_usuarioultmod"><?= $Grid->renderFieldHeader($Grid->usuarioultmod) ?></div></th>
 <?php } ?>
 <?php if ($Grid->fecultmod->Visible) { // fecultmod ?>
         <th data-name="fecultmod" class="<?= $Grid->fecultmod->headerCellClass() ?>"><div id="elh_lotes_fecultmod" class="lotes_fecultmod"><?= $Grid->renderFieldHeader($Grid->fecultmod) ?></div></th>
+<?php } ?>
+<?php if ($Grid->dir_secuencia->Visible) { // dir_secuencia ?>
+        <th data-name="dir_secuencia" class="<?= $Grid->dir_secuencia->headerCellClass() ?>"><div id="elh_lotes_dir_secuencia" class="lotes_dir_secuencia"><?= $Grid->renderFieldHeader($Grid->dir_secuencia) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -225,31 +221,6 @@ while ($Grid->RecordCount < $Grid->StopRecord || $Grid->RowIndex === '$rowindex$
 // Render list options (body, left)
 $Grid->ListOptions->render("body", "left", $Grid->RowCount);
 ?>
-    <?php if ($Grid->codnum->Visible) { // codnum ?>
-        <td data-name="codnum"<?= $Grid->codnum->cellAttributes() ?>>
-<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_codnum" class="el_lotes_codnum"></span>
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_codnum" id="o<?= $Grid->RowIndex ?>_codnum" value="<?= HtmlEncode($Grid->codnum->OldValue) ?>">
-<?php } ?>
-<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_codnum" class="el_lotes_codnum">
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" name="x<?= $Grid->RowIndex ?>_codnum" id="x<?= $Grid->RowIndex ?>_codnum" value="<?= HtmlEncode($Grid->codnum->CurrentValue) ?>">
-</span>
-<?php } ?>
-<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_codnum" class="el_lotes_codnum">
-<span<?= $Grid->codnum->viewAttributes() ?>>
-<?= $Grid->codnum->getViewValue() ?></span>
-</span>
-<?php if ($Grid->isConfirm()) { ?>
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_codnum" id="flotesgrid$x<?= $Grid->RowIndex ?>_codnum" value="<?= HtmlEncode($Grid->codnum->FormValue) ?>">
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_codnum" id="flotesgrid$o<?= $Grid->RowIndex ?>_codnum" value="<?= HtmlEncode($Grid->codnum->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-    <?php } else { ?>
-            <input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" name="x<?= $Grid->RowIndex ?>_codnum" id="x<?= $Grid->RowIndex ?>_codnum" value="<?= HtmlEncode($Grid->codnum->CurrentValue) ?>">
-    <?php } ?>
     <?php if ($Grid->codrem->Visible) { // codrem ?>
         <td data-name="codrem"<?= $Grid->codrem->cellAttributes() ?>>
 <?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
@@ -267,7 +238,7 @@ if (IsRTL()) {
 <span id="as_x<?= $Grid->RowIndex ?>_codrem" class="ew-auto-suggest">
     <input type="<?= $Grid->codrem->getInputTextType() ?>" class="form-control" name="sv_x<?= $Grid->RowIndex ?>_codrem" id="sv_x<?= $Grid->RowIndex ?>_codrem" value="<?= RemoveHtml($Grid->codrem->EditValue) ?>" autocomplete="off" size="30" placeholder="<?= HtmlEncode($Grid->codrem->getPlaceHolder()) ?>" data-placeholder="<?= HtmlEncode($Grid->codrem->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Grid->codrem->formatPattern()) ?>"<?= $Grid->codrem->editAttributes() ?>>
 </span>
-<selection-list hidden class="form-control" data-table="lotes" data-field="x_codrem" data-input="sv_x<?= $Grid->RowIndex ?>_codrem" data-value-separator="<?= $Grid->codrem->displayValueSeparatorAttribute() ?>" name="x<?= $Grid->RowIndex ?>_codrem" id="x<?= $Grid->RowIndex ?>_codrem" value="<?= HtmlEncode($Grid->codrem->CurrentValue) ?>" data-ew-action="update-options"></selection-list>
+<selection-list hidden class="form-control" data-table="lotes" data-field="x_codrem" data-input="sv_x<?= $Grid->RowIndex ?>_codrem" data-value-separator="<?= $Grid->codrem->displayValueSeparatorAttribute() ?>" name="x<?= $Grid->RowIndex ?>_codrem" id="x<?= $Grid->RowIndex ?>_codrem" value="<?= HtmlEncode($Grid->codrem->CurrentValue) ?>"></selection-list>
 <div class="invalid-feedback"><?= $Grid->codrem->getErrorMessage() ?></div>
 <script>
 loadjs.ready("flotesgrid", function() {
@@ -380,9 +351,27 @@ loadjs.ready("flotesgrid", function() {
 <?php } ?>
 <?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
 <span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_estado" class="el_lotes_estado">
-<span<?= $Grid->estado->viewAttributes() ?>>
-<span class="form-control-plaintext"><?= $Grid->estado->getDisplayValue($Grid->estado->EditValue) ?></span></span>
-<input type="hidden" data-table="lotes" data-field="x_estado" data-hidden="1" name="x<?= $Grid->RowIndex ?>_estado" id="x<?= $Grid->RowIndex ?>_estado" value="<?= HtmlEncode($Grid->estado->CurrentValue) ?>">
+<template id="tp_x<?= $Grid->RowIndex ?>_estado">
+    <div class="form-check">
+        <input type="radio" class="form-check-input" data-table="lotes" data-field="x_estado" name="x<?= $Grid->RowIndex ?>_estado" id="x<?= $Grid->RowIndex ?>_estado"<?= $Grid->estado->editAttributes() ?>>
+        <label class="form-check-label"></label>
+    </div>
+</template>
+<div id="dsl_x<?= $Grid->RowIndex ?>_estado" class="ew-item-list"></div>
+<selection-list hidden
+    id="x<?= $Grid->RowIndex ?>_estado"
+    name="x<?= $Grid->RowIndex ?>_estado"
+    value="<?= HtmlEncode($Grid->estado->CurrentValue) ?>"
+    data-type="select-one"
+    data-template="tp_x<?= $Grid->RowIndex ?>_estado"
+    data-target="dsl_x<?= $Grid->RowIndex ?>_estado"
+    data-repeatcolumn="5"
+    class="form-control<?= $Grid->estado->isInvalidClass() ?>"
+    data-table="lotes"
+    data-field="x_estado"
+    data-value-separator="<?= $Grid->estado->displayValueSeparatorAttribute() ?>"
+    <?= $Grid->estado->editAttributes() ?>></selection-list>
+<div class="invalid-feedback"><?= $Grid->estado->getErrorMessage() ?></div>
 </span>
 <?php } ?>
 <?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
@@ -783,8 +772,9 @@ loadjs.ready("flotesgrid", function() {
 <?php } ?>
 <?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
 <span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_codintlote" class="el_lotes_codintlote">
-<input type="<?= $Grid->codintlote->getInputTextType() ?>" name="x<?= $Grid->RowIndex ?>_codintlote" id="x<?= $Grid->RowIndex ?>_codintlote" data-table="lotes" data-field="x_codintlote" value="<?= $Grid->codintlote->EditValue ?>" size="30" maxlength="8" placeholder="<?= HtmlEncode($Grid->codintlote->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Grid->codintlote->formatPattern()) ?>"<?= $Grid->codintlote->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Grid->codintlote->getErrorMessage() ?></div>
+<span<?= $Grid->codintlote->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Grid->codintlote->getDisplayValue($Grid->codintlote->EditValue))) ?>"></span>
+<input type="hidden" data-table="lotes" data-field="x_codintlote" data-hidden="1" name="x<?= $Grid->RowIndex ?>_codintlote" id="x<?= $Grid->RowIndex ?>_codintlote" value="<?= HtmlEncode($Grid->codintlote->CurrentValue) ?>">
 </span>
 <?php } ?>
 <?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
@@ -847,6 +837,44 @@ loadjs.ready("flotesgrid", function() {
 <?php if ($Grid->isConfirm()) { ?>
 <input type="hidden" data-table="lotes" data-field="x_codintsublote" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_codintsublote" id="flotesgrid$x<?= $Grid->RowIndex ?>_codintsublote" value="<?= HtmlEncode($Grid->codintsublote->FormValue) ?>">
 <input type="hidden" data-table="lotes" data-field="x_codintsublote" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_codintsublote" id="flotesgrid$o<?= $Grid->RowIndex ?>_codintsublote" value="<?= HtmlEncode($Grid->codintsublote->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+    <?php } ?>
+    <?php if ($Grid->usuarioultmod->Visible) { // usuarioultmod ?>
+        <td data-name="usuarioultmod"<?= $Grid->usuarioultmod->cellAttributes() ?>>
+<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
+<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_usuarioultmod" id="o<?= $Grid->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Grid->usuarioultmod->OldValue) ?>">
+<?php } ?>
+<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
+<?php } ?>
+<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
+<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_usuarioultmod" class="el_lotes_usuarioultmod">
+<span<?= $Grid->usuarioultmod->viewAttributes() ?>>
+<?= $Grid->usuarioultmod->getViewValue() ?></span>
+</span>
+<?php if ($Grid->isConfirm()) { ?>
+<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_usuarioultmod" id="flotesgrid$x<?= $Grid->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Grid->usuarioultmod->FormValue) ?>">
+<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_usuarioultmod" id="flotesgrid$o<?= $Grid->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Grid->usuarioultmod->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+    <?php } ?>
+    <?php if ($Grid->fecultmod->Visible) { // fecultmod ?>
+        <td data-name="fecultmod"<?= $Grid->fecultmod->cellAttributes() ?>>
+<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
+<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_fecultmod" id="o<?= $Grid->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Grid->fecultmod->OldValue) ?>">
+<?php } ?>
+<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
+<?php } ?>
+<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
+<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_fecultmod" class="el_lotes_fecultmod">
+<span<?= $Grid->fecultmod->viewAttributes() ?>>
+<?= $Grid->fecultmod->getViewValue() ?></span>
+</span>
+<?php if ($Grid->isConfirm()) { ?>
+<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_fecultmod" id="flotesgrid$x<?= $Grid->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Grid->fecultmod->FormValue) ?>">
+<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_fecultmod" id="flotesgrid$o<?= $Grid->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Grid->fecultmod->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>
@@ -942,44 +970,6 @@ loadjs.ready("flotesgrid", function() {
 <?php if ($Grid->isConfirm()) { ?>
 <input type="hidden" data-table="lotes" data-field="x_dir_secuencia" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_dir_secuencia" id="flotesgrid$x<?= $Grid->RowIndex ?>_dir_secuencia" value="<?= HtmlEncode($Grid->dir_secuencia->FormValue) ?>">
 <input type="hidden" data-table="lotes" data-field="x_dir_secuencia" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_dir_secuencia" id="flotesgrid$o<?= $Grid->RowIndex ?>_dir_secuencia" value="<?= HtmlEncode($Grid->dir_secuencia->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Grid->usuarioultmod->Visible) { // usuarioultmod ?>
-        <td data-name="usuarioultmod"<?= $Grid->usuarioultmod->cellAttributes() ?>>
-<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
-<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_usuarioultmod" id="o<?= $Grid->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Grid->usuarioultmod->OldValue) ?>">
-<?php } ?>
-<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
-<?php } ?>
-<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_usuarioultmod" class="el_lotes_usuarioultmod">
-<span<?= $Grid->usuarioultmod->viewAttributes() ?>>
-<?= $Grid->usuarioultmod->getViewValue() ?></span>
-</span>
-<?php if ($Grid->isConfirm()) { ?>
-<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_usuarioultmod" id="flotesgrid$x<?= $Grid->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Grid->usuarioultmod->FormValue) ?>">
-<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_usuarioultmod" id="flotesgrid$o<?= $Grid->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Grid->usuarioultmod->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Grid->fecultmod->Visible) { // fecultmod ?>
-        <td data-name="fecultmod"<?= $Grid->fecultmod->cellAttributes() ?>>
-<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
-<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_fecultmod" id="o<?= $Grid->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Grid->fecultmod->OldValue) ?>">
-<?php } ?>
-<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
-<?php } ?>
-<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_lotes_fecultmod" class="el_lotes_fecultmod">
-<span<?= $Grid->fecultmod->viewAttributes() ?>>
-<?= $Grid->fecultmod->getViewValue() ?></span>
-</span>
-<?php if ($Grid->isConfirm()) { ?>
-<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" name="flotesgrid$x<?= $Grid->RowIndex ?>_fecultmod" id="flotesgrid$x<?= $Grid->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Grid->fecultmod->FormValue) ?>">
-<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" data-old name="flotesgrid$o<?= $Grid->RowIndex ?>_fecultmod" id="flotesgrid$o<?= $Grid->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Grid->fecultmod->OldValue) ?>">
 <?php } ?>
 <?php } ?>
 </td>

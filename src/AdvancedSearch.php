@@ -184,12 +184,13 @@ class AdvancedSearch
     public function save()
     {
         $fldVal = $this->SearchValue;
+        $sep = $this->Field->UseFilter ? Config("FILTER_OPTION_SEPARATOR") : Config("MULTIPLE_OPTION_SEPARATOR");
         if (is_array($fldVal)) {
-            $fldVal = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal);
+            $fldVal = implode($sep, $fldVal);
         }
         $fldVal2 = $this->SearchValue2;
         if (is_array($fldVal2)) {
-            $fldVal2 = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal2);
+            $fldVal2 = implode($sep, $fldVal2);
         }
         if (Session($this->getSessionName("x")) != $fldVal) {
             $_SESSION[$this->getSessionName("x")] = $fldVal;

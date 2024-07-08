@@ -25,7 +25,6 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["codnum", [fields.codnum.visible && fields.codnum.required ? ew.Validators.required(fields.codnum.caption) : null], fields.codnum.isInvalid],
             ["codrem", [fields.codrem.visible && fields.codrem.required ? ew.Validators.required(fields.codrem.caption) : null], fields.codrem.isInvalid],
             ["codcli", [fields.codcli.visible && fields.codcli.required ? ew.Validators.required(fields.codcli.caption) : null], fields.codcli.isInvalid],
             ["codrubro", [fields.codrubro.visible && fields.codrubro.required ? ew.Validators.required(fields.codrubro.caption) : null], fields.codrubro.isInvalid],
@@ -48,9 +47,9 @@ loadjs.ready(["wrapper", "head"], function () {
             ["codintlote", [fields.codintlote.visible && fields.codintlote.required ? ew.Validators.required(fields.codintlote.caption) : null], fields.codintlote.isInvalid],
             ["codintnum", [fields.codintnum.visible && fields.codintnum.required ? ew.Validators.required(fields.codintnum.caption) : null], fields.codintnum.isInvalid],
             ["codintsublote", [fields.codintsublote.visible && fields.codintsublote.required ? ew.Validators.required(fields.codintsublote.caption) : null], fields.codintsublote.isInvalid],
-            ["dir_secuencia", [fields.dir_secuencia.visible && fields.dir_secuencia.required ? ew.Validators.required(fields.dir_secuencia.caption) : null], fields.dir_secuencia.isInvalid],
             ["usuarioultmod", [fields.usuarioultmod.visible && fields.usuarioultmod.required ? ew.Validators.required(fields.usuarioultmod.caption) : null], fields.usuarioultmod.isInvalid],
-            ["fecultmod", [fields.fecultmod.visible && fields.fecultmod.required ? ew.Validators.required(fields.fecultmod.caption) : null], fields.fecultmod.isInvalid]
+            ["fecultmod", [fields.fecultmod.visible && fields.fecultmod.required ? ew.Validators.required(fields.fecultmod.caption) : null], fields.fecultmod.isInvalid],
+            ["dir_secuencia", [fields.dir_secuencia.visible && fields.dir_secuencia.required ? ew.Validators.required(fields.dir_secuencia.caption) : null], fields.dir_secuencia.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -83,7 +82,7 @@ ew.PREVIEW_NAV_STYLE ??= "tabs"; // tabs/pills/underline
 ew.PREVIEW_MODAL_CLASS ??= "modal modal-fullscreen-sm-down";
 ew.PREVIEW_ROW ??= true;
 ew.PREVIEW_SINGLE_ROW ??= false;
-ew.PREVIEW || ew.ready("head", ew.PATH_BASE + "js/preview.js?v=24.4.0", "preview");
+ew.PREVIEW || ew.ready("head", ew.PATH_BASE + "js/preview.min.js?v=24.13.0", "preview");
 </script>
 <script>
 loadjs.ready("head", function () {
@@ -230,9 +229,6 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <th data-name="codnum" class="<?= $Page->codnum->headerCellClass() ?>"><div id="elh_lotes_codnum" class="lotes_codnum"><?= $Page->renderFieldHeader($Page->codnum) ?></div></th>
-<?php } ?>
 <?php if ($Page->codrem->Visible) { // codrem ?>
         <th data-name="codrem" class="<?= $Page->codrem->headerCellClass() ?>"><div id="elh_lotes_codrem" class="lotes_codrem"><?= $Page->renderFieldHeader($Page->codrem) ?></div></th>
 <?php } ?>
@@ -299,14 +295,14 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->codintsublote->Visible) { // codintsublote ?>
         <th data-name="codintsublote" class="<?= $Page->codintsublote->headerCellClass() ?>"><div id="elh_lotes_codintsublote" class="lotes_codintsublote"><?= $Page->renderFieldHeader($Page->codintsublote) ?></div></th>
 <?php } ?>
-<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
-        <th data-name="dir_secuencia" class="<?= $Page->dir_secuencia->headerCellClass() ?>"><div id="elh_lotes_dir_secuencia" class="lotes_dir_secuencia"><?= $Page->renderFieldHeader($Page->dir_secuencia) ?></div></th>
-<?php } ?>
 <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
         <th data-name="usuarioultmod" class="<?= $Page->usuarioultmod->headerCellClass() ?>"><div id="elh_lotes_usuarioultmod" class="lotes_usuarioultmod"><?= $Page->renderFieldHeader($Page->usuarioultmod) ?></div></th>
 <?php } ?>
 <?php if ($Page->fecultmod->Visible) { // fecultmod ?>
         <th data-name="fecultmod" class="<?= $Page->fecultmod->headerCellClass() ?>"><div id="elh_lotes_fecultmod" class="lotes_fecultmod"><?= $Page->renderFieldHeader($Page->fecultmod) ?></div></th>
+<?php } ?>
+<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
+        <th data-name="dir_secuencia" class="<?= $Page->dir_secuencia->headerCellClass() ?>"><div id="elh_lotes_dir_secuencia" class="lotes_dir_secuencia"><?= $Page->renderFieldHeader($Page->dir_secuencia) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -343,27 +339,6 @@ while ($Page->RecordCount < $Page->StopRecord || $Page->RowIndex === '$rowindex$
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->codnum->Visible) { // codnum ?>
-        <td data-name="codnum"<?= $Page->codnum->cellAttributes() ?>>
-<?php if ($Page->RowType == RowType::ADD) { // Add record ?>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_codnum" class="el_lotes_codnum"></span>
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_codnum" id="o<?= $Page->RowIndex ?>_codnum" value="<?= HtmlEncode($Page->codnum->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_codnum" class="el_lotes_codnum">
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" name="x<?= $Page->RowIndex ?>_codnum" id="x<?= $Page->RowIndex ?>_codnum" value="<?= HtmlEncode($Page->codnum->CurrentValue) ?>">
-</span>
-<?php } ?>
-<?php if ($Page->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_codnum" class="el_lotes_codnum">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } else { ?>
-            <input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" name="x<?= $Page->RowIndex ?>_codnum" id="x<?= $Page->RowIndex ?>_codnum" value="<?= HtmlEncode($Page->codnum->CurrentValue) ?>">
-    <?php } ?>
     <?php if ($Page->codrem->Visible) { // codrem ?>
         <td data-name="codrem"<?= $Page->codrem->cellAttributes() ?>>
 <?php if ($Page->RowType == RowType::ADD) { // Add record ?>
@@ -381,7 +356,7 @@ if (IsRTL()) {
 <span id="as_x<?= $Page->RowIndex ?>_codrem" class="ew-auto-suggest">
     <input type="<?= $Page->codrem->getInputTextType() ?>" class="form-control" name="sv_x<?= $Page->RowIndex ?>_codrem" id="sv_x<?= $Page->RowIndex ?>_codrem" value="<?= RemoveHtml($Page->codrem->EditValue) ?>" autocomplete="off" size="30" placeholder="<?= HtmlEncode($Page->codrem->getPlaceHolder()) ?>" data-placeholder="<?= HtmlEncode($Page->codrem->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->codrem->formatPattern()) ?>"<?= $Page->codrem->editAttributes() ?>>
 </span>
-<selection-list hidden class="form-control" data-table="lotes" data-field="x_codrem" data-input="sv_x<?= $Page->RowIndex ?>_codrem" data-value-separator="<?= $Page->codrem->displayValueSeparatorAttribute() ?>" name="x<?= $Page->RowIndex ?>_codrem" id="x<?= $Page->RowIndex ?>_codrem" value="<?= HtmlEncode($Page->codrem->CurrentValue) ?>" data-ew-action="update-options"></selection-list>
+<selection-list hidden class="form-control" data-table="lotes" data-field="x_codrem" data-input="sv_x<?= $Page->RowIndex ?>_codrem" data-value-separator="<?= $Page->codrem->displayValueSeparatorAttribute() ?>" name="x<?= $Page->RowIndex ?>_codrem" id="x<?= $Page->RowIndex ?>_codrem" value="<?= HtmlEncode($Page->codrem->CurrentValue) ?>"></selection-list>
 <div class="invalid-feedback"><?= $Page->codrem->getErrorMessage() ?></div>
 <script>
 loadjs.ready("<?= $Page->FormName ?>", function() {
@@ -482,9 +457,27 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <?php } ?>
 <?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_estado" class="el_lotes_estado">
-<span<?= $Page->estado->viewAttributes() ?>>
-<span class="form-control-plaintext"><?= $Page->estado->getDisplayValue($Page->estado->EditValue) ?></span></span>
-<input type="hidden" data-table="lotes" data-field="x_estado" data-hidden="1" name="x<?= $Page->RowIndex ?>_estado" id="x<?= $Page->RowIndex ?>_estado" value="<?= HtmlEncode($Page->estado->CurrentValue) ?>">
+<template id="tp_x<?= $Page->RowIndex ?>_estado">
+    <div class="form-check">
+        <input type="radio" class="form-check-input" data-table="lotes" data-field="x_estado" name="x<?= $Page->RowIndex ?>_estado" id="x<?= $Page->RowIndex ?>_estado"<?= $Page->estado->editAttributes() ?>>
+        <label class="form-check-label"></label>
+    </div>
+</template>
+<div id="dsl_x<?= $Page->RowIndex ?>_estado" class="ew-item-list"></div>
+<selection-list hidden
+    id="x<?= $Page->RowIndex ?>_estado"
+    name="x<?= $Page->RowIndex ?>_estado"
+    value="<?= HtmlEncode($Page->estado->CurrentValue) ?>"
+    data-type="select-one"
+    data-template="tp_x<?= $Page->RowIndex ?>_estado"
+    data-target="dsl_x<?= $Page->RowIndex ?>_estado"
+    data-repeatcolumn="5"
+    class="form-control<?= $Page->estado->isInvalidClass() ?>"
+    data-table="lotes"
+    data-field="x_estado"
+    data-value-separator="<?= $Page->estado->displayValueSeparatorAttribute() ?>"
+    <?= $Page->estado->editAttributes() ?>></selection-list>
+<div class="invalid-feedback"><?= $Page->estado->getErrorMessage() ?></div>
 </span>
 <?php } ?>
 <?php if ($Page->RowType == RowType::VIEW) { // View record ?>
@@ -821,8 +814,9 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <?php } ?>
 <?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_codintlote" class="el_lotes_codintlote">
-<input type="<?= $Page->codintlote->getInputTextType() ?>" name="x<?= $Page->RowIndex ?>_codintlote" id="x<?= $Page->RowIndex ?>_codintlote" data-table="lotes" data-field="x_codintlote" value="<?= $Page->codintlote->EditValue ?>" size="30" maxlength="8" placeholder="<?= HtmlEncode($Page->codintlote->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->codintlote->formatPattern()) ?>"<?= $Page->codintlote->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Page->codintlote->getErrorMessage() ?></div>
+<span<?= $Page->codintlote->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->codintlote->getDisplayValue($Page->codintlote->EditValue))) ?>"></span>
+<input type="hidden" data-table="lotes" data-field="x_codintlote" data-hidden="1" name="x<?= $Page->RowIndex ?>_codintlote" id="x<?= $Page->RowIndex ?>_codintlote" value="<?= HtmlEncode($Page->codintlote->CurrentValue) ?>">
 </span>
 <?php } ?>
 <?php if ($Page->RowType == RowType::VIEW) { // View record ?>
@@ -873,6 +867,36 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_codintsublote" class="el_lotes_codintsublote">
 <span<?= $Page->codintsublote->viewAttributes() ?>>
 <?= $Page->codintsublote->getViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+    <?php } ?>
+    <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
+        <td data-name="usuarioultmod"<?= $Page->usuarioultmod->cellAttributes() ?>>
+<?php if ($Page->RowType == RowType::ADD) { // Add record ?>
+<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_usuarioultmod" id="o<?= $Page->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Page->usuarioultmod->OldValue) ?>">
+<?php } ?>
+<?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
+<?php } ?>
+<?php if ($Page->RowType == RowType::VIEW) { // View record ?>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_usuarioultmod" class="el_lotes_usuarioultmod">
+<span<?= $Page->usuarioultmod->viewAttributes() ?>>
+<?= $Page->usuarioultmod->getViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+    <?php } ?>
+    <?php if ($Page->fecultmod->Visible) { // fecultmod ?>
+        <td data-name="fecultmod"<?= $Page->fecultmod->cellAttributes() ?>>
+<?php if ($Page->RowType == RowType::ADD) { // Add record ?>
+<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_fecultmod" id="o<?= $Page->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Page->fecultmod->OldValue) ?>">
+<?php } ?>
+<?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
+<?php } ?>
+<?php if ($Page->RowType == RowType::VIEW) { // View record ?>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_fecultmod" class="el_lotes_fecultmod">
+<span<?= $Page->fecultmod->viewAttributes() ?>>
+<?= $Page->fecultmod->getViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
@@ -964,36 +988,6 @@ loadjs.ready("<?= $Page->FormName ?>", function() {
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_dir_secuencia" class="el_lotes_dir_secuencia">
 <span<?= $Page->dir_secuencia->viewAttributes() ?>>
 <?= $Page->dir_secuencia->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
-        <td data-name="usuarioultmod"<?= $Page->usuarioultmod->cellAttributes() ?>>
-<?php if ($Page->RowType == RowType::ADD) { // Add record ?>
-<input type="hidden" data-table="lotes" data-field="x_usuarioultmod" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_usuarioultmod" id="o<?= $Page->RowIndex ?>_usuarioultmod" value="<?= HtmlEncode($Page->usuarioultmod->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
-<?php } ?>
-<?php if ($Page->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_usuarioultmod" class="el_lotes_usuarioultmod">
-<span<?= $Page->usuarioultmod->viewAttributes() ?>>
-<?= $Page->usuarioultmod->getViewValue() ?></span>
-</span>
-<?php } ?>
-</td>
-    <?php } ?>
-    <?php if ($Page->fecultmod->Visible) { // fecultmod ?>
-        <td data-name="fecultmod"<?= $Page->fecultmod->cellAttributes() ?>>
-<?php if ($Page->RowType == RowType::ADD) { // Add record ?>
-<input type="hidden" data-table="lotes" data-field="x_fecultmod" data-hidden="1" data-old name="o<?= $Page->RowIndex ?>_fecultmod" id="o<?= $Page->RowIndex ?>_fecultmod" value="<?= HtmlEncode($Page->fecultmod->OldValue) ?>">
-<?php } ?>
-<?php if ($Page->RowType == RowType::EDIT) { // Edit record ?>
-<?php } ?>
-<?php if ($Page->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_lotes_fecultmod" class="el_lotes_fecultmod">
-<span<?= $Page->fecultmod->viewAttributes() ?>>
-<?= $Page->fecultmod->getViewValue() ?></span>
 </span>
 <?php } ?>
 </td>

@@ -48,6 +48,8 @@ $isDebug = IsDebug();
 
 // Set warnings and notices as errors
 if ($isDebug && Config("REPORT_ALL_ERRORS")) {
+    ini_set("display_errors", 1);
+    ini_set("display_startup_errors", 1);
     error_reporting(E_ALL);
     set_error_handler(function ($severity, $message, $file, $line) {
         if (error_reporting() & $severity) {
@@ -109,7 +111,9 @@ $app->addBodyParsingMiddleware();
 // Add CORS middleware
 $app->add(new CorsMiddleware([
     "Access-Control-Allow-Origin" => "*",
-    "Access-Control-Allow-Headers" => "X-Requested-With, Origin, X-Authorization"
+    "Access-Control-Allow-Headers" => "X-Requested-With, Origin, X-Authorization",
+    "Access-Control-Allow-Methods" => "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Credentials" => true
 ]));
 
 // Add routing middleware (after CORS middleware so routing is performed first)

@@ -76,9 +76,10 @@ class ExportExcel extends AbstractExport
      * @param int $col Column (1-based)
      * @param int $row Row (1-based)
      * @param mixed $val Value (utf-8 encoded)
+     * @param ?array $style Style
      * @return void
      */
-    public function setCellValueByColumnAndRow($col, $row, $val)
+    public function setCellValueByColumnAndRow($col, $row, $val, $style = null)
     {
         $sheet = $this->getActiveSheet();
         $sheet->setCellValueByColumnAndRow($col, $row, $val);
@@ -90,6 +91,9 @@ class ExportExcel extends AbstractExport
             $multiplier = preg_match("/\p{Han}+/u", $txt) ? self::$TextWidthMultiplier : 1; // Handle Chinese
             $w = PhpSpreadsheet\Shared\Font::getTextWidthPixelsApprox($txt, $font, 0) * $multiplier;
             $cd->setWidth(max($w, $cd->getWidth("px")), "px"); // Set column width
+            if ($style) {
+                $sheet->getCell($letter . $row)->getStyle()->applyFromArray($style);
+            }
         }
     }
 
@@ -227,7 +231,8 @@ class ExportExcel extends AbstractExport
                     $val = $this->convertToUtf8($fld->CurrentValue); // Use original value instead of formatted value
                 }
             }
-            $this->setCellValueByColumnAndRow($col, $row, $val);
+            $style = preg_match('/\\btext-align:\\s?(left|center|right|justify)\\b/', $fld->CellCssStyle, $m) ? ["alignment" => ["horizontal" => $m[1]]] : null;
+            $this->setCellValueByColumnAndRow($col, $row, $val, $style);
         }
     }
 

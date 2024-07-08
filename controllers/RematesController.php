@@ -42,4 +42,11 @@ class RematesController extends ControllerBase
     {
         return $this->runPage($request, $response, $args, "RematesDelete");
     }
+
+    // query
+    #[Map(["GET","POST","OPTIONS"], "/RematesQuery", [PermissionMiddleware::class], "query.remates")]
+    public function query(Request $request, Response $response, array $args): Response
+    {
+        return $this->runPage($request, $response, $args, "RematesSearch", "RematesQuery");
+    }
 }

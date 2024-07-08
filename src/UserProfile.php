@@ -34,6 +34,7 @@ class UserProfile implements \Stringable
     public static $OTP_ACCOUNT = "OTPAccount";
     public static $OTP_CREATE_DATE_TIME = "OTPCreateDateTime";
     public static $OTP_VERIFY_DATE_TIME = "OTPVerifyDateTime";
+    public static $CHAT_ENABLED = "ChatEnabled";
     private $userName = "";
     private $userId;
     private $userPrimaryKey;
@@ -225,7 +226,7 @@ class UserProfile implements \Stringable
     }
 
     // Assign properties to profile
-    public function assign(object|array $input, bool $save = true)
+    public function assign(object|array $input)
     {
         if (is_object($input)) {
             $vars = get_object_vars($input);
@@ -234,7 +235,7 @@ class UserProfile implements \Stringable
                 unset($vars["data"]);
                 $vars = array_merge($vars, $data);
             }
-            $this->assign($vars, $save);
+            $this->assign($vars);
         } elseif (is_array($input)) {
             $input = array_filter($input, fn ($v, $k) => !is_int($k) && (is_bool($v) || is_float($v) || is_int($v) || $v === null || is_string($v)), ARRAY_FILTER_USE_BOTH);
             foreach ($input as $key => $value) {
@@ -375,7 +376,8 @@ class UserProfile implements \Stringable
             }
             $user = $this->getUser();
             if ($user) { // Database user
-                $user->set(Config("USER_PROFILE_FIELD_NAME"), (string)$this)->flush();
+                $user->set(Config("USER_PROFILE_FIELD_NAME"), (string)$this);
+                GetUserEntityManager()->flush();
             } else { // No database user
                 $this->saveToSession();
             }
@@ -838,6 +840,19 @@ class UserProfile implements \Stringable
         return $this;
     }
 
+    // Get chat enabled
+    public function getChatEnabled()
+    {
+        return $this->{self::$CHAT_ENABLED};
+    }
+
+    // Set chat enabled
+    public function setChatEnabled($value)
+    {
+        $this->{self::$CHAT_ENABLED} = $value;
+        return $this;
+    }
+
     // User has 2FA secret
     public function hasUserSecret($verified = false)
     {
@@ -980,7 +995,7 @@ class UserProfile implements \Stringable
                         } elseif (SameText(Config("TWO_FACTOR_AUTHENTICATION_TYPE"), "sms")) {
                             $user->set(Config("USER_PHONE_FIELD_NAME"), $account);
                         }
-                        $user->flush();
+                        GetUserEntityManager()->flush();
                     }
                 }
                 return $valid;

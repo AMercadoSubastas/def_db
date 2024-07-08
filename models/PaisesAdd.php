@@ -587,7 +587,7 @@ class PaisesAdd extends Paises
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
+                    // Handle UseAjaxActions with return page
                     if ($this->IsModal && $this->UseAjaxActions) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "PaisesList") {
@@ -803,10 +803,10 @@ class PaisesAdd extends Paises
             $this->descripcion->ViewValue = $this->descripcion->CurrentValue;
 
             // activo
-            if (ConvertToBool($this->activo->CurrentValue)) {
-                $this->activo->ViewValue = $this->activo->tagCaption(1) != "" ? $this->activo->tagCaption(1) : "Sí";
+            if (strval($this->activo->CurrentValue) != "") {
+                $this->activo->ViewValue = $this->activo->optionCaption($this->activo->CurrentValue);
             } else {
-                $this->activo->ViewValue = $this->activo->tagCaption(2) != "" ? $this->activo->tagCaption(2) : "No";
+                $this->activo->ViewValue = null;
             }
 
             // descripcion
@@ -824,7 +824,8 @@ class PaisesAdd extends Paises
             $this->descripcion->PlaceHolder = RemoveHtml($this->descripcion->caption());
 
             // activo
-            $this->activo->EditValue = $this->activo->options(false);
+            $this->activo->setupEditAttributes();
+            $this->activo->EditValue = $this->activo->options(true);
             $this->activo->PlaceHolder = RemoveHtml($this->activo->caption());
 
             // Add refer script
@@ -861,7 +862,7 @@ class PaisesAdd extends Paises
                 }
             }
             if ($this->activo->Visible && $this->activo->Required) {
-                if ($this->activo->FormValue == "") {
+                if (!$this->activo->IsDetailKey && EmptyValue($this->activo->FormValue)) {
                     $this->activo->addErrorMessage(str_replace("%s", $this->activo->caption(), $this->activo->RequiredErrorMessage));
                 }
             }
@@ -940,7 +941,7 @@ class PaisesAdd extends Paises
         $this->descripcion->setDbValueDef($rsnew, $this->descripcion->CurrentValue, false);
 
         // activo
-        $this->activo->setDbValueDef($rsnew, strval($this->activo->CurrentValue) == "1" ? "1" : "0", strval($this->activo->CurrentValue) == "");
+        $this->activo->setDbValueDef($rsnew, $this->activo->CurrentValue, strval($this->activo->CurrentValue) == "");
         return $rsnew;
     }
 

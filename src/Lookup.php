@@ -3,6 +3,7 @@
 namespace PHPMaker2024\Subastas2024;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use Exception;
 
 /**
  * Lookup class
@@ -266,16 +267,25 @@ class Lookup
         $filterValues = count($this->FilterValues) > 0 ? array_slice($this->FilterValues, 1) : [];
         $useParentFilter = count($filterValues) == count(array_filter($filterValues)) || !$this->hasParentTable() && $this->LookupType != "filter";
         $sql = $this->getSql($useParentFilter, "", "", $page, !$useParentFilter);
-        $orderBy = $this->UserOrderBy;
         $pageSize = $this->PageSize;
         $offset = $this->Offset;
         $recordCnt = ($pageSize > 0) ? $tbl->getRecordCount($sql) : 0; // Get record count first
-        $stmt = $this->executeQuery($sql, $orderBy, $pageSize, $offset);
-        if ($stmt) {
-            $rsarr = $stmt->fetchAllAssociative();
+        $rsarr = [];
+        $fldCnt = 0;
+        try {
+            $stmt = $this->executeQuery($sql, $pageSize, $offset);
+            if ($stmt) {
+                $rsarr = $stmt->fetchAllAssociative();
+                $fldCnt = $stmt->columnCount();
+            }
+        } catch (Exception $e) {
+            if (Config("DEBUG")) {
+                LogError($e->getMessage(), ["sql" => $sql, "pageSize" => $pageSize, "offset" => $offset]);
+            }
+        }
+        if (is_array($rsarr)) {
             $rowCnt = count($rsarr);
             $totalCnt = ($pageSize > 0) ? $recordCnt : $rowCnt;
-            $fldCnt = $stmt->columnCount();
 
             // Clean output buffer
             if ($response && ob_get_length()) {
@@ -725,7 +735,7 @@ class Lookup
                 foreach ($ar as $val) {
                     if (in_array($opr, ["LIKE", "NOT LIKE", "STARTS WITH", "ENDS WITH"])) {
                         $fldOpr = ($opr == "NOT LIKE") ? "NOT LIKE" : "LIKE";
-                        $filter = LikeOrNotLike($fldOpr, QuotedValue(Wildcard($val, $opr), $fld, $dbid), $dbid);
+                        $filter = LikeOrNotLike($fldOpr, Wildcard($val, $opr, $dbid), $dbid);
                     } else {
                         $fldOpr = $opr;
                         $val = QuotedValue($val, $fld, $dbid);
@@ -754,12 +764,11 @@ class Lookup
      * Execute query
      *
      * @param string|QueryBuilder $sql SQL or QueryBuilder of the SQL to be executed
-     * @param string $orderBy ORDER BY clause
      * @param int $pageSize
      * @param int $offset
      * @return Result
      */
-    protected function executeQuery($sql, $orderBy, $pageSize, $offset)
+    protected function executeQuery($sql, $pageSize, $offset)
     {
         $tbl = $this->getTable();
         if ($tbl === null) {
@@ -805,7 +814,7 @@ class Lookup
      */
     protected function getAutoSuggestFilter($sv, $dbid)
     {
-        return $this->getSearchExpression() . Like(QuotedValue(Wildcard($sv, "STARTS WITH"), DataType::STRING, $dbid), $dbid);
+        return $this->getSearchExpression() . Like(Wildcard($sv, "STARTS WITH", $dbid), $dbid);
     }
 
     /**
@@ -826,7 +835,7 @@ class Lookup
         $filter = "";
         foreach ($ar as $keyword) {
             if ($keyword != "") {
-                $thisFilter = $this->getSearchExpression() . Like(QuotedValue(Wildcard($keyword, self::$ModalLookupSearchOperator), DataType::STRING, $dbid), $dbid);
+                $thisFilter = $this->getSearchExpression() . Like(Wildcard($keyword, self::$ModalLookupSearchOperator, $dbid), $dbid);
                 AddFilter($filter, $thisFilter, $searchType);
             }
         }

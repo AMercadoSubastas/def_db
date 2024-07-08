@@ -121,7 +121,7 @@ class LotesEdit extends Lotes
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->codnum->Visible = false;
         $this->codrem->setVisibility();
         $this->codcli->setVisibility();
         $this->codrubro->setVisibility();
@@ -145,9 +145,9 @@ class LotesEdit extends Lotes
         $this->codintlote->setVisibility();
         $this->codintnum->setVisibility();
         $this->codintsublote->setVisibility();
-        $this->dir_secuencia->setVisibility();
         $this->usuarioultmod->setVisibility();
         $this->fecultmod->setVisibility();
+        $this->dir_secuencia->setVisibility();
     }
 
     // Constructor
@@ -514,7 +514,7 @@ class LotesEdit extends Lotes
         $this->CurrentAction = Param("action"); // Set up current action
         $this->setVisibility();
         $this->codrem->Required = false;
-        $this->estado->Required = false;
+        $this->codintlote->Required = false;
 
         // Set lookup cache
         if (!in_array($this->PageID, Config("LOOKUP_CACHE_PAGE_IDS"))) {
@@ -655,7 +655,7 @@ class LotesEdit extends Lotes
                     }
 
                     // Handle UseAjaxActions with return page
-                    if ($this->IsModal && $this->UseAjaxActions) {
+                    if ($this->IsModal && $this->UseAjaxActions && !$this->getCurrentMasterTable()) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "LotesList") {
                             Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL
@@ -729,12 +729,6 @@ class LotesEdit extends Lotes
         // Load from form
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
-
-        // Check field name 'codnum' first before field var 'x_codnum'
-        $val = $CurrentForm->hasValue("codnum") ? $CurrentForm->getValue("codnum") : $CurrentForm->getValue("x_codnum");
-        if (!$this->codnum->IsDetailKey) {
-            $this->codnum->setFormValue($val);
-        }
 
         // Check field name 'codrem' first before field var 'x_codrem'
         $val = $CurrentForm->hasValue("codrem") ? $CurrentForm->getValue("codrem") : $CurrentForm->getValue("x_codrem");
@@ -957,16 +951,6 @@ class LotesEdit extends Lotes
             }
         }
 
-        // Check field name 'dir_secuencia' first before field var 'x_dir_secuencia'
-        $val = $CurrentForm->hasValue("dir_secuencia") ? $CurrentForm->getValue("dir_secuencia") : $CurrentForm->getValue("x_dir_secuencia");
-        if (!$this->dir_secuencia->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->dir_secuencia->Visible = false; // Disable update for API request
-            } else {
-                $this->dir_secuencia->setFormValue($val);
-            }
-        }
-
         // Check field name 'usuarioultmod' first before field var 'x_usuarioultmod'
         $val = $CurrentForm->hasValue("usuarioultmod") ? $CurrentForm->getValue("usuarioultmod") : $CurrentForm->getValue("x_usuarioultmod");
         if (!$this->usuarioultmod->IsDetailKey) {
@@ -986,6 +970,22 @@ class LotesEdit extends Lotes
                 $this->fecultmod->setFormValue($val);
             }
             $this->fecultmod->CurrentValue = UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern());
+        }
+
+        // Check field name 'dir_secuencia' first before field var 'x_dir_secuencia'
+        $val = $CurrentForm->hasValue("dir_secuencia") ? $CurrentForm->getValue("dir_secuencia") : $CurrentForm->getValue("x_dir_secuencia");
+        if (!$this->dir_secuencia->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->dir_secuencia->Visible = false; // Disable update for API request
+            } else {
+                $this->dir_secuencia->setFormValue($val);
+            }
+        }
+
+        // Check field name 'codnum' first before field var 'x_codnum'
+        $val = $CurrentForm->hasValue("codnum") ? $CurrentForm->getValue("codnum") : $CurrentForm->getValue("x_codnum");
+        if (!$this->codnum->IsDetailKey) {
+            $this->codnum->setFormValue($val);
         }
     }
 
@@ -1017,10 +1017,10 @@ class LotesEdit extends Lotes
         $this->codintlote->CurrentValue = $this->codintlote->FormValue;
         $this->codintnum->CurrentValue = $this->codintnum->FormValue;
         $this->codintsublote->CurrentValue = $this->codintsublote->FormValue;
-        $this->dir_secuencia->CurrentValue = $this->dir_secuencia->FormValue;
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->FormValue;
         $this->fecultmod->CurrentValue = $this->fecultmod->FormValue;
         $this->fecultmod->CurrentValue = UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern());
+        $this->dir_secuencia->CurrentValue = $this->dir_secuencia->FormValue;
     }
 
     /**
@@ -1085,9 +1085,9 @@ class LotesEdit extends Lotes
         $this->codintlote->setDbValue($row['codintlote']);
         $this->codintnum->setDbValue($row['codintnum']);
         $this->codintsublote->setDbValue($row['codintsublote']);
-        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
         $this->usuarioultmod->setDbValue($row['usuarioultmod']);
         $this->fecultmod->setDbValue($row['fecultmod']);
+        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
     }
 
     // Return a row with default values
@@ -1118,9 +1118,9 @@ class LotesEdit extends Lotes
         $row['codintlote'] = $this->codintlote->DefaultValue;
         $row['codintnum'] = $this->codintnum->DefaultValue;
         $row['codintsublote'] = $this->codintsublote->DefaultValue;
-        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         $row['usuarioultmod'] = $this->usuarioultmod->DefaultValue;
         $row['fecultmod'] = $this->fecultmod->DefaultValue;
+        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         return $row;
     }
 
@@ -1227,14 +1227,14 @@ class LotesEdit extends Lotes
         // codintsublote
         $this->codintsublote->RowCssClass = "row";
 
-        // dir_secuencia
-        $this->dir_secuencia->RowCssClass = "row";
-
         // usuarioultmod
         $this->usuarioultmod->RowCssClass = "row";
 
         // fecultmod
         $this->fecultmod->RowCssClass = "row";
+
+        // dir_secuencia
+        $this->dir_secuencia->RowCssClass = "row";
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -1351,12 +1351,20 @@ class LotesEdit extends Lotes
             // codintsublote
             $this->codintsublote->ViewValue = $this->codintsublote->CurrentValue;
 
+            // usuarioultmod
+            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
+            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
+
+            // fecultmod
+            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
+            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
+
             // dir_secuencia
             $curVal = strval($this->dir_secuencia->CurrentValue);
             if ($curVal != "") {
                 $this->dir_secuencia->ViewValue = $this->dir_secuencia->lookupCacheOption($curVal);
                 if ($this->dir_secuencia->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                     $sqlWrk = $this->dir_secuencia->Lookup->getSql(false, $filterWrk, '', $this, true, true);
                     $conn = Conn();
                     $config = $conn->getConfiguration();
@@ -1374,17 +1382,6 @@ class LotesEdit extends Lotes
                 $this->dir_secuencia->ViewValue = null;
             }
 
-            // usuarioultmod
-            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
-            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
-
-            // fecultmod
-            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
-            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
-
-            // codnum
-            $this->codnum->HrefValue = "";
-
             // codrem
             $this->codrem->HrefValue = "";
             $this->codrem->TooltipValue = "";
@@ -1397,7 +1394,6 @@ class LotesEdit extends Lotes
 
             // estado
             $this->estado->HrefValue = "";
-            $this->estado->TooltipValue = "";
 
             // moneda
             $this->moneda->HrefValue = "";
@@ -1446,6 +1442,7 @@ class LotesEdit extends Lotes
 
             // codintlote
             $this->codintlote->HrefValue = "";
+            $this->codintlote->TooltipValue = "";
 
             // codintnum
             $this->codintnum->HrefValue = "";
@@ -1453,21 +1450,15 @@ class LotesEdit extends Lotes
             // codintsublote
             $this->codintsublote->HrefValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
 
             // fecultmod
             $this->fecultmod->HrefValue = "";
-        } elseif ($this->RowType == RowType::EDIT) {
-            // codnum
-            $this->codnum->setupEditAttributes();
-            if (strval($this->codnum->EditValue) != "" && is_numeric($this->codnum->EditValue)) {
-                $this->codnum->EditValue = $this->codnum->EditValue;
-            }
 
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
+        } elseif ($this->RowType == RowType::EDIT) {
             // codrem
             $this->codrem->setupEditAttributes();
             $this->codrem->EditValue = $this->codrem->CurrentValue;
@@ -1508,12 +1499,8 @@ class LotesEdit extends Lotes
             }
 
             // estado
-            $this->estado->setupEditAttributes();
-            if (strval($this->estado->CurrentValue) != "") {
-                $this->estado->EditValue = $this->estado->optionCaption($this->estado->CurrentValue);
-            } else {
-                $this->estado->EditValue = null;
-            }
+            $this->estado->EditValue = $this->estado->options(false);
+            $this->estado->PlaceHolder = RemoveHtml($this->estado->caption());
 
             // moneda
             $this->moneda->setupEditAttributes();
@@ -1604,11 +1591,7 @@ class LotesEdit extends Lotes
 
             // codintlote
             $this->codintlote->setupEditAttributes();
-            if (!$this->codintlote->Raw) {
-                $this->codintlote->CurrentValue = HtmlDecode($this->codintlote->CurrentValue);
-            }
-            $this->codintlote->EditValue = HtmlEncode($this->codintlote->CurrentValue);
-            $this->codintlote->PlaceHolder = RemoveHtml($this->codintlote->caption());
+            $this->codintlote->EditValue = $this->codintlote->CurrentValue;
 
             // codintnum
             $this->codintnum->setupEditAttributes();
@@ -1619,6 +1602,10 @@ class LotesEdit extends Lotes
 
             // codintsublote
             $this->codintsublote->setupEditAttributes();
+
+            // usuarioultmod
+
+            // fecultmod
 
             // dir_secuencia
             $this->dir_secuencia->setupEditAttributes();
@@ -1634,7 +1621,7 @@ class LotesEdit extends Lotes
                 if ($curVal == "") {
                     $filterWrk = "0=1";
                 } else {
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $this->dir_secuencia->CurrentValue, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $this->dir_secuencia->CurrentValue, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                 }
                 $sqlWrk = $this->dir_secuencia->Lookup->getSql(true, $filterWrk, '', $this, false, true);
                 $conn = Conn();
@@ -1647,14 +1634,7 @@ class LotesEdit extends Lotes
             }
             $this->dir_secuencia->PlaceHolder = RemoveHtml($this->dir_secuencia->caption());
 
-            // usuarioultmod
-
-            // fecultmod
-
             // Edit refer script
-
-            // codnum
-            $this->codnum->HrefValue = "";
 
             // codrem
             $this->codrem->HrefValue = "";
@@ -1668,7 +1648,6 @@ class LotesEdit extends Lotes
 
             // estado
             $this->estado->HrefValue = "";
-            $this->estado->TooltipValue = "";
 
             // moneda
             $this->moneda->HrefValue = "";
@@ -1717,6 +1696,7 @@ class LotesEdit extends Lotes
 
             // codintlote
             $this->codintlote->HrefValue = "";
+            $this->codintlote->TooltipValue = "";
 
             // codintnum
             $this->codintnum->HrefValue = "";
@@ -1724,14 +1704,14 @@ class LotesEdit extends Lotes
             // codintsublote
             $this->codintsublote->HrefValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
 
             // fecultmod
             $this->fecultmod->HrefValue = "";
+
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1753,11 +1733,6 @@ class LotesEdit extends Lotes
             return true;
         }
         $validateForm = true;
-            if ($this->codnum->Visible && $this->codnum->Required) {
-                if (!$this->codnum->IsDetailKey && EmptyValue($this->codnum->FormValue)) {
-                    $this->codnum->addErrorMessage(str_replace("%s", $this->codnum->caption(), $this->codnum->RequiredErrorMessage));
-                }
-            }
             if ($this->codrem->Visible && $this->codrem->Required) {
                 if (!$this->codrem->IsDetailKey && EmptyValue($this->codrem->FormValue)) {
                     $this->codrem->addErrorMessage(str_replace("%s", $this->codrem->caption(), $this->codrem->RequiredErrorMessage));
@@ -1874,11 +1849,6 @@ class LotesEdit extends Lotes
                     $this->codintsublote->addErrorMessage(str_replace("%s", $this->codintsublote->caption(), $this->codintsublote->RequiredErrorMessage));
                 }
             }
-            if ($this->dir_secuencia->Visible && $this->dir_secuencia->Required) {
-                if (!$this->dir_secuencia->IsDetailKey && EmptyValue($this->dir_secuencia->FormValue)) {
-                    $this->dir_secuencia->addErrorMessage(str_replace("%s", $this->dir_secuencia->caption(), $this->dir_secuencia->RequiredErrorMessage));
-                }
-            }
             if ($this->usuarioultmod->Visible && $this->usuarioultmod->Required) {
                 if (!$this->usuarioultmod->IsDetailKey && EmptyValue($this->usuarioultmod->FormValue)) {
                     $this->usuarioultmod->addErrorMessage(str_replace("%s", $this->usuarioultmod->caption(), $this->usuarioultmod->RequiredErrorMessage));
@@ -1887,6 +1857,11 @@ class LotesEdit extends Lotes
             if ($this->fecultmod->Visible && $this->fecultmod->Required) {
                 if (!$this->fecultmod->IsDetailKey && EmptyValue($this->fecultmod->FormValue)) {
                     $this->fecultmod->addErrorMessage(str_replace("%s", $this->fecultmod->caption(), $this->fecultmod->RequiredErrorMessage));
+                }
+            }
+            if ($this->dir_secuencia->Visible && $this->dir_secuencia->Required) {
+                if (!$this->dir_secuencia->IsDetailKey && EmptyValue($this->dir_secuencia->FormValue)) {
+                    $this->dir_secuencia->addErrorMessage(str_replace("%s", $this->dir_secuencia->caption(), $this->dir_secuencia->RequiredErrorMessage));
                 }
             }
 
@@ -2002,6 +1977,9 @@ class LotesEdit extends Lotes
         // codrubro
         $this->codrubro->setDbValueDef($rsnew, $this->codrubro->CurrentValue, $this->codrubro->ReadOnly);
 
+        // estado
+        $this->estado->setDbValueDef($rsnew, $this->estado->CurrentValue, $this->estado->ReadOnly);
+
         // moneda
         $this->moneda->setDbValueDef($rsnew, $this->moneda->CurrentValue, $this->moneda->ReadOnly);
 
@@ -2043,14 +2021,11 @@ class LotesEdit extends Lotes
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // fecalta
         $this->fecalta->CurrentValue = $this->fecalta->getAutoUpdateValue(); // PHP
-        $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()));
-
-        // codintlote
-        $this->codintlote->setDbValueDef($rsnew, $this->codintlote->CurrentValue, $this->codintlote->ReadOnly);
+        $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()), $this->fecalta->ReadOnly);
 
         // codintnum
         $this->codintnum->setDbValueDef($rsnew, $this->codintnum->CurrentValue, $this->codintnum->ReadOnly);
@@ -2058,16 +2033,16 @@ class LotesEdit extends Lotes
         // codintsublote
         $this->codintsublote->setDbValueDef($rsnew, $this->codintsublote->CurrentValue, $this->codintsublote->ReadOnly);
 
-        // dir_secuencia
-        $this->dir_secuencia->setDbValueDef($rsnew, $this->dir_secuencia->CurrentValue, $this->dir_secuencia->ReadOnly);
-
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, $this->usuarioultmod->ReadOnly);
 
         // fecultmod
         $this->fecultmod->CurrentValue = $this->fecultmod->getAutoUpdateValue(); // PHP
-        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()));
+        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), $this->fecultmod->ReadOnly);
+
+        // dir_secuencia
+        $this->dir_secuencia->setDbValueDef($rsnew, $this->dir_secuencia->CurrentValue, $this->dir_secuencia->ReadOnly);
         return $rsnew;
     }
 
@@ -2082,6 +2057,9 @@ class LotesEdit extends Lotes
         }
         if (isset($row['codrubro'])) { // codrubro
             $this->codrubro->CurrentValue = $row['codrubro'];
+        }
+        if (isset($row['estado'])) { // estado
+            $this->estado->CurrentValue = $row['estado'];
         }
         if (isset($row['moneda'])) { // moneda
             $this->moneda->CurrentValue = $row['moneda'];
@@ -2128,23 +2106,20 @@ class LotesEdit extends Lotes
         if (isset($row['fecalta'])) { // fecalta
             $this->fecalta->CurrentValue = $row['fecalta'];
         }
-        if (isset($row['codintlote'])) { // codintlote
-            $this->codintlote->CurrentValue = $row['codintlote'];
-        }
         if (isset($row['codintnum'])) { // codintnum
             $this->codintnum->CurrentValue = $row['codintnum'];
         }
         if (isset($row['codintsublote'])) { // codintsublote
             $this->codintsublote->CurrentValue = $row['codintsublote'];
         }
-        if (isset($row['dir_secuencia'])) { // dir_secuencia
-            $this->dir_secuencia->CurrentValue = $row['dir_secuencia'];
-        }
         if (isset($row['usuarioultmod'])) { // usuarioultmod
             $this->usuarioultmod->CurrentValue = $row['usuarioultmod'];
         }
         if (isset($row['fecultmod'])) { // fecultmod
             $this->fecultmod->CurrentValue = $row['fecultmod'];
+        }
+        if (isset($row['dir_secuencia'])) { // dir_secuencia
+            $this->dir_secuencia->CurrentValue = $row['dir_secuencia'];
         }
     }
 

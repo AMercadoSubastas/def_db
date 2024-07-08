@@ -1481,19 +1481,19 @@ class DirRematesEdit extends DirRemates
 
         // usuarioalta
         $this->usuarioalta->CurrentValue = $this->usuarioalta->getAutoUpdateValue(); // PHP
-        $this->usuarioalta->setDbValueDef($rsnew, $this->usuarioalta->CurrentValue);
+        $this->usuarioalta->setDbValueDef($rsnew, $this->usuarioalta->CurrentValue, $this->usuarioalta->ReadOnly);
 
         // fechaalta
         $this->fechaalta->CurrentValue = $this->fechaalta->getAutoUpdateValue(); // PHP
-        $this->fechaalta->setDbValueDef($rsnew, UnFormatDateTime($this->fechaalta->CurrentValue, $this->fechaalta->formatPattern()));
+        $this->fechaalta->setDbValueDef($rsnew, UnFormatDateTime($this->fechaalta->CurrentValue, $this->fechaalta->formatPattern()), $this->fechaalta->ReadOnly);
 
         // usuariomod
         $this->usuariomod->CurrentValue = $this->usuariomod->getAutoUpdateValue(); // PHP
-        $this->usuariomod->setDbValueDef($rsnew, $this->usuariomod->CurrentValue);
+        $this->usuariomod->setDbValueDef($rsnew, $this->usuariomod->CurrentValue, $this->usuariomod->ReadOnly);
 
         // fechaultmod
         $this->fechaultmod->CurrentValue = $this->fechaultmod->getAutoUpdateValue(); // PHP
-        $this->fechaultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fechaultmod->CurrentValue, $this->fechaultmod->formatPattern()));
+        $this->fechaultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fechaultmod->CurrentValue, $this->fechaultmod->formatPattern()), $this->fechaultmod->ReadOnly);
         return $rsnew;
     }
 

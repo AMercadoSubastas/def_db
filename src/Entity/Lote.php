@@ -28,36 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "lotes")]
 class Lote extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'codrem' => 'codrem',
-        'codcli' => 'codcli',
-        'codrubro' => 'codrubro',
-        'estado' => 'estado',
-        'moneda' => 'moneda',
-        'preciobase' => 'preciobase',
-        'preciofinal' => 'preciofinal',
-        'comiscobr' => 'comiscobr',
-        'comispag' => 'comispag',
-        'comprador' => 'comprador',
-        'ivari' => 'ivari',
-        'ivarni' => 'ivarni',
-        'codimpadic' => 'codimpadic',
-        'impadic' => 'impadic',
-        'descripcion' => 'descripcion',
-        'descor' => 'descor',
-        'observ' => 'observ',
-        'usuario' => 'usuario',
-        'fecalta' => 'fecalta',
-        'secuencia' => 'secuencia',
-        'codintlote' => 'codintlote',
-        'codintnum' => 'codintnum',
-        'codintsublote' => 'codintsublote',
-        'dir_secuencia' => 'dirSecuencia',
-        'usuarioultmod' => 'usuarioultmod',
-        'fecultmod' => 'fecultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -73,22 +43,22 @@ class Lote extends AbstractEntity
     private ?int $codrubro;
 
     #[Column(type: "integer")]
-    private int $estado = 0;
+    private int $estado;
 
     #[Column(type: "integer")]
-    private int $moneda = 1;
+    private int $moneda;
 
     #[Column(type: "float", nullable: true)]
-    private ?float $preciobase = 0;
+    private ?float $preciobase;
 
     #[Column(type: "float", nullable: true)]
-    private ?float $preciofinal = 0;
+    private ?float $preciofinal;
 
     #[Column(type: "float", nullable: true)]
-    private ?float $comiscobr = 10;
+    private ?float $comiscobr;
 
     #[Column(type: "float", nullable: true)]
-    private ?float $comispag = 0;
+    private ?float $comispag;
 
     #[Column(type: "integer", nullable: true)]
     private ?int $comprador;
@@ -132,14 +102,24 @@ class Lote extends AbstractEntity
     #[Column(type: "string", nullable: true)]
     private ?string $codintsublote;
 
-    #[Column(name: "dir_secuencia", type: "integer", nullable: true)]
-    private ?int $dirSecuencia;
-
     #[Column(type: "integer", nullable: true)]
     private ?int $usuarioultmod;
 
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fecultmod;
+
+    #[Column(name: "dir_secuencia", type: "integer", nullable: true)]
+    private ?int $dirSecuencia;
+
+    public function __construct()
+    {
+        $this->estado = 0;
+        $this->moneda = 1;
+        $this->preciobase = 0;
+        $this->preciofinal = 0;
+        $this->comiscobr = 10;
+        $this->comispag = 0;
+    }
 
     public function getCodnum(): int
     {
@@ -405,17 +385,6 @@ class Lote extends AbstractEntity
         return $this;
     }
 
-    public function getDirSecuencia(): ?int
-    {
-        return $this->dirSecuencia;
-    }
-
-    public function setDirSecuencia(?int $value): static
-    {
-        $this->dirSecuencia = $value;
-        return $this;
-    }
-
     public function getUsuarioultmod(): ?int
     {
         return $this->usuarioultmod;
@@ -435,6 +404,17 @@ class Lote extends AbstractEntity
     public function setFecultmod(?DateTime $value): static
     {
         $this->fecultmod = $value;
+        return $this;
+    }
+
+    public function getDirSecuencia(): ?int
+    {
+        return $this->dirSecuencia;
+    }
+
+    public function setDirSecuencia(?int $value): static
+    {
+        $this->dirSecuencia = $value;
         return $this;
     }
 }

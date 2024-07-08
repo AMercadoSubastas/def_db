@@ -13,19 +13,11 @@ use Slim\Routing\RouteContext;
  */
 final class CorsMiddleware implements MiddlewareInterface
 {
-    protected $Default = [
-        "Access-Control-Allow-Origin" => "*",
-        "Access-Control-Allow-Headers" => "",
-        "Access-Control-Allow-Methods" => "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-        "Access-Control-Allow-Credentials" => true
-    ];
-
     /**
      * Constructor
      */
     public function __construct(public array $Config = [])
     {
-        $this->Config = array_merge($this->Default, $this->Config);
     }
 
     /**
@@ -69,8 +61,10 @@ final class CorsMiddleware implements MiddlewareInterface
         }
 
         // Access-Control-Allow-Credentials
-        if ($this->Config["Access-Control-Allow-Credentials"] === true) {
-            $response = $response->withHeader("Access-Control-Allow-Credentials", "true"); // The only valid value for this header is true (case-sensitive)
+        if (in_array("Access-Control-Allow-Credentials", $headers)) {
+            if ($this->Config["Access-Control-Allow-Credentials"] === true) {
+                $response = $response->withHeader("Access-Control-Allow-Credentials", "true"); // The only valid value for this header is true (case-sensitive)
+            }
         }
         return $response;
     }

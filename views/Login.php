@@ -1,4 +1,3 @@
-<?php namespace PHPMaker2024\Subastas2024; ?>
 <?php
 
 namespace PHPMaker2024\Subastas2024;
@@ -93,6 +92,12 @@ loadjs.ready(["wrapper", "head"], function() {
         <div class="invalid-feedback"><?= $Page->Password->getErrorMessage() ?></div>
     </div>
     <?php } ?>
+    <div class="row gx-0">
+        <div class="form-check">
+            <input type="checkbox" name="<?= $Page->LoginType->FieldVar ?>" id="<?= $Page->LoginType->FieldVar ?>" class="form-check-input" value="a"<?php if ($Page->LoginType->CurrentValue == "a") { ?> checked<?php } ?>>
+            <label class="form-check-label" for="<?= $Page->LoginType->FieldVar ?>"><?= $Language->phrase("RememberMe") ?></label>
+        </div>
+    </div>
     <div class="d-grid">
         <button class="btn btn-primary ew-btn disabled enable-on-init" name="btn-submit" id="btn-submit" type="submit" formaction="<?= CurrentPageUrl(false) ?>"><?= $Language->phrase("Login", true) ?></button>
     </div>

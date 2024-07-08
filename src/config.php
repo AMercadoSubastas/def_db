@@ -122,17 +122,17 @@ require_once __DIR__ . "/userlevelsettings.php";
 $CONFIG = [
 
     // Debug
-    "DEBUG" => true, // Enabled
+    "DEBUG" => false, // Enabled
     "REPORT_ALL_ERRORS" => false, // Treat PHP warnings and notices as errors
-    "LOG_ERROR_TO_FILE" => false, // Log error to file
-    "LOG_ERROR_DETAILS" => true, // Log error details
+    "LOG_ERROR_TO_FILE" => true, // Log error to file
+    "LOG_ERROR_DETAILS" => false, // Log error details
     "DEBUG_MESSAGE_TEMPLATE" => '<div class="card card-danger ew-debug"><div class="card-header">' .
         '<h3 class="card-title">%t</h3>' .
         '<div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fa-solid fa-minus"></i></button></div>' .
         '</div><div class="card-body">%s</div></div>', // Debug message template
 
     // Environment
-    "ENVIRONMENT" => "production",
+    "ENVIRONMENT" => "development",
 
     // Maintenance mode
     "MAINTENANCE_MODE" => false,
@@ -143,7 +143,7 @@ $CONFIG = [
     "COMPILE_CONTAINER" => false,
 
     // Use route cache
-    "USE_ROUTE_CACHE" => false,
+    "USE_ROUTE_CACHE" => true,
     "CACHE_FOLDER" => "log/cache", // Cache folder
     "ROUTE_ATTRIBUTES_FILE" => "RouteAttributes.php", // Route attributes file under CACHE_FOLDER
     "ROUTE_CACHE_FILE" => "RouteCache.php", // Route cache file under CACHE_FOLDER
@@ -167,7 +167,7 @@ $CONFIG = [
     "SIDEBAR_CLASS" => "main-sidebar sidebar-light-primary elevation-1", // CSS class(es) for sidebar
     "NAVBAR_CLASS" => "main-header navbar navbar-expand navbar-white navbar-light", // CSS class(es) for navbar
     "CLASS_PREFIX" => "_", // Prefix for invalid CSS class names
-    "USE_JAVASCRIPT_MESSAGE" => false, // Use JavaScript message (toast)
+    "USE_JAVASCRIPT_MESSAGE" => true, // Use JavaScript message (toast)
     "ENCRYPTION_KEY" => '', // Encryption key
     "REDIRECT_STATUS_CODE" => 302, // Redirect status code
 
@@ -183,10 +183,12 @@ $CONFIG = [
         "curl" => "curl",
         "fileinfo" => "fileinfo",
         "intl" => "intl",
+        "hash" => "hash",
         "mbstring" => "mbstring",
-        "libxml" => "libxml",
         "openssl" => "openssl",
-        "gd" => "image"
+        "gd" => "image",
+        "xml" => "xml",
+        "libxml" => "libxml",
     ],
 
     // Check Token
@@ -381,7 +383,7 @@ $CONFIG = [
     "AUDIT_TRAIL_FIELD_NAME_NEWVALUE" => "", // New Value field name
 
     // Export Log
-    "EXPORT_PATH" => "export-02827d3d-6df9-4506-954e-ca333c80d2bb", // Export folder
+    "EXPORT_PATH" => "export-35af585c-c723-49ab-acd9-d7d82f885863", // Export folder
     "EXPORT_LOG_DBID" => "DB", // DB ID
     "EXPORT_LOG_TABLE_NAME" => "", // Table name
     "EXPORT_LOG_TABLE_VAR" => "", // Table var
@@ -407,7 +409,7 @@ $CONFIG = [
     "ENCRYPTION_ENABLED" => false, // Encryption enabled
     "ENCRYPT_USER_NAME_AND_PASSWORD" => false, // Encrypt user name / password
     "ADMIN_USER_NAME" => "RICARDOC", // Administrator user name
-    "ADMIN_PASSWORD" => "6019_Richi", // Administrator password
+    "ADMIN_PASSWORD" => "yRAXvYF**Y8dyT", // Administrator password
     "USE_CUSTOM_LOGIN" => true, // Use custom login (Windows/LDAP/User_CustomValidate)
     "ALLOW_LOGIN_BY_URL" => true, // Allow login by URL
     "PHPASS_ITERATION_COUNT_LOG2" => [10, 8], // For PasswordHash
@@ -479,7 +481,7 @@ $CONFIG = [
     // https://github.com/giggsey/libphonenumber-for-php/blob/master/docs/PhoneNumberUtil.md
     // - null => Use region code from locale (i.e. en-US => US)
     // - false => Skip formatting with PhoneNumberUtil
-    "SMS_REGION_CODE" => null,
+    "SMS_REGION_CODE" => false,
 
     // Email/SMS Templates // P2024
     "EMAIL_CHANGE_PASSWORD_TEMPLATE" => "ChangePassword.php",
@@ -632,7 +634,7 @@ $CONFIG = [
 
     // Import records
     "IMPORT_MAX_EXECUTION_TIME" => 300, // Import max execution time
-    "IMPORT_FILE_ALLOWED_EXTENSIONS" => "csv,xls,xlsx", // Import file allowed extensions
+    "IMPORT_FILE_ALLOWED_EXTENSIONS" => "csv,xls,xlsx,pdf", // Import file allowed extensions
     "IMPORT_INSERT_ONLY" => true, // Import by insert only
     "IMPORT_USE_TRANSACTION" => false, // Import use transaction
     "IMPORT_MAX_FAILURES" => 1, // Import maximum number of failures
@@ -640,8 +642,8 @@ $CONFIG = [
     // Export records
     "EXPORT_ALL" => true, // Export all records
     "EXPORT_ALL_TIME_LIMIT" => 120, // Export all records time limit
-    "EXPORT_ORIGINAL_VALUE" => false,
-    "EXPORT_FIELD_CAPTION" => false, // True to export field caption
+    "EXPORT_ORIGINAL_VALUE" => true,
+    "EXPORT_FIELD_CAPTION" => true, // True to export field caption
     "EXPORT_FIELD_IMAGE" => true, // True to export field image
     "EXPORT_CSS_STYLES" => true, // True to export CSS styles
     "EXPORT_MASTER_RECORD" => true, // True to export master record
@@ -729,7 +731,7 @@ $CONFIG = [
      * 2 - AND all multi values
      * 3 - OR all multi values
     */
-    "SEARCH_MULTI_VALUE_OPTION" => 3,
+    "SEARCH_MULTI_VALUE_OPTION" => 1,
 
     // Advanced search
     "SEARCH_OPTION" => "AUTO",
@@ -787,8 +789,9 @@ $CONFIG = [
 
     // Lookup
     "MULTIPLE_OPTION_SEPARATOR" => ",",
+    "FILTER_OPTION_SEPARATOR" => "|",
     "USE_LOOKUP_CACHE" => true,
-    "LOOKUP_CACHE_COUNT" => 9999999999999999,
+    "LOOKUP_CACHE_COUNT" => 0,
     "LOOKUP_CACHE_PAGE_IDS" => ["add","edit"],
 
     // Page Title Style
@@ -800,7 +803,7 @@ $CONFIG = [
 
     // Fixed header table
     "FIXED_HEADER_TABLE_CLASS" => "table-head-fixed",
-    "USE_FIXED_HEADER_TABLE" => false,
+    "USE_FIXED_HEADER_TABLE" => true,
     "FIXED_HEADER_TABLE_HEIGHT" => "mh-400px", // CSS class for fixed header table height
 
     // Multi column list options position
@@ -1271,7 +1274,8 @@ $CONFIG = [
         "USE_JAVASCRIPT_MESSAGE",
         "LIST_ACTION",
         "VIEW_ACTION",
-        "EDIT_ACTION"
+        "EDIT_ACTION",
+        "RTL_LANGUAGES"
     ],
 
     // Global client side variables

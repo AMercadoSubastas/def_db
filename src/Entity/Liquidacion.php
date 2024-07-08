@@ -28,45 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "liquidacion")]
 class Liquidacion extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'tcomp' => 'tcomp',
-        'serie' => 'serie',
-        'ncomp' => 'ncomp',
-        'cliente' => 'cliente',
-        'rubro' => 'rubro',
-        'calle' => 'calle',
-        'dnro' => 'dnro',
-        'pisodto' => 'pisodto',
-        'codpost' => 'codpost',
-        'codpais' => 'codpais',
-        'codprov' => 'codprov',
-        'codloc' => 'codloc',
-        'codrem' => 'codrem',
-        'fecharem' => 'fecharem',
-        'cuit' => 'cuit',
-        'tipoiva' => 'tipoiva',
-        'totremate' => 'totremate',
-        'totneto1' => 'totneto1',
-        'totiva21' => 'totiva21',
-        'subtot1' => 'subtot1',
-        'totneto2' => 'totneto2',
-        'totiva105' => 'totiva105',
-        'subtot2' => 'subtot2',
-        'totacuenta' => 'totacuenta',
-        'totgastos' => 'totgastos',
-        'totvarios' => 'totvarios',
-        'saldoafav' => 'saldoafav',
-        'fechahora' => 'fechahora',
-        'usuario' => 'usuario',
-        'fechaliq' => 'fechaliq',
-        'estado' => 'estado',
-        'nrodoc' => 'nrodoc',
-        'cotiz' => 'cotiz',
-        'usuarioultmod' => 'usuarioultmod',
-        'fecultmod' => 'fecultmod',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -121,37 +82,37 @@ class Liquidacion extends AbstractEntity
     private ?int $tipoiva;
 
     #[Column(type: "decimal")]
-    private string $totremate = "0.00";
+    private string $totremate;
 
     #[Column(type: "decimal")]
-    private string $totneto1 = "0.00";
+    private string $totneto1;
 
     #[Column(type: "decimal")]
-    private string $totiva21 = "0.00";
+    private string $totiva21;
 
     #[Column(type: "decimal")]
-    private string $subtot1 = "0.00";
+    private string $subtot1;
 
     #[Column(type: "decimal")]
-    private string $totneto2 = "0.00";
+    private string $totneto2;
 
     #[Column(type: "decimal")]
-    private string $totiva105 = "0.00";
+    private string $totiva105;
 
     #[Column(type: "decimal")]
-    private string $subtot2 = "0.00";
+    private string $subtot2;
 
     #[Column(type: "decimal")]
-    private string $totacuenta = "0.00";
+    private string $totacuenta;
 
     #[Column(type: "decimal")]
-    private string $totgastos = "0.00";
+    private string $totgastos;
 
     #[Column(type: "decimal")]
-    private string $totvarios = "0.00";
+    private string $totvarios;
 
     #[Column(type: "decimal")]
-    private string $saldoafav = "0.00";
+    private string $saldoafav;
 
     #[Column(type: "datetime")]
     private DateTime $fechahora;
@@ -176,6 +137,21 @@ class Liquidacion extends AbstractEntity
 
     #[Column(type: "datetime", nullable: true)]
     private ?DateTime $fecultmod;
+
+    public function __construct()
+    {
+        $this->totremate = "0.00";
+        $this->totneto1 = "0.00";
+        $this->totiva21 = "0.00";
+        $this->subtot1 = "0.00";
+        $this->totneto2 = "0.00";
+        $this->totiva105 = "0.00";
+        $this->subtot2 = "0.00";
+        $this->totacuenta = "0.00";
+        $this->totgastos = "0.00";
+        $this->totvarios = "0.00";
+        $this->saldoafav = "0.00";
+    }
 
     public function getCodnum(): int
     {

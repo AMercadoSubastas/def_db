@@ -605,7 +605,7 @@ class Entidades extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->usuario->addMethod("getAutoUpdateValue", fn() => cogerUsuario());
+        $this->usuario->addMethod("getAutoUpdateValue", fn() => CurrentUserID());
         $this->usuario->InputTextType = "text";
         $this->usuario->Raw = true;
         $this->usuario->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
@@ -677,7 +677,6 @@ class Entidades extends DbTable
             'TEXT' // Edit Tag
         );
         $this->cargo->InputTextType = "text";
-        $this->cargo->Required = true; // Required field
         $this->cargo->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
         $this->Fields['cargo'] = &$this->cargo;
 
@@ -687,10 +686,10 @@ class Entidades extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -702,7 +701,7 @@ class Entidades extends DbTable
         $this->fechahora->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -822,7 +821,7 @@ class Entidades extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->usuarioultmod->addMethod("getAutoUpdateValue", fn() => cogerUsuario());
+        $this->usuarioultmod->addMethod("getAutoUpdateValue", fn() => CurrentUserID());
         $this->usuarioultmod->InputTextType = "text";
         $this->usuarioultmod->Raw = true;
         $this->usuarioultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
@@ -834,10 +833,10 @@ class Entidades extends DbTable
             'x_fecultmod', // Variable name
             'fecultmod', // Name
             '`fecultmod`', // Expression
-            CastDateFieldForLike("`fecultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecultmod`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecultmod`', // Virtual expression
             false, // Is virtual
@@ -849,7 +848,7 @@ class Entidades extends DbTable
         $this->fecultmod->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fecultmod->InputTextType = "text";
         $this->fecultmod->Raw = true;
-        $this->fecultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecultmod->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecultmod'] = &$this->fecultmod;
 
@@ -1799,14 +1798,7 @@ class Entidades extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

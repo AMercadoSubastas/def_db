@@ -10,13 +10,13 @@ $remates->TableClass = "table table-bordered table-hover table-sm ew-table ew-ma
 <div class="ew-master-div">
 <table id="tbl_rematesmaster" class="table ew-view-table ew-master-table ew-vertical">
     <tbody>
-<?php if ($remates->codnum->Visible) { // codnum ?>
-        <tr id="r_codnum"<?= $remates->codnum->rowAttributes() ?>>
-            <td class="<?= $remates->TableLeftColumnClass ?>"><?= $remates->codnum->caption() ?></td>
-            <td<?= $remates->codnum->cellAttributes() ?>>
-<span id="el_remates_codnum">
-<span<?= $remates->codnum->viewAttributes() ?>>
-<?= $remates->codnum->getViewValue() ?></span>
+<?php if ($remates->ncomp->Visible) { // ncomp ?>
+        <tr id="r_ncomp"<?= $remates->ncomp->rowAttributes() ?>>
+            <td class="<?= $remates->TableLeftColumnClass ?>"><?= $remates->ncomp->caption() ?></td>
+            <td<?= $remates->ncomp->cellAttributes() ?>>
+<span id="el_remates_ncomp">
+<span<?= $remates->ncomp->viewAttributes() ?>>
+<?= $remates->ncomp->getViewValue() ?></span>
 </span>
 </td>
         </tr>
@@ -39,17 +39,6 @@ $remates->TableClass = "table table-bordered table-hover table-sm ew-table ew-ma
 <span id="el_remates_serie">
 <span<?= $remates->serie->viewAttributes() ?>>
 <?= $remates->serie->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
-<?php if ($remates->ncomp->Visible) { // ncomp ?>
-        <tr id="r_ncomp"<?= $remates->ncomp->rowAttributes() ?>>
-            <td class="<?= $remates->TableLeftColumnClass ?>"><?= $remates->ncomp->caption() ?></td>
-            <td<?= $remates->ncomp->cellAttributes() ?>>
-<span id="el_remates_ncomp">
-<span<?= $remates->ncomp->viewAttributes() ?>>
-<?= $remates->ncomp->getViewValue() ?></span>
 </span>
 </td>
         </tr>
@@ -302,7 +291,10 @@ $remates->TableClass = "table table-bordered table-hover table-sm ew-table ew-ma
             <td<?= $remates->tasa->cellAttributes() ?>>
 <span id="el_remates_tasa">
 <span<?= $remates->tasa->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($remates->tasa->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
+<div class="form-check form-switch d-inline-block">
+    <input type="checkbox" id="x_tasa_<?= $Page->RowCount ?>" class="form-check-input" value="<?= $remates->tasa->getViewValue() ?>" disabled<?php if (ConvertToBool($remates->tasa->CurrentValue)) { ?> checked<?php } ?>>
+    <label class="form-check-label" for="x_tasa_<?= $Page->RowCount ?>"></label>
+</div>
 </span>
 </span>
 </td>

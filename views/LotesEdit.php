@@ -28,7 +28,6 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["codnum", [fields.codnum.visible && fields.codnum.required ? ew.Validators.required(fields.codnum.caption) : null], fields.codnum.isInvalid],
             ["codrem", [fields.codrem.visible && fields.codrem.required ? ew.Validators.required(fields.codrem.caption) : null], fields.codrem.isInvalid],
             ["codcli", [fields.codcli.visible && fields.codcli.required ? ew.Validators.required(fields.codcli.caption) : null], fields.codcli.isInvalid],
             ["codrubro", [fields.codrubro.visible && fields.codrubro.required ? ew.Validators.required(fields.codrubro.caption) : null], fields.codrubro.isInvalid],
@@ -51,9 +50,9 @@ loadjs.ready(["wrapper", "head"], function () {
             ["codintlote", [fields.codintlote.visible && fields.codintlote.required ? ew.Validators.required(fields.codintlote.caption) : null], fields.codintlote.isInvalid],
             ["codintnum", [fields.codintnum.visible && fields.codintnum.required ? ew.Validators.required(fields.codintnum.caption) : null], fields.codintnum.isInvalid],
             ["codintsublote", [fields.codintsublote.visible && fields.codintsublote.required ? ew.Validators.required(fields.codintsublote.caption) : null], fields.codintsublote.isInvalid],
-            ["dir_secuencia", [fields.dir_secuencia.visible && fields.dir_secuencia.required ? ew.Validators.required(fields.dir_secuencia.caption) : null], fields.dir_secuencia.isInvalid],
             ["usuarioultmod", [fields.usuarioultmod.visible && fields.usuarioultmod.required ? ew.Validators.required(fields.usuarioultmod.caption) : null], fields.usuarioultmod.isInvalid],
-            ["fecultmod", [fields.fecultmod.visible && fields.fecultmod.required ? ew.Validators.required(fields.fecultmod.caption) : null], fields.fecultmod.isInvalid]
+            ["fecultmod", [fields.fecultmod.visible && fields.fecultmod.required ? ew.Validators.required(fields.fecultmod.caption) : null], fields.fecultmod.isInvalid],
+            ["dir_secuencia", [fields.dir_secuencia.visible && fields.dir_secuencia.required ? ew.Validators.required(fields.dir_secuencia.caption) : null], fields.dir_secuencia.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -72,6 +71,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "estado": <?= $Page->estado->toClientList($Page) ?>,
             "dir_secuencia": <?= $Page->dir_secuencia->toClientList($Page) ?>,
         })
         .build();
@@ -150,37 +150,9 @@ loadjs.ready("head", function () {
         <label id="elh_lotes_codintlote" for="x_codintlote" class="<?= $Page->LeftColumnClass ?>"><?= $Page->codintlote->caption() ?><?= $Page->codintlote->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->codintlote->cellAttributes() ?>>
 <span id="el_lotes_codintlote">
-<input type="<?= $Page->codintlote->getInputTextType() ?>" name="x_codintlote" id="x_codintlote" data-table="lotes" data-field="x_codintlote" value="<?= $Page->codintlote->EditValue ?>" data-page="1" size="30" maxlength="8" placeholder="<?= HtmlEncode($Page->codintlote->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->codintlote->formatPattern()) ?>"<?= $Page->codintlote->editAttributes() ?> aria-describedby="x_codintlote_help">
-<?= $Page->codintlote->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->codintlote->getErrorMessage() ?></div>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-</div><!-- /page* -->
-        </div><!-- /multi-page .tab-pane -->
-        <div class="<?= $Page->MultiPages->tabPaneClasses(2) ?>" id="tab_lotes2" role="tabpanel"><!-- multi-page .tab-pane -->
-<div class="ew-edit-div"><!-- page* -->
-<?php if ($Page->estado->Visible) { // estado ?>
-    <div id="r_estado"<?= $Page->estado->rowAttributes() ?>>
-        <label id="elh_lotes_estado" class="<?= $Page->LeftColumnClass ?>"><?= $Page->estado->caption() ?><?= $Page->estado->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->estado->cellAttributes() ?>>
-<span id="el_lotes_estado">
-<span<?= $Page->estado->viewAttributes() ?>>
-<span class="form-control-plaintext"><?= $Page->estado->getDisplayValue($Page->estado->EditValue) ?></span></span>
-<input type="hidden" data-table="lotes" data-field="x_estado" data-hidden="1" data-page="2" name="x_estado" id="x_estado" value="<?= HtmlEncode($Page->estado->CurrentValue) ?>">
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->comiscobr->Visible) { // comiscobr ?>
-    <div id="r_comiscobr"<?= $Page->comiscobr->rowAttributes() ?>>
-        <label id="elh_lotes_comiscobr" for="x_comiscobr" class="<?= $Page->LeftColumnClass ?>"><?= $Page->comiscobr->caption() ?><?= $Page->comiscobr->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->comiscobr->cellAttributes() ?>>
-<span id="el_lotes_comiscobr">
-<input type="<?= $Page->comiscobr->getInputTextType() ?>" name="x_comiscobr" id="x_comiscobr" data-table="lotes" data-field="x_comiscobr" value="<?= $Page->comiscobr->EditValue ?>" data-page="2" size="30" placeholder="<?= HtmlEncode($Page->comiscobr->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->comiscobr->formatPattern()) ?>"<?= $Page->comiscobr->editAttributes() ?> aria-describedby="x_comiscobr_help">
-<?= $Page->comiscobr->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->comiscobr->getErrorMessage() ?></div>
+<span<?= $Page->codintlote->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->codintlote->getDisplayValue($Page->codintlote->EditValue))) ?>"></span>
+<input type="hidden" data-table="lotes" data-field="x_codintlote" data-hidden="1" data-page="1" name="x_codintlote" id="x_codintlote" value="<?= HtmlEncode($Page->codintlote->CurrentValue) ?>">
 </span>
 </div></div>
     </div>
@@ -199,7 +171,7 @@ loadjs.ready("head", function () {
         <?php } ?>
         data-table="lotes"
         data-field="x_dir_secuencia"
-        data-page="2"
+        data-page="1"
         data-value-separator="<?= $Page->dir_secuencia->displayValueSeparatorAttribute() ?>"
         data-placeholder="<?= HtmlEncode($Page->dir_secuencia->getPlaceHolder()) ?>"
         <?= $Page->dir_secuencia->editAttributes() ?>>
@@ -234,12 +206,57 @@ loadjs.ready("flotesedit", function() {
 <?php } ?>
 </div><!-- /page* -->
         </div><!-- /multi-page .tab-pane -->
+        <div class="<?= $Page->MultiPages->tabPaneClasses(2) ?>" id="tab_lotes2" role="tabpanel"><!-- multi-page .tab-pane -->
+<div class="ew-edit-div"><!-- page* -->
+<?php if ($Page->estado->Visible) { // estado ?>
+    <div id="r_estado"<?= $Page->estado->rowAttributes() ?>>
+        <label id="elh_lotes_estado" class="<?= $Page->LeftColumnClass ?>"><?= $Page->estado->caption() ?><?= $Page->estado->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->estado->cellAttributes() ?>>
+<span id="el_lotes_estado">
+<template id="tp_x_estado">
+    <div class="form-check">
+        <input type="radio" class="form-check-input" data-table="lotes" data-field="x_estado" name="x_estado" id="x_estado"<?= $Page->estado->editAttributes() ?>>
+        <label class="form-check-label"></label>
+    </div>
+</template>
+<div id="dsl_x_estado" class="ew-item-list"></div>
+<selection-list hidden
+    id="x_estado"
+    name="x_estado"
+    value="<?= HtmlEncode($Page->estado->CurrentValue) ?>"
+    data-type="select-one"
+    data-template="tp_x_estado"
+    data-target="dsl_x_estado"
+    data-repeatcolumn="5"
+    class="form-control<?= $Page->estado->isInvalidClass() ?>"
+    data-table="lotes"
+    data-field="x_estado"
+    data-page="2"
+    data-value-separator="<?= $Page->estado->displayValueSeparatorAttribute() ?>"
+    <?= $Page->estado->editAttributes() ?>></selection-list>
+<?= $Page->estado->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->estado->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->comiscobr->Visible) { // comiscobr ?>
+    <div id="r_comiscobr"<?= $Page->comiscobr->rowAttributes() ?>>
+        <label id="elh_lotes_comiscobr" for="x_comiscobr" class="<?= $Page->LeftColumnClass ?>"><?= $Page->comiscobr->caption() ?><?= $Page->comiscobr->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->comiscobr->cellAttributes() ?>>
+<span id="el_lotes_comiscobr">
+<input type="<?= $Page->comiscobr->getInputTextType() ?>" name="x_comiscobr" id="x_comiscobr" data-table="lotes" data-field="x_comiscobr" value="<?= $Page->comiscobr->EditValue ?>" data-page="2" size="30" placeholder="<?= HtmlEncode($Page->comiscobr->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->comiscobr->formatPattern()) ?>"<?= $Page->comiscobr->editAttributes() ?> aria-describedby="x_comiscobr_help">
+<?= $Page->comiscobr->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->comiscobr->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+</div><!-- /page* -->
+        </div><!-- /multi-page .tab-pane -->
     </div><!-- /multi-page tabs .tab-content -->
 </div><!-- /multi-page tabs -->
 </div><!-- /multi-page -->
-<span id="el_lotes_codnum">
-<input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" data-page="1" name="x_codnum" id="x_codnum" value="<?= HtmlEncode($Page->codnum->CurrentValue) ?>">
-</span>
 <span id="el_lotes_codcli">
 <input type="hidden" data-table="lotes" data-field="x_codcli" data-hidden="1" name="x_codcli" id="x_codcli" value="<?= HtmlEncode($Page->codcli->CurrentValue) ?>">
 </span>
@@ -282,6 +299,7 @@ loadjs.ready("flotesedit", function() {
 <span id="el_lotes_codintsublote">
 <input type="hidden" data-table="lotes" data-field="x_codintsublote" data-hidden="1" name="x_codintsublote" id="x_codintsublote" value="<?= HtmlEncode($Page->codintsublote->CurrentValue) ?>">
 </span>
+    <input type="hidden" data-table="lotes" data-field="x_codnum" data-hidden="1" name="x_codnum" id="x_codnum" value="<?= HtmlEncode($Page->codnum->CurrentValue) ?>">
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="flotesedit"><?= $Language->phrase("SaveBtn") ?></button>

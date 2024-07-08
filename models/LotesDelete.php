@@ -121,7 +121,7 @@ class LotesDelete extends Lotes
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->codnum->Visible = false;
         $this->codrem->setVisibility();
         $this->codcli->setVisibility();
         $this->codrubro->setVisibility();
@@ -145,9 +145,9 @@ class LotesDelete extends Lotes
         $this->codintlote->setVisibility();
         $this->codintnum->setVisibility();
         $this->codintsublote->setVisibility();
-        $this->dir_secuencia->setVisibility();
         $this->usuarioultmod->setVisibility();
         $this->fecultmod->setVisibility();
+        $this->dir_secuencia->setVisibility();
     }
 
     // Constructor
@@ -638,9 +638,9 @@ class LotesDelete extends Lotes
         $this->codintlote->setDbValue($row['codintlote']);
         $this->codintnum->setDbValue($row['codintnum']);
         $this->codintsublote->setDbValue($row['codintsublote']);
-        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
         $this->usuarioultmod->setDbValue($row['usuarioultmod']);
         $this->fecultmod->setDbValue($row['fecultmod']);
+        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
     }
 
     // Return a row with default values
@@ -671,9 +671,9 @@ class LotesDelete extends Lotes
         $row['codintlote'] = $this->codintlote->DefaultValue;
         $row['codintnum'] = $this->codintnum->DefaultValue;
         $row['codintsublote'] = $this->codintsublote->DefaultValue;
-        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         $row['usuarioultmod'] = $this->usuarioultmod->DefaultValue;
         $row['fecultmod'] = $this->fecultmod->DefaultValue;
+        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         return $row;
     }
 
@@ -737,11 +737,11 @@ class LotesDelete extends Lotes
 
         // codintsublote
 
-        // dir_secuencia
-
         // usuarioultmod
 
         // fecultmod
+
+        // dir_secuencia
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -855,12 +855,20 @@ class LotesDelete extends Lotes
             // codintsublote
             $this->codintsublote->ViewValue = $this->codintsublote->CurrentValue;
 
+            // usuarioultmod
+            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
+            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
+
+            // fecultmod
+            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
+            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
+
             // dir_secuencia
             $curVal = strval($this->dir_secuencia->CurrentValue);
             if ($curVal != "") {
                 $this->dir_secuencia->ViewValue = $this->dir_secuencia->lookupCacheOption($curVal);
                 if ($this->dir_secuencia->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                     $sqlWrk = $this->dir_secuencia->Lookup->getSql(false, $filterWrk, '', $this, true, true);
                     $conn = Conn();
                     $config = $conn->getConfiguration();
@@ -877,18 +885,6 @@ class LotesDelete extends Lotes
             } else {
                 $this->dir_secuencia->ViewValue = null;
             }
-
-            // usuarioultmod
-            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
-            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
-
-            // fecultmod
-            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
-            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
-
-            // codnum
-            $this->codnum->HrefValue = "";
-            $this->codnum->TooltipValue = "";
 
             // codrem
             $this->codrem->HrefValue = "";
@@ -978,10 +974,6 @@ class LotesDelete extends Lotes
             $this->codintsublote->HrefValue = "";
             $this->codintsublote->TooltipValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-            $this->dir_secuencia->TooltipValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
             $this->usuarioultmod->TooltipValue = "";
@@ -989,6 +981,10 @@ class LotesDelete extends Lotes
             // fecultmod
             $this->fecultmod->HrefValue = "";
             $this->fecultmod->TooltipValue = "";
+
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
+            $this->dir_secuencia->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1067,7 +1063,9 @@ class LotesDelete extends Lotes
         }
         if ($deleteRows) {
             if ($this->UseTransaction) { // Commit transaction
-                $conn->commit();
+                if ($conn->isTransactionActive()) {
+                    $conn->commit();
+                }
             }
 
             // Set warning message if delete some records failed
@@ -1076,7 +1074,9 @@ class LotesDelete extends Lotes
             }
         } else {
             if ($this->UseTransaction) { // Rollback transaction
-                $conn->rollback();
+                if ($conn->isTransactionActive()) {
+                    $conn->rollback();
+                }
             }
         }
 

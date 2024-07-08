@@ -243,6 +243,10 @@ abstract class AbstractExport extends AbstractExportBase
                     $classes->remove("break-after-page");
                 }
             } else {
+                $prev = $element->previousSibling();
+                if ($prev?->isElementNode() && $prev->style()->getProperty("page-break-after") == "always") { // PAGE_BREAK_HTML
+                    $avoid = true;
+                }
                 if ($this->UseInlineStyles) {
                     $break && !$avoid ? $style->setProperty("page-break-before", "always") : $style->removeProperty("page-break-before");
                     $style->removeProperty("page-break-after");

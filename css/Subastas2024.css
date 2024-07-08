@@ -490,7 +490,7 @@ label.form-check-label {
 .ew-desktop .ew-desktop-table > thead > tr > td:first-of-type > span[id^=elh_], .ew-desktop .ew-desktop-table > tbody > tr > td:first-of-type > span[id^=elh_] {
   font-weight: bold;
   display: inline-block;
-  margin-top: 0.75rem;
+  margin-top: 0.25rem;
 }
 .ew-desktop .ew-desktop-table > thead > tr > td:first-of-type .checkbox, .ew-desktop .ew-desktop-table > tbody > tr > td:first-of-type .checkbox {
   margin-top: 0;
@@ -500,7 +500,7 @@ label.form-check-label {
   font-weight: bold;
 }
 .ew-desktop .ew-desktop-table > thead > tr > td:nth-of-type(2):not(:last-of-type) .ew-search-operator, .ew-desktop .ew-desktop-table > tbody > tr > td:nth-of-type(2):not(:last-of-type) .ew-search-operator {
-  margin-top: 0.75rem;
+  margin-top: 0.25rem;
 }
 .ew-desktop .ew-desktop-table > thead > tr > th:last-of-type, .ew-desktop .ew-desktop-table > thead > tr > td:last-of-type, .ew-desktop .ew-desktop-table > tbody > tr > th:last-of-type, .ew-desktop .ew-desktop-table > tbody > tr > td:last-of-type {
   min-width: 150px;
@@ -1233,6 +1233,10 @@ input.cke_dialog_ui_input_text {
   left: -100%;
   margin-left: 10px;
   border-radius: 0.375rem 0 0.375rem 0.375rem;
+}
+
+.ew-pdfobject {
+  max-width: 1000px;
 }
 
 /* desktop */
@@ -3852,6 +3856,10 @@ body > div.wrapper.ew-layout > div.content-wrapper {
   top: 17px;
 }
 
+#ew-navbar > a > img {
+  width: 200px;
+}
+
 /*END_USER_STYLES*/
 tr.ew-table-preview-row.expandable-body,
 tr.ew-table-preview-row.expandable-body > td,
@@ -3893,6 +3901,10 @@ tr.ew-table-preview-row.expandable-body > td,
   padding-right: 10px;
   /*rtl:ignore*/
   direction: ltr;
+}
+
+.ew-preview-container .btn-group {
+  display: block;
 }
 
 .ew-preview-container .nav-item .text-bg-white {

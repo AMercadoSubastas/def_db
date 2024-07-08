@@ -278,10 +278,10 @@ class Cabremi extends DbTable
             'x_fecharemi', // Variable name
             'fecharemi', // Name
             '`fecharemi`', // Expression
-            CastDateFieldForLike("`fecharemi`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecharemi`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecharemi`', // Virtual expression
             false, // Is virtual
@@ -294,7 +294,7 @@ class Cabremi extends DbTable
         $this->fecharemi->Raw = true;
         $this->fecharemi->Nullable = false; // NOT NULL field
         $this->fecharemi->Required = true; // Required field
-        $this->fecharemi->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecharemi->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecharemi->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecharemi'] = &$this->fecharemi;
 
@@ -552,10 +552,10 @@ class Cabremi extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -566,7 +566,7 @@ class Cabremi extends DbTable
         );
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -697,10 +697,10 @@ class Cabremi extends DbTable
             'x_fechaultmod', // Variable name
             'fechaultmod', // Name
             '`fechaultmod`', // Expression
-            CastDateFieldForLike("`fechaultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechaultmod`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechaultmod`', // Virtual expression
             false, // Is virtual
@@ -711,7 +711,7 @@ class Cabremi extends DbTable
         );
         $this->fechaultmod->InputTextType = "text";
         $this->fechaultmod->Raw = true;
-        $this->fechaultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechaultmod->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechaultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechaultmod'] = &$this->fechaultmod;
 
@@ -1570,14 +1570,7 @@ class Cabremi extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

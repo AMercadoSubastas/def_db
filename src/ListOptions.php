@@ -209,7 +209,7 @@ class ListOptions implements \ArrayAccess, \IteratorAggregate
     // Render list options
     public function render($part, $pos = "", $rowCnt = "", $templateType = "block", $templateId = "", $templateClassName = "", $output = true)
     {
-        if ($this->CustomItem == "" && ($groupitem = $this->getItem($this->GroupOptionName)) && $this->showPos($groupitem->OnLeft, $pos)) {
+        if ($this->CustomItem == "" && ($groupItem = $this->getItem($this->GroupOptionName)) && $this->showPos($groupItem->OnLeft, $pos)) {
             $useDropDownButton = $this->UseDropDownButton;
             $useButtonGroup = $this->UseButtonGroup;
             if ($useDropDownButton) { // Render dropdown
@@ -230,34 +230,31 @@ class ListOptions implements \ArrayAccess, \IteratorAggregate
                 } else {
                     $dropdownButtonClass = !ContainsString($this->TagClassName, "ew-multi-column-list-option-card") ? "btn-default" : "";
                     AppendClass($dropdownButtonClass, "btn dropdown-toggle");
-                    $groupitem->Body = $this->renderDropDownButton($buttonValue, $pos, $dropdownButtonClass);
-                    $groupitem->Visible = true;
+                    $groupItem->Body = $this->renderDropDownButton($buttonValue, $pos, $dropdownButtonClass);
+                    $groupItem->Visible = true;
                 }
             }
             if (!$useDropDownButton) {
                 if ($useButtonGroup) { // Render button group
                     $visible = false;
-                    $buttongroups = [];
+                    $buttonGroups = [];
                     foreach ($this->Items as $item) {
                         if ($item->Name != $this->GroupOptionName && $item->Visible && $item->Body != "") {
                             if ($item->ShowInButtonGroup) {
                                 $visible = true;
                                 $buttonValue = $item->Body;
-                                if (!array_key_exists($item->ButtonGroupName, $buttongroups)) {
-                                    $buttongroups[$item->ButtonGroupName] = "";
+                                if (!array_key_exists($item->ButtonGroupName, $buttonGroups)) {
+                                    $buttonGroups[$item->ButtonGroupName] = "";
                                 }
-                                $buttongroups[$item->ButtonGroupName] .= $buttonValue;
+                                $buttonGroups[$item->ButtonGroupName] .= $buttonValue;
                             } elseif ($item->Name == "listactions") { // Show listactions as button group
                                 $item->Body = $this->renderButtonGroup($item->Body, $pos);
                             }
                         }
                     }
-                    $groupitem->Body = "";
-                    foreach ($buttongroups as $buttongroup => $buttonValue) {
-                        $groupitem->Body .= $this->renderButtonGroup($buttonValue, $pos);
-                    }
+                    $groupItem->Body = implode(array_map(fn($buttonValue) => $this->renderButtonGroup($buttonValue, $pos), array_values($buttonGroups)));
                     if ($visible) {
-                        $groupitem->Visible = true;
+                        $groupItem->Visible = true;
                     }
                 } else { // Render links as button links
                     foreach ($this->Items as $item) {
@@ -374,7 +371,7 @@ class ListOptions implements \ArrayAccess, \IteratorAggregate
     {
         $show = $item->Visible && $this->showPos($item->OnLeft, $pos);
         if ($show) {
-            $groupItemVisible = $this->getItem($this->GroupOptionName)->Visible;
+            $groupItemVisible = $this->getItem($this->GroupOptionName)?->Visible ?? false;
             if ($this->UseDropDownButton) { // Group item / Item not in dropdown / Item in dropdown + Group item not visible
                 $show = $item->Name == $this->GroupOptionName && $groupItemVisible || !$item->ShowInDropDown || $item->ShowInDropDown && !$groupItemVisible;
             } elseif ($this->UseButtonGroup) { // Group item / Item not in button group / Item in button group + Group item not visible

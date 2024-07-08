@@ -135,7 +135,7 @@ class LotesGrid extends Lotes
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->codnum->Visible = false;
         $this->codrem->setVisibility();
         $this->codcli->setVisibility();
         $this->codrubro->setVisibility();
@@ -159,9 +159,9 @@ class LotesGrid extends Lotes
         $this->codintlote->setVisibility();
         $this->codintnum->setVisibility();
         $this->codintsublote->setVisibility();
-        $this->dir_secuencia->setVisibility();
         $this->usuarioultmod->setVisibility();
         $this->fecultmod->setVisibility();
+        $this->dir_secuencia->setVisibility();
     }
 
     // Constructor
@@ -530,7 +530,7 @@ class LotesGrid extends Lotes
     public $KeyCount = 0; // Key count
     public $MultiColumnGridClass = "row-cols-md";
     public $MultiColumnEditClass = "col-12 w-100";
-    public $MultiColumnCardClass = "card h-100 ew-card";
+    public $MultiColumnCardClass = "card h-200 ew-card";
     public $MultiColumnListOptionsPosition = "bottom-start";
     public $DbMasterFilter = ""; // Master filter
     public $DbDetailFilter = ""; // Detail filter
@@ -1119,67 +1119,172 @@ class LotesGrid extends Lotes
     public function emptyRow()
     {
         global $CurrentForm;
-        if ($CurrentForm->hasValue("x_codrem") && $CurrentForm->hasValue("o_codrem") && $this->codrem->CurrentValue != $this->codrem->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codrem") &&
+            $CurrentForm->hasValue("o_codrem") &&
+            $this->codrem->CurrentValue != $this->codrem->DefaultValue &&
+            !($this->codrem->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codrem->CurrentValue == $this->codrem->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codcli") && $CurrentForm->hasValue("o_codcli") && $this->codcli->CurrentValue != $this->codcli->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codcli") &&
+            $CurrentForm->hasValue("o_codcli") &&
+            $this->codcli->CurrentValue != $this->codcli->DefaultValue &&
+            !($this->codcli->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codcli->CurrentValue == $this->codcli->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codrubro") && $CurrentForm->hasValue("o_codrubro") && $this->codrubro->CurrentValue != $this->codrubro->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codrubro") &&
+            $CurrentForm->hasValue("o_codrubro") &&
+            $this->codrubro->CurrentValue != $this->codrubro->DefaultValue &&
+            !($this->codrubro->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codrubro->CurrentValue == $this->codrubro->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_estado") && $CurrentForm->hasValue("o_estado") && $this->estado->CurrentValue != $this->estado->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_estado") &&
+            $CurrentForm->hasValue("o_estado") &&
+            $this->estado->CurrentValue != $this->estado->DefaultValue &&
+            !($this->estado->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->estado->CurrentValue == $this->estado->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_moneda") && $CurrentForm->hasValue("o_moneda") && $this->moneda->CurrentValue != $this->moneda->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_moneda") &&
+            $CurrentForm->hasValue("o_moneda") &&
+            $this->moneda->CurrentValue != $this->moneda->DefaultValue &&
+            !($this->moneda->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->moneda->CurrentValue == $this->moneda->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_preciobase") && $CurrentForm->hasValue("o_preciobase") && $this->preciobase->CurrentValue != $this->preciobase->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_preciobase") &&
+            $CurrentForm->hasValue("o_preciobase") &&
+            $this->preciobase->CurrentValue != $this->preciobase->DefaultValue &&
+            !($this->preciobase->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->preciobase->CurrentValue == $this->preciobase->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_preciofinal") && $CurrentForm->hasValue("o_preciofinal") && $this->preciofinal->CurrentValue != $this->preciofinal->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_preciofinal") &&
+            $CurrentForm->hasValue("o_preciofinal") &&
+            $this->preciofinal->CurrentValue != $this->preciofinal->DefaultValue &&
+            !($this->preciofinal->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->preciofinal->CurrentValue == $this->preciofinal->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_comiscobr") && $CurrentForm->hasValue("o_comiscobr") && $this->comiscobr->CurrentValue != $this->comiscobr->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_comiscobr") &&
+            $CurrentForm->hasValue("o_comiscobr") &&
+            $this->comiscobr->CurrentValue != $this->comiscobr->DefaultValue &&
+            !($this->comiscobr->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->comiscobr->CurrentValue == $this->comiscobr->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_comispag") && $CurrentForm->hasValue("o_comispag") && $this->comispag->CurrentValue != $this->comispag->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_comispag") &&
+            $CurrentForm->hasValue("o_comispag") &&
+            $this->comispag->CurrentValue != $this->comispag->DefaultValue &&
+            !($this->comispag->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->comispag->CurrentValue == $this->comispag->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_comprador") && $CurrentForm->hasValue("o_comprador") && $this->comprador->CurrentValue != $this->comprador->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_comprador") &&
+            $CurrentForm->hasValue("o_comprador") &&
+            $this->comprador->CurrentValue != $this->comprador->DefaultValue &&
+            !($this->comprador->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->comprador->CurrentValue == $this->comprador->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_ivari") && $CurrentForm->hasValue("o_ivari") && $this->ivari->CurrentValue != $this->ivari->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_ivari") &&
+            $CurrentForm->hasValue("o_ivari") &&
+            $this->ivari->CurrentValue != $this->ivari->DefaultValue &&
+            !($this->ivari->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->ivari->CurrentValue == $this->ivari->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_ivarni") && $CurrentForm->hasValue("o_ivarni") && $this->ivarni->CurrentValue != $this->ivarni->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_ivarni") &&
+            $CurrentForm->hasValue("o_ivarni") &&
+            $this->ivarni->CurrentValue != $this->ivarni->DefaultValue &&
+            !($this->ivarni->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->ivarni->CurrentValue == $this->ivarni->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codimpadic") && $CurrentForm->hasValue("o_codimpadic") && $this->codimpadic->CurrentValue != $this->codimpadic->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codimpadic") &&
+            $CurrentForm->hasValue("o_codimpadic") &&
+            $this->codimpadic->CurrentValue != $this->codimpadic->DefaultValue &&
+            !($this->codimpadic->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codimpadic->CurrentValue == $this->codimpadic->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_impadic") && $CurrentForm->hasValue("o_impadic") && $this->impadic->CurrentValue != $this->impadic->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_impadic") &&
+            $CurrentForm->hasValue("o_impadic") &&
+            $this->impadic->CurrentValue != $this->impadic->DefaultValue &&
+            !($this->impadic->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->impadic->CurrentValue == $this->impadic->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_descor") && $CurrentForm->hasValue("o_descor") && $this->descor->CurrentValue != $this->descor->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_descor") &&
+            $CurrentForm->hasValue("o_descor") &&
+            $this->descor->CurrentValue != $this->descor->DefaultValue &&
+            !($this->descor->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->descor->CurrentValue == $this->descor->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_observ") && $CurrentForm->hasValue("o_observ") && $this->observ->CurrentValue != $this->observ->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_observ") &&
+            $CurrentForm->hasValue("o_observ") &&
+            $this->observ->CurrentValue != $this->observ->DefaultValue &&
+            !($this->observ->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->observ->CurrentValue == $this->observ->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_secuencia") && $CurrentForm->hasValue("o_secuencia") && $this->secuencia->CurrentValue != $this->secuencia->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_secuencia") &&
+            $CurrentForm->hasValue("o_secuencia") &&
+            $this->secuencia->CurrentValue != $this->secuencia->DefaultValue &&
+            !($this->secuencia->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->secuencia->CurrentValue == $this->secuencia->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codintlote") && $CurrentForm->hasValue("o_codintlote") && $this->codintlote->CurrentValue != $this->codintlote->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codintlote") &&
+            $CurrentForm->hasValue("o_codintlote") &&
+            $this->codintlote->CurrentValue != $this->codintlote->DefaultValue &&
+            !($this->codintlote->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codintlote->CurrentValue == $this->codintlote->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codintnum") && $CurrentForm->hasValue("o_codintnum") && $this->codintnum->CurrentValue != $this->codintnum->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codintnum") &&
+            $CurrentForm->hasValue("o_codintnum") &&
+            $this->codintnum->CurrentValue != $this->codintnum->DefaultValue &&
+            !($this->codintnum->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codintnum->CurrentValue == $this->codintnum->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_codintsublote") && $CurrentForm->hasValue("o_codintsublote") && $this->codintsublote->CurrentValue != $this->codintsublote->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_codintsublote") &&
+            $CurrentForm->hasValue("o_codintsublote") &&
+            $this->codintsublote->CurrentValue != $this->codintsublote->DefaultValue &&
+            !($this->codintsublote->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->codintsublote->CurrentValue == $this->codintsublote->getSessionValue())
+        ) {
             return false;
         }
-        if ($CurrentForm->hasValue("x_dir_secuencia") && $CurrentForm->hasValue("o_dir_secuencia") && $this->dir_secuencia->CurrentValue != $this->dir_secuencia->DefaultValue) {
+        if (
+            $CurrentForm->hasValue("x_dir_secuencia") &&
+            $CurrentForm->hasValue("o_dir_secuencia") &&
+            $this->dir_secuencia->CurrentValue != $this->dir_secuencia->DefaultValue &&
+            !($this->dir_secuencia->IsForeignKey && $this->getCurrentMasterTable() != "" && $this->dir_secuencia->CurrentValue == $this->dir_secuencia->getSessionValue())
+        ) {
             return false;
         }
         return true;
@@ -1494,6 +1599,19 @@ class LotesGrid extends Lotes
         $item = &$option->addGroupOption();
         $item->Body = "";
         $item->Visible = false;
+
+        // Add
+        if ($this->CurrentMode == "view") { // Check view mode
+            $item = &$option->add("add");
+            $addcaption = HtmlTitle($Language->phrase("AddLink"));
+            $this->AddUrl = $this->getAddUrl();
+            if ($this->ModalAdd && !IsMobile()) {
+                $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-table=\"lotes\" data-caption=\"" . $addcaption . "\" data-ew-action=\"modal\" data-action=\"add\" data-ajax=\"" . ($this->UseAjaxActions ? "true" : "false") . "\" data-url=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\" data-btn=\"AddBtn\">" . $Language->phrase("AddLink") . "</a>";
+            } else {
+                $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
+            }
+            $item->Visible = $this->AddUrl != "" && $Security->canAdd();
+        }
     }
 
     // Active user filter
@@ -1531,7 +1649,7 @@ class LotesGrid extends Lotes
                     $option->UseDropDownButton = false;
                     $item = &$option->add("addblankrow");
                     $item->Body = "<a class=\"ew-add-edit ew-add-blank-row\" title=\"" . HtmlTitle($Language->phrase("AddBlankRow")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("AddBlankRow")) . "\" data-ew-action=\"add-grid-row\">" . $Language->phrase("AddBlankRow") . "</a>";
-                    $item->Visible = false;
+                    $item->Visible = $Security->canAdd();
                     $this->ShowOtherOptions = $item->Visible;
                 }
             }
@@ -1719,12 +1837,6 @@ class LotesGrid extends Lotes
         global $CurrentForm;
         $CurrentForm->FormName = $this->FormName;
         $validate = !Config("SERVER_VALIDATE");
-
-        // Check field name 'codnum' first before field var 'x_codnum'
-        $val = $CurrentForm->hasValue("codnum") ? $CurrentForm->getValue("codnum") : $CurrentForm->getValue("x_codnum");
-        if (!$this->codnum->IsDetailKey && !$this->isGridAdd() && !$this->isAdd()) {
-            $this->codnum->setFormValue($val);
-        }
 
         // Check field name 'codrem' first before field var 'x_codrem'
         $val = $CurrentForm->hasValue("codrem") ? $CurrentForm->getValue("codrem") : $CurrentForm->getValue("x_codrem");
@@ -2013,19 +2125,6 @@ class LotesGrid extends Lotes
             $this->codintsublote->setOldValue($CurrentForm->getValue("o_codintsublote"));
         }
 
-        // Check field name 'dir_secuencia' first before field var 'x_dir_secuencia'
-        $val = $CurrentForm->hasValue("dir_secuencia") ? $CurrentForm->getValue("dir_secuencia") : $CurrentForm->getValue("x_dir_secuencia");
-        if (!$this->dir_secuencia->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->dir_secuencia->Visible = false; // Disable update for API request
-            } else {
-                $this->dir_secuencia->setFormValue($val);
-            }
-        }
-        if ($CurrentForm->hasValue("o_dir_secuencia")) {
-            $this->dir_secuencia->setOldValue($CurrentForm->getValue("o_dir_secuencia"));
-        }
-
         // Check field name 'usuarioultmod' first before field var 'x_usuarioultmod'
         $val = $CurrentForm->hasValue("usuarioultmod") ? $CurrentForm->getValue("usuarioultmod") : $CurrentForm->getValue("x_usuarioultmod");
         if (!$this->usuarioultmod->IsDetailKey) {
@@ -2051,6 +2150,25 @@ class LotesGrid extends Lotes
         }
         if ($CurrentForm->hasValue("o_fecultmod")) {
             $this->fecultmod->setOldValue($CurrentForm->getValue("o_fecultmod"));
+        }
+
+        // Check field name 'dir_secuencia' first before field var 'x_dir_secuencia'
+        $val = $CurrentForm->hasValue("dir_secuencia") ? $CurrentForm->getValue("dir_secuencia") : $CurrentForm->getValue("x_dir_secuencia");
+        if (!$this->dir_secuencia->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->dir_secuencia->Visible = false; // Disable update for API request
+            } else {
+                $this->dir_secuencia->setFormValue($val);
+            }
+        }
+        if ($CurrentForm->hasValue("o_dir_secuencia")) {
+            $this->dir_secuencia->setOldValue($CurrentForm->getValue("o_dir_secuencia"));
+        }
+
+        // Check field name 'codnum' first before field var 'x_codnum'
+        $val = $CurrentForm->hasValue("codnum") ? $CurrentForm->getValue("codnum") : $CurrentForm->getValue("x_codnum");
+        if (!$this->codnum->IsDetailKey && !$this->isGridAdd() && !$this->isAdd()) {
+            $this->codnum->setFormValue($val);
         }
     }
 
@@ -2084,10 +2202,10 @@ class LotesGrid extends Lotes
         $this->codintlote->CurrentValue = $this->codintlote->FormValue;
         $this->codintnum->CurrentValue = $this->codintnum->FormValue;
         $this->codintsublote->CurrentValue = $this->codintsublote->FormValue;
-        $this->dir_secuencia->CurrentValue = $this->dir_secuencia->FormValue;
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->FormValue;
         $this->fecultmod->CurrentValue = $this->fecultmod->FormValue;
         $this->fecultmod->CurrentValue = UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern());
+        $this->dir_secuencia->CurrentValue = $this->dir_secuencia->FormValue;
     }
 
     /**
@@ -2207,9 +2325,9 @@ class LotesGrid extends Lotes
         $this->codintlote->setDbValue($row['codintlote']);
         $this->codintnum->setDbValue($row['codintnum']);
         $this->codintsublote->setDbValue($row['codintsublote']);
-        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
         $this->usuarioultmod->setDbValue($row['usuarioultmod']);
         $this->fecultmod->setDbValue($row['fecultmod']);
+        $this->dir_secuencia->setDbValue($row['dir_secuencia']);
     }
 
     // Return a row with default values
@@ -2240,9 +2358,9 @@ class LotesGrid extends Lotes
         $row['codintlote'] = $this->codintlote->DefaultValue;
         $row['codintnum'] = $this->codintnum->DefaultValue;
         $row['codintsublote'] = $this->codintsublote->DefaultValue;
-        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         $row['usuarioultmod'] = $this->usuarioultmod->DefaultValue;
         $row['fecultmod'] = $this->fecultmod->DefaultValue;
+        $row['dir_secuencia'] = $this->dir_secuencia->DefaultValue;
         return $row;
     }
 
@@ -2329,11 +2447,11 @@ class LotesGrid extends Lotes
 
         // codintsublote
 
-        // dir_secuencia
-
         // usuarioultmod
 
         // fecultmod
+
+        // dir_secuencia
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -2447,12 +2565,20 @@ class LotesGrid extends Lotes
             // codintsublote
             $this->codintsublote->ViewValue = $this->codintsublote->CurrentValue;
 
+            // usuarioultmod
+            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
+            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
+
+            // fecultmod
+            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
+            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
+
             // dir_secuencia
             $curVal = strval($this->dir_secuencia->CurrentValue);
             if ($curVal != "") {
                 $this->dir_secuencia->ViewValue = $this->dir_secuencia->lookupCacheOption($curVal);
                 if ($this->dir_secuencia->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $curVal, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                     $sqlWrk = $this->dir_secuencia->Lookup->getSql(false, $filterWrk, '', $this, true, true);
                     $conn = Conn();
                     $config = $conn->getConfiguration();
@@ -2469,18 +2595,6 @@ class LotesGrid extends Lotes
             } else {
                 $this->dir_secuencia->ViewValue = null;
             }
-
-            // usuarioultmod
-            $this->usuarioultmod->ViewValue = $this->usuarioultmod->CurrentValue;
-            $this->usuarioultmod->ViewValue = FormatNumber($this->usuarioultmod->ViewValue, $this->usuarioultmod->formatPattern());
-
-            // fecultmod
-            $this->fecultmod->ViewValue = $this->fecultmod->CurrentValue;
-            $this->fecultmod->ViewValue = FormatDateTime($this->fecultmod->ViewValue, $this->fecultmod->formatPattern());
-
-            // codnum
-            $this->codnum->HrefValue = "";
-            $this->codnum->TooltipValue = "";
 
             // codrem
             $this->codrem->HrefValue = "";
@@ -2570,10 +2684,6 @@ class LotesGrid extends Lotes
             $this->codintsublote->HrefValue = "";
             $this->codintsublote->TooltipValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-            $this->dir_secuencia->TooltipValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
             $this->usuarioultmod->TooltipValue = "";
@@ -2581,9 +2691,11 @@ class LotesGrid extends Lotes
             // fecultmod
             $this->fecultmod->HrefValue = "";
             $this->fecultmod->TooltipValue = "";
-        } elseif ($this->RowType == RowType::ADD) {
-            // codnum
 
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
+            $this->dir_secuencia->TooltipValue = "";
+        } elseif ($this->RowType == RowType::ADD) {
             // codrem
             $this->codrem->setupEditAttributes();
             if ($this->codrem->getSessionValue() != "") {
@@ -2786,6 +2898,10 @@ class LotesGrid extends Lotes
             $this->codintsublote->EditValue = HtmlEncode($this->codintsublote->CurrentValue);
             $this->codintsublote->PlaceHolder = RemoveHtml($this->codintsublote->caption());
 
+            // usuarioultmod
+
+            // fecultmod
+
             // dir_secuencia
             $this->dir_secuencia->setupEditAttributes();
             $curVal = trim(strval($this->dir_secuencia->CurrentValue));
@@ -2800,7 +2916,7 @@ class LotesGrid extends Lotes
                 if ($curVal == "") {
                     $filterWrk = "0=1";
                 } else {
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $this->dir_secuencia->CurrentValue, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $this->dir_secuencia->CurrentValue, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                 }
                 $sqlWrk = $this->dir_secuencia->Lookup->getSql(true, $filterWrk, '', $this, false, true);
                 $conn = Conn();
@@ -2813,14 +2929,7 @@ class LotesGrid extends Lotes
             }
             $this->dir_secuencia->PlaceHolder = RemoveHtml($this->dir_secuencia->caption());
 
-            // usuarioultmod
-
-            // fecultmod
-
             // Add refer script
-
-            // codnum
-            $this->codnum->HrefValue = "";
 
             // codrem
             $this->codrem->HrefValue = "";
@@ -2888,21 +2997,15 @@ class LotesGrid extends Lotes
             // codintsublote
             $this->codintsublote->HrefValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
 
             // fecultmod
             $this->fecultmod->HrefValue = "";
-        } elseif ($this->RowType == RowType::EDIT) {
-            // codnum
-            $this->codnum->setupEditAttributes();
-            if (strval($this->codnum->EditValue) != "" && is_numeric($this->codnum->EditValue)) {
-                $this->codnum->EditValue = $this->codnum->EditValue;
-            }
 
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
+        } elseif ($this->RowType == RowType::EDIT) {
             // codrem
             $this->codrem->setupEditAttributes();
             $this->codrem->EditValue = $this->codrem->CurrentValue;
@@ -2943,12 +3046,8 @@ class LotesGrid extends Lotes
             }
 
             // estado
-            $this->estado->setupEditAttributes();
-            if (strval($this->estado->CurrentValue) != "") {
-                $this->estado->EditValue = $this->estado->optionCaption($this->estado->CurrentValue);
-            } else {
-                $this->estado->EditValue = null;
-            }
+            $this->estado->EditValue = $this->estado->options(false);
+            $this->estado->PlaceHolder = RemoveHtml($this->estado->caption());
 
             // moneda
             $this->moneda->setupEditAttributes();
@@ -3041,11 +3140,7 @@ class LotesGrid extends Lotes
 
             // codintlote
             $this->codintlote->setupEditAttributes();
-            if (!$this->codintlote->Raw) {
-                $this->codintlote->CurrentValue = HtmlDecode($this->codintlote->CurrentValue);
-            }
-            $this->codintlote->EditValue = HtmlEncode($this->codintlote->CurrentValue);
-            $this->codintlote->PlaceHolder = RemoveHtml($this->codintlote->caption());
+            $this->codintlote->EditValue = $this->codintlote->CurrentValue;
 
             // codintnum
             $this->codintnum->setupEditAttributes();
@@ -3056,6 +3151,10 @@ class LotesGrid extends Lotes
 
             // codintsublote
             $this->codintsublote->setupEditAttributes();
+
+            // usuarioultmod
+
+            // fecultmod
 
             // dir_secuencia
             $this->dir_secuencia->setupEditAttributes();
@@ -3071,7 +3170,7 @@ class LotesGrid extends Lotes
                 if ($curVal == "") {
                     $filterWrk = "0=1";
                 } else {
-                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchExpression(), "=", $this->dir_secuencia->CurrentValue, $this->dir_secuencia->Lookup->getTable()->Fields["secuencia"]->searchDataType(), "");
+                    $filterWrk = SearchFilter($this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchExpression(), "=", $this->dir_secuencia->CurrentValue, $this->dir_secuencia->Lookup->getTable()->Fields["codnum"]->searchDataType(), "");
                 }
                 $sqlWrk = $this->dir_secuencia->Lookup->getSql(true, $filterWrk, '', $this, false, true);
                 $conn = Conn();
@@ -3084,14 +3183,7 @@ class LotesGrid extends Lotes
             }
             $this->dir_secuencia->PlaceHolder = RemoveHtml($this->dir_secuencia->caption());
 
-            // usuarioultmod
-
-            // fecultmod
-
             // Edit refer script
-
-            // codnum
-            $this->codnum->HrefValue = "";
 
             // codrem
             $this->codrem->HrefValue = "";
@@ -3105,7 +3197,6 @@ class LotesGrid extends Lotes
 
             // estado
             $this->estado->HrefValue = "";
-            $this->estado->TooltipValue = "";
 
             // moneda
             $this->moneda->HrefValue = "";
@@ -3154,6 +3245,7 @@ class LotesGrid extends Lotes
 
             // codintlote
             $this->codintlote->HrefValue = "";
+            $this->codintlote->TooltipValue = "";
 
             // codintnum
             $this->codintnum->HrefValue = "";
@@ -3161,14 +3253,14 @@ class LotesGrid extends Lotes
             // codintsublote
             $this->codintsublote->HrefValue = "";
 
-            // dir_secuencia
-            $this->dir_secuencia->HrefValue = "";
-
             // usuarioultmod
             $this->usuarioultmod->HrefValue = "";
 
             // fecultmod
             $this->fecultmod->HrefValue = "";
+
+            // dir_secuencia
+            $this->dir_secuencia->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -3190,11 +3282,6 @@ class LotesGrid extends Lotes
             return true;
         }
         $validateForm = true;
-            if ($this->codnum->Visible && $this->codnum->Required) {
-                if (!$this->codnum->IsDetailKey && EmptyValue($this->codnum->FormValue)) {
-                    $this->codnum->addErrorMessage(str_replace("%s", $this->codnum->caption(), $this->codnum->RequiredErrorMessage));
-                }
-            }
             if ($this->codrem->Visible && $this->codrem->Required) {
                 if (!$this->codrem->IsDetailKey && EmptyValue($this->codrem->FormValue)) {
                     $this->codrem->addErrorMessage(str_replace("%s", $this->codrem->caption(), $this->codrem->RequiredErrorMessage));
@@ -3311,11 +3398,6 @@ class LotesGrid extends Lotes
                     $this->codintsublote->addErrorMessage(str_replace("%s", $this->codintsublote->caption(), $this->codintsublote->RequiredErrorMessage));
                 }
             }
-            if ($this->dir_secuencia->Visible && $this->dir_secuencia->Required) {
-                if (!$this->dir_secuencia->IsDetailKey && EmptyValue($this->dir_secuencia->FormValue)) {
-                    $this->dir_secuencia->addErrorMessage(str_replace("%s", $this->dir_secuencia->caption(), $this->dir_secuencia->RequiredErrorMessage));
-                }
-            }
             if ($this->usuarioultmod->Visible && $this->usuarioultmod->Required) {
                 if (!$this->usuarioultmod->IsDetailKey && EmptyValue($this->usuarioultmod->FormValue)) {
                     $this->usuarioultmod->addErrorMessage(str_replace("%s", $this->usuarioultmod->caption(), $this->usuarioultmod->RequiredErrorMessage));
@@ -3324,6 +3406,11 @@ class LotesGrid extends Lotes
             if ($this->fecultmod->Visible && $this->fecultmod->Required) {
                 if (!$this->fecultmod->IsDetailKey && EmptyValue($this->fecultmod->FormValue)) {
                     $this->fecultmod->addErrorMessage(str_replace("%s", $this->fecultmod->caption(), $this->fecultmod->RequiredErrorMessage));
+                }
+            }
+            if ($this->dir_secuencia->Visible && $this->dir_secuencia->Required) {
+                if (!$this->dir_secuencia->IsDetailKey && EmptyValue($this->dir_secuencia->FormValue)) {
+                    $this->dir_secuencia->addErrorMessage(str_replace("%s", $this->dir_secuencia->caption(), $this->dir_secuencia->RequiredErrorMessage));
                 }
             }
 
@@ -3500,6 +3587,9 @@ class LotesGrid extends Lotes
         // codrubro
         $this->codrubro->setDbValueDef($rsnew, $this->codrubro->CurrentValue, $this->codrubro->ReadOnly);
 
+        // estado
+        $this->estado->setDbValueDef($rsnew, $this->estado->CurrentValue, $this->estado->ReadOnly);
+
         // moneda
         $this->moneda->setDbValueDef($rsnew, $this->moneda->CurrentValue, $this->moneda->ReadOnly);
 
@@ -3538,17 +3628,14 @@ class LotesGrid extends Lotes
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, $this->usuario->ReadOnly);
 
         // fecalta
         $this->fecalta->CurrentValue = $this->fecalta->getAutoUpdateValue(); // PHP
-        $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()));
+        $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()), $this->fecalta->ReadOnly);
 
         // secuencia
         $this->secuencia->setDbValueDef($rsnew, $this->secuencia->CurrentValue, $this->secuencia->ReadOnly);
-
-        // codintlote
-        $this->codintlote->setDbValueDef($rsnew, $this->codintlote->CurrentValue, $this->codintlote->ReadOnly);
 
         // codintnum
         $this->codintnum->setDbValueDef($rsnew, $this->codintnum->CurrentValue, $this->codintnum->ReadOnly);
@@ -3556,16 +3643,16 @@ class LotesGrid extends Lotes
         // codintsublote
         $this->codintsublote->setDbValueDef($rsnew, $this->codintsublote->CurrentValue, $this->codintsublote->ReadOnly);
 
-        // dir_secuencia
-        $this->dir_secuencia->setDbValueDef($rsnew, $this->dir_secuencia->CurrentValue, $this->dir_secuencia->ReadOnly);
-
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, $this->usuarioultmod->ReadOnly);
 
         // fecultmod
         $this->fecultmod->CurrentValue = $this->fecultmod->getAutoUpdateValue(); // PHP
-        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()));
+        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), $this->fecultmod->ReadOnly);
+
+        // dir_secuencia
+        $this->dir_secuencia->setDbValueDef($rsnew, $this->dir_secuencia->CurrentValue, $this->dir_secuencia->ReadOnly);
         return $rsnew;
     }
 
@@ -3580,6 +3667,9 @@ class LotesGrid extends Lotes
         }
         if (isset($row['codrubro'])) { // codrubro
             $this->codrubro->CurrentValue = $row['codrubro'];
+        }
+        if (isset($row['estado'])) { // estado
+            $this->estado->CurrentValue = $row['estado'];
         }
         if (isset($row['moneda'])) { // moneda
             $this->moneda->CurrentValue = $row['moneda'];
@@ -3626,23 +3716,20 @@ class LotesGrid extends Lotes
         if (isset($row['secuencia'])) { // secuencia
             $this->secuencia->CurrentValue = $row['secuencia'];
         }
-        if (isset($row['codintlote'])) { // codintlote
-            $this->codintlote->CurrentValue = $row['codintlote'];
-        }
         if (isset($row['codintnum'])) { // codintnum
             $this->codintnum->CurrentValue = $row['codintnum'];
         }
         if (isset($row['codintsublote'])) { // codintsublote
             $this->codintsublote->CurrentValue = $row['codintsublote'];
         }
-        if (isset($row['dir_secuencia'])) { // dir_secuencia
-            $this->dir_secuencia->CurrentValue = $row['dir_secuencia'];
-        }
         if (isset($row['usuarioultmod'])) { // usuarioultmod
             $this->usuarioultmod->CurrentValue = $row['usuarioultmod'];
         }
         if (isset($row['fecultmod'])) { // fecultmod
             $this->fecultmod->CurrentValue = $row['fecultmod'];
+        }
+        if (isset($row['dir_secuencia'])) { // dir_secuencia
+            $this->dir_secuencia->CurrentValue = $row['dir_secuencia'];
         }
     }
 
@@ -3771,11 +3858,11 @@ class LotesGrid extends Lotes
 
         // usuario
         $this->usuario->CurrentValue = $this->usuario->getAutoUpdateValue(); // PHP
-        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue);
+        $this->usuario->setDbValueDef($rsnew, $this->usuario->CurrentValue, false);
 
         // fecalta
         $this->fecalta->CurrentValue = $this->fecalta->getAutoUpdateValue(); // PHP
-        $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()));
+        $this->fecalta->setDbValueDef($rsnew, UnFormatDateTime($this->fecalta->CurrentValue, $this->fecalta->formatPattern()), false);
 
         // secuencia
         $this->secuencia->setDbValueDef($rsnew, $this->secuencia->CurrentValue, false);
@@ -3789,16 +3876,16 @@ class LotesGrid extends Lotes
         // codintsublote
         $this->codintsublote->setDbValueDef($rsnew, $this->codintsublote->CurrentValue, false);
 
-        // dir_secuencia
-        $this->dir_secuencia->setDbValueDef($rsnew, $this->dir_secuencia->CurrentValue, false);
-
         // usuarioultmod
         $this->usuarioultmod->CurrentValue = $this->usuarioultmod->getAutoUpdateValue(); // PHP
-        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue);
+        $this->usuarioultmod->setDbValueDef($rsnew, $this->usuarioultmod->CurrentValue, false);
 
         // fecultmod
         $this->fecultmod->CurrentValue = $this->fecultmod->getAutoUpdateValue(); // PHP
-        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()));
+        $this->fecultmod->setDbValueDef($rsnew, UnFormatDateTime($this->fecultmod->CurrentValue, $this->fecultmod->formatPattern()), false);
+
+        // dir_secuencia
+        $this->dir_secuencia->setDbValueDef($rsnew, $this->dir_secuencia->CurrentValue, false);
         return $rsnew;
     }
 
@@ -3874,14 +3961,14 @@ class LotesGrid extends Lotes
         if (isset($row['codintsublote'])) { // codintsublote
             $this->codintsublote->setFormValue($row['codintsublote']);
         }
-        if (isset($row['dir_secuencia'])) { // dir_secuencia
-            $this->dir_secuencia->setFormValue($row['dir_secuencia']);
-        }
         if (isset($row['usuarioultmod'])) { // usuarioultmod
             $this->usuarioultmod->setFormValue($row['usuarioultmod']);
         }
         if (isset($row['fecultmod'])) { // fecultmod
             $this->fecultmod->setFormValue($row['fecultmod']);
+        }
+        if (isset($row['dir_secuencia'])) { // dir_secuencia
+            $this->dir_secuencia->setFormValue($row['dir_secuencia']);
         }
     }
 
@@ -3892,6 +3979,7 @@ class LotesGrid extends Lotes
         $masterTblVar = $this->getCurrentMasterTable();
         if ($masterTblVar == "remates") {
             $masterTbl = Container("remates");
+            $this->codrem->Visible = false;
             if ($masterTbl->EventCancelled) {
                 $this->EventCancelled = true;
             }

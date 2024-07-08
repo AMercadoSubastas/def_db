@@ -126,7 +126,10 @@ $cabrecibo->TableClass = "table table-bordered table-hover table-sm ew-table ew-
             <td<?= $cabrecibo->emitido->cellAttributes() ?>>
 <span id="el_cabrecibo_emitido">
 <span<?= $cabrecibo->emitido->viewAttributes() ?>>
-<i class="fa-regular fa-square<?php if (ConvertToBool($cabrecibo->emitido->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
+<div class="form-check form-switch d-inline-block">
+    <input type="checkbox" id="x_emitido_<?= $Page->RowCount ?>" class="form-check-input" value="<?= $cabrecibo->emitido->getViewValue() ?>" disabled<?php if (ConvertToBool($cabrecibo->emitido->CurrentValue)) { ?> checked<?php } ?>>
+    <label class="form-check-label" for="x_emitido_<?= $Page->RowCount ?>"></label>
+</div>
 </span>
 </span>
 </td>

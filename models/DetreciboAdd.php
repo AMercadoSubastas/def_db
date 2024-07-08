@@ -597,8 +597,8 @@ class DetreciboAdd extends Detrecibo
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
 
-                    // Handle UseAjaxActions
-                    if ($this->IsModal && $this->UseAjaxActions) {
+                    // Handle UseAjaxActions with return page
+                    if ($this->IsModal && $this->UseAjaxActions && !$this->getCurrentMasterTable()) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "DetreciboList") {
                             Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL

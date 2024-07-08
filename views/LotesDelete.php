@@ -50,9 +50,6 @@ $Page->showMessage();
 <table class="<?= $Page->TableClass ?>">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <th class="<?= $Page->codnum->headerCellClass() ?>"><span id="elh_lotes_codnum" class="lotes_codnum"><?= $Page->codnum->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->codrem->Visible) { // codrem ?>
         <th class="<?= $Page->codrem->headerCellClass() ?>"><span id="elh_lotes_codrem" class="lotes_codrem"><?= $Page->codrem->caption() ?></span></th>
 <?php } ?>
@@ -119,14 +116,14 @@ $Page->showMessage();
 <?php if ($Page->codintsublote->Visible) { // codintsublote ?>
         <th class="<?= $Page->codintsublote->headerCellClass() ?>"><span id="elh_lotes_codintsublote" class="lotes_codintsublote"><?= $Page->codintsublote->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
-        <th class="<?= $Page->dir_secuencia->headerCellClass() ?>"><span id="elh_lotes_dir_secuencia" class="lotes_dir_secuencia"><?= $Page->dir_secuencia->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
         <th class="<?= $Page->usuarioultmod->headerCellClass() ?>"><span id="elh_lotes_usuarioultmod" class="lotes_usuarioultmod"><?= $Page->usuarioultmod->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->fecultmod->Visible) { // fecultmod ?>
         <th class="<?= $Page->fecultmod->headerCellClass() ?>"><span id="elh_lotes_fecultmod" class="lotes_fecultmod"><?= $Page->fecultmod->caption() ?></span></th>
+<?php } ?>
+<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
+        <th class="<?= $Page->dir_secuencia->headerCellClass() ?>"><span id="elh_lotes_dir_secuencia" class="lotes_dir_secuencia"><?= $Page->dir_secuencia->caption() ?></span></th>
 <?php } ?>
     </tr>
     </thead>
@@ -149,14 +146,6 @@ while ($Page->fetch()) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->codnum->Visible) { // codnum ?>
-        <td<?= $Page->codnum->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->codnum->viewAttributes() ?>>
-<?= $Page->codnum->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->codrem->Visible) { // codrem ?>
         <td<?= $Page->codrem->cellAttributes() ?>>
 <span id="">
@@ -333,14 +322,6 @@ while ($Page->fetch()) {
 </span>
 </td>
 <?php } ?>
-<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
-        <td<?= $Page->dir_secuencia->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->dir_secuencia->viewAttributes() ?>>
-<?= $Page->dir_secuencia->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->usuarioultmod->Visible) { // usuarioultmod ?>
         <td<?= $Page->usuarioultmod->cellAttributes() ?>>
 <span id="">
@@ -354,6 +335,14 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->fecultmod->viewAttributes() ?>>
 <?= $Page->fecultmod->getViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($Page->dir_secuencia->Visible) { // dir_secuencia ?>
+        <td<?= $Page->dir_secuencia->cellAttributes() ?>>
+<span id="">
+<span<?= $Page->dir_secuencia->viewAttributes() ?>>
+<?= $Page->dir_secuencia->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

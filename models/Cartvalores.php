@@ -727,10 +727,10 @@ class Cartvalores extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 4, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            4, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -742,7 +742,7 @@ class Cartvalores extends DbTable
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
         $this->fechahora->Nullable = false; // NOT NULL field
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(4), $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -933,10 +933,10 @@ class Cartvalores extends DbTable
             'x_fecharel', // Variable name
             'fecharel', // Name
             '`fecharel`', // Expression
-            CastDateFieldForLike("`fecharel`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecharel`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fecharel`', // Virtual expression
             false, // Is virtual
@@ -947,7 +947,7 @@ class Cartvalores extends DbTable
         );
         $this->fecharel->InputTextType = "text";
         $this->fecharel->Raw = true;
-        $this->fecharel->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecharel->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fecharel->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecharel'] = &$this->fecharel;
 
@@ -981,10 +981,10 @@ class Cartvalores extends DbTable
             'x_fechasal', // Variable name
             'fechasal', // Name
             '`fechasal`', // Expression
-            CastDateFieldForLike("`fechasal`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechasal`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechasal`', // Virtual expression
             false, // Is virtual
@@ -995,7 +995,7 @@ class Cartvalores extends DbTable
         );
         $this->fechasal->InputTextType = "text";
         $this->fechasal->Raw = true;
-        $this->fechasal->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechasal->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechasal->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechasal'] = &$this->fechasal;
 
@@ -1862,14 +1862,7 @@ class Cartvalores extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

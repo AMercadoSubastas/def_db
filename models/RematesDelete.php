@@ -121,10 +121,10 @@ class RematesDelete extends Remates
     // Set field visibility
     public function setVisibility()
     {
-        $this->codnum->setVisibility();
+        $this->ncomp->setVisibility();
+        $this->codnum->Visible = false;
         $this->tcomp->setVisibility();
         $this->serie->setVisibility();
-        $this->ncomp->setVisibility();
         $this->codcli->setVisibility();
         $this->direccion->setVisibility();
         $this->codpais->setVisibility();
@@ -619,10 +619,10 @@ class RematesDelete extends Remates
 
         // Call Row Selected event
         $this->rowSelected($row);
+        $this->ncomp->setDbValue($row['ncomp']);
         $this->codnum->setDbValue($row['codnum']);
         $this->tcomp->setDbValue($row['tcomp']);
         $this->serie->setDbValue($row['serie']);
-        $this->ncomp->setDbValue($row['ncomp']);
         $this->codcli->setDbValue($row['codcli']);
         $this->direccion->setDbValue($row['direccion']);
         $this->codpais->setDbValue($row['codpais']);
@@ -668,10 +668,10 @@ class RematesDelete extends Remates
     protected function newRow()
     {
         $row = [];
+        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codnum'] = $this->codnum->DefaultValue;
         $row['tcomp'] = $this->tcomp->DefaultValue;
         $row['serie'] = $this->serie->DefaultValue;
-        $row['ncomp'] = $this->ncomp->DefaultValue;
         $row['codcli'] = $this->codcli->DefaultValue;
         $row['direccion'] = $this->direccion->DefaultValue;
         $row['codpais'] = $this->codpais->DefaultValue;
@@ -711,13 +711,13 @@ class RematesDelete extends Remates
 
         // Common render codes for all row types
 
+        // ncomp
+
         // codnum
 
         // tcomp
 
         // serie
-
-        // ncomp
 
         // codcli
 
@@ -769,6 +769,10 @@ class RematesDelete extends Remates
 
         // View row
         if ($this->RowType == RowType::VIEW) {
+            // ncomp
+            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
+            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
+
             // codnum
             $this->codnum->ViewValue = $this->codnum->CurrentValue;
 
@@ -819,10 +823,6 @@ class RematesDelete extends Remates
             } else {
                 $this->serie->ViewValue = null;
             }
-
-            // ncomp
-            $this->ncomp->ViewValue = $this->ncomp->CurrentValue;
-            $this->ncomp->ViewValue = FormatNumber($this->ncomp->ViewValue, $this->ncomp->formatPattern());
 
             // codcli
             $curVal = strval($this->codcli->CurrentValue);
@@ -1020,9 +1020,9 @@ class RematesDelete extends Remates
                 $this->tasa->ViewValue = $this->tasa->tagCaption(2) != "" ? $this->tasa->tagCaption(2) : "No";
             }
 
-            // codnum
-            $this->codnum->HrefValue = "";
-            $this->codnum->TooltipValue = "";
+            // ncomp
+            $this->ncomp->HrefValue = "";
+            $this->ncomp->TooltipValue = "";
 
             // tcomp
             $this->tcomp->HrefValue = "";
@@ -1031,10 +1031,6 @@ class RematesDelete extends Remates
             // serie
             $this->serie->HrefValue = "";
             $this->serie->TooltipValue = "";
-
-            // ncomp
-            $this->ncomp->HrefValue = "";
-            $this->ncomp->TooltipValue = "";
 
             // codcli
             $this->codcli->HrefValue = "";
@@ -1213,7 +1209,9 @@ class RematesDelete extends Remates
         }
         if ($deleteRows) {
             if ($this->UseTransaction) { // Commit transaction
-                $conn->commit();
+                if ($conn->isTransactionActive()) {
+                    $conn->commit();
+                }
             }
 
             // Set warning message if delete some records failed
@@ -1222,7 +1220,9 @@ class RematesDelete extends Remates
             }
         } else {
             if ($this->UseTransaction) { // Rollback transaction
-                $conn->rollback();
+                if ($conn->isTransactionActive()) {
+                    $conn->rollback();
+                }
             }
         }
 

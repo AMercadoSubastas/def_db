@@ -28,17 +28,6 @@ use function PHPMaker2024\Subastas2024\EncryptPassword;
 #[Table(name: "usuarios")]
 class Usuario extends AbstractEntity
 {
-    public static array $propertyNames = [
-        'codnum' => 'codnum',
-        'usuario' => 'usuario',
-        'nombre' => 'nombre',
-        'clave' => 'clave',
-        'nivel' => 'nivel',
-        'activo' => 'activo',
-        'email' => 'email',
-        'perfil' => 'perfil',
-    ];
-
     #[Id]
     #[Column(type: "integer", unique: true)]
     #[GeneratedValue]
@@ -56,14 +45,19 @@ class Usuario extends AbstractEntity
     #[Column(type: "integer")]
     private int $nivel;
 
-    #[Column(type: "boolean")]
-    private bool $activo = true;
+    #[Column(type: "integer")]
+    private int $activo;
 
     #[Column(type: "string", nullable: true)]
     private ?string $email;
 
     #[Column(type: "text", nullable: true)]
     private ?string $perfil;
+
+    public function __construct()
+    {
+        $this->activo = 1;
+    }
 
     public function getCodnum(): int
     {
@@ -120,12 +114,12 @@ class Usuario extends AbstractEntity
         return $this;
     }
 
-    public function getActivo(): bool
+    public function getActivo(): int
     {
         return $this->activo;
     }
 
-    public function setActivo(bool $value): static
+    public function setActivo(int $value): static
     {
         $this->activo = $value;
         return $this;
@@ -163,11 +157,5 @@ class Usuario extends AbstractEntity
             "userLevel" => $this->get('nivel') ?? AdvancedSecurity::ANONYMOUS_USER_LEVEL_ID,
             "userPrimaryKey" => $this->get('codnum'),
         ];
-    }
-
-    // Flush
-    public function flush()
-    {
-        EntityManager("DB")->flush();
     }
 }

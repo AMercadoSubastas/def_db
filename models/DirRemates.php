@@ -363,10 +363,10 @@ class DirRemates extends DbTable
             'x_fechaalta', // Variable name
             'fechaalta', // Name
             '`fechaalta`', // Expression
-            CastDateFieldForLike("`fechaalta`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechaalta`", 1, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            1, // Date/Time format
             false, // Is upload field
             '`fechaalta`', // Virtual expression
             false, // Is virtual
@@ -378,7 +378,7 @@ class DirRemates extends DbTable
         $this->fechaalta->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fechaalta->InputTextType = "text";
         $this->fechaalta->Raw = true;
-        $this->fechaalta->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechaalta->DefaultErrorMessage = str_replace("%s", DateFormat(1), $Language->phrase("IncorrectDate"));
         $this->fechaalta->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechaalta'] = &$this->fechaalta;
 
@@ -413,10 +413,10 @@ class DirRemates extends DbTable
             'x_fechaultmod', // Variable name
             'fechaultmod', // Name
             '`fechaultmod`', // Expression
-            CastDateFieldForLike("`fechaultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechaultmod`", 1, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            1, // Date/Time format
             false, // Is upload field
             '`fechaultmod`', // Virtual expression
             false, // Is virtual
@@ -428,7 +428,7 @@ class DirRemates extends DbTable
         $this->fechaultmod->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->fechaultmod->InputTextType = "text";
         $this->fechaultmod->Raw = true;
-        $this->fechaultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechaultmod->DefaultErrorMessage = str_replace("%s", DateFormat(1), $Language->phrase("IncorrectDate"));
         $this->fechaultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fechaultmod'] = &$this->fechaultmod;
 
@@ -1273,14 +1273,7 @@ class DirRemates extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys

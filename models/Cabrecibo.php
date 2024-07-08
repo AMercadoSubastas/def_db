@@ -271,10 +271,10 @@ class Cabrecibo extends DbTable
             'x_fecha', // Variable name
             'fecha', // Name
             '`fecha`', // Expression
-            CastDateFieldForLike("`fecha`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecha`", 7, "DB"), // Basic search expression
             133, // Type
             10, // Size
-            0, // Date/Time format
+            7, // Date/Time format
             false, // Is upload field
             '`fecha`', // Virtual expression
             false, // Is virtual
@@ -287,7 +287,7 @@ class Cabrecibo extends DbTable
         $this->fecha->Raw = true;
         $this->fecha->Nullable = false; // NOT NULL field
         $this->fecha->Required = true; // Required field
-        $this->fecha->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecha->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
         $this->fecha->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fecha'] = &$this->fecha;
 
@@ -322,10 +322,10 @@ class Cabrecibo extends DbTable
             'x_fechahora', // Variable name
             'fechahora', // Name
             '`fechahora`', // Expression
-            CastDateFieldForLike("`fechahora`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fechahora`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`fechahora`', // Virtual expression
             false, // Is virtual
@@ -338,7 +338,7 @@ class Cabrecibo extends DbTable
         $this->fechahora->InputTextType = "text";
         $this->fechahora->Raw = true;
         $this->fechahora->Nullable = false; // NOT NULL field
-        $this->fechahora->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fechahora->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->fechahora->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['fechahora'] = &$this->fechahora;
 
@@ -389,7 +389,7 @@ class Cabrecibo extends DbTable
             '`imptot`', // Expression
             '`imptot`', // Basic search expression
             131, // Type
-            12, // Size
+            14, // Size
             -1, // Date/Time format
             false, // Is upload field
             '`imptot`', // Virtual expression
@@ -476,10 +476,10 @@ class Cabrecibo extends DbTable
             'x_fecultmod', // Variable name
             'fecultmod', // Name
             '`fecultmod`', // Expression
-            CastDateFieldForLike("`fecultmod`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`fecultmod`", 17, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            17, // Date/Time format
             false, // Is upload field
             '`fecultmod`', // Virtual expression
             false, // Is virtual
@@ -491,7 +491,7 @@ class Cabrecibo extends DbTable
         $this->fecultmod->addMethod("getAutoUpdateValue", fn() => CurrentUserID());
         $this->fecultmod->InputTextType = "text";
         $this->fecultmod->Raw = true;
-        $this->fecultmod->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->fecultmod->DefaultErrorMessage = str_replace("%s", DateFormat(17), $Language->phrase("IncorrectDate"));
         $this->fecultmod->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['fecultmod'] = &$this->fecultmod;
 
@@ -1433,14 +1433,7 @@ class Cabrecibo extends DbTable
     // Get filter from records
     public function getFilterFromRecords($rows)
     {
-        $keyFilter = "";
-        foreach ($rows as $row) {
-            if ($keyFilter != "") {
-                $keyFilter .= " OR ";
-            }
-            $keyFilter .= "(" . $this->getRecordFilter($row) . ")";
-        }
-        return $keyFilter;
+        return implode(" OR ", array_map(fn($row) => "(" . $this->getRecordFilter($row) . ")", $rows));
     }
 
     // Get filter from record keys
