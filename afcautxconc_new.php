@@ -23,7 +23,7 @@ if (isset($_POST['descripcion']) && GetSQLValueString($_POST['descripcion'], "te
 	if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {
 		mysqli_select_db($amercado, $database_amercado);
 		$actualiza1 = sprintf("UPDATE `series` SET `nroact` = %s WHERE `series`.`codnum` = %s", GetSQLValueString($_POST['num_factura'], "int"), 			GetSQLValueString($_POST['serie'], "int")) ;				 
-		$resultado=mysqli_query($amercado,	$actualiza1);	
+		$resultado=mysqli_query($amercado,	$actualiza1);
 
 	}
 	// HASTA ACA ===================================================================================
