@@ -2,21 +2,19 @@
 
 namespace PHPMaker2024\Subastas2024;
 
-use BenSampo\Enum\Enum;
-
 // RowType
-final class RowType extends Enum
+enum RowType: int
 {
-    const HEADER = 0;
-    const VIEW = 1;
-    const ADD = 2;
-    const EDIT = 3;
-    const SEARCH = 4;
-    const MASTER = 5;
-    const AGGREGATEINIT = 6;
-    const AGGREGATE = 7;
-    const DETAIL = 8;
-    const TOTAL = 9;
-    const PREVIEW = 10;
-    const PREVIEWFIELD = 11;
+    case HEADER = 0;
+    case VIEW = 1;
+    case ADD = 2;
+    case EDIT = 3;
+    case SEARCH = 4;
+    case MASTER = 5;
+    case AGGREGATEINIT = 6;
+    case AGGREGATE = 7;
+    case DETAIL = 8;
+    case TOTAL = 9;
+    case PREVIEW = 10;
+    case PREVIEWFIELD = 11;
 }

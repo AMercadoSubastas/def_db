@@ -1498,6 +1498,33 @@ class RematesList extends Remates
         // Clear other search and save rules to session
         if ($where && $fieldName == "") { // Skip if get query for specific field
             $this->resetSearchParms();
+            $this->ncomp->AdvancedSearch->save(); // ncomp
+            $this->tcomp->AdvancedSearch->save(); // tcomp
+            $this->serie->AdvancedSearch->save(); // serie
+            $this->codcli->AdvancedSearch->save(); // codcli
+            $this->direccion->AdvancedSearch->save(); // direccion
+            $this->codpais->AdvancedSearch->save(); // codpais
+            $this->codprov->AdvancedSearch->save(); // codprov
+            $this->codloc->AdvancedSearch->save(); // codloc
+            $this->fecest->AdvancedSearch->save(); // fecest
+            $this->fecreal->AdvancedSearch->save(); // fecreal
+            $this->imptot->AdvancedSearch->save(); // imptot
+            $this->impbase->AdvancedSearch->save(); // impbase
+            $this->estado->AdvancedSearch->save(); // estado
+            $this->cantlotes->AdvancedSearch->save(); // cantlotes
+            $this->horaest->AdvancedSearch->save(); // horaest
+            $this->horareal->AdvancedSearch->save(); // horareal
+            $this->usuario->AdvancedSearch->save(); // usuario
+            $this->fecalta->AdvancedSearch->save(); // fecalta
+            $this->observacion->AdvancedSearch->save(); // observacion
+            $this->tipoind->AdvancedSearch->save(); // tipoind
+            $this->sello->AdvancedSearch->save(); // sello
+            $this->plazoSAP->AdvancedSearch->save(); // plazoSAP
+            $this->usuarioultmod->AdvancedSearch->save(); // usuarioultmod
+            $this->fecultmod->AdvancedSearch->save(); // fecultmod
+            $this->servicios->AdvancedSearch->save(); // servicios
+            $this->gastos->AdvancedSearch->save(); // gastos
+            $this->tasa->AdvancedSearch->save(); // tasa
             $this->setSessionRules($rules);
         }
 
@@ -4388,7 +4415,7 @@ class RematesList extends Remates
                     if (!$ope || !$fldOpr) {
                         throw new \Exception("Unknown SQL operation for operator '" . $rule["operator"] . "'");
                     }
-                    if ($ope["nb_inputs"] > 0 && ($rule["value"] ?? false) || IsNullOrEmptyOperator($fldOpr)) {
+                    if ($ope["nb_inputs"] > 0 && isset($rule["value"]) && !EmptyValue($rule["value"]) || IsNullOrEmptyOperator($fldOpr)) {
                         $fldVal = $rule["value"];
                         if (is_array($fldVal)) {
                             $fldVal = $fld->isMultiSelect() ? implode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal) : $fldVal[0];
@@ -4419,12 +4446,14 @@ class RematesList extends Remates
                                     if (is_array($fldVal2)) {
                                         $fldVal2 = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal2);
                                     }
+                                    $fld->AdvancedSearch->SearchValue = ConvertSearchValue($fldVal, $fldOpr, $fld);
+                                    $fld->AdvancedSearch->SearchValue2 = ConvertSearchValue($fldVal2, $fldOpr, $fld);
                                     $parts[] = GetSearchSql(
                                         $fld,
-                                        ConvertSearchValue($fldVal, $fldOpr, $fld), // $fldVal
+                                        $fld->AdvancedSearch->SearchValue, // SearchValue
                                         $fldOpr,
                                         "", // $fldCond not used
-                                        ConvertSearchValue($fldVal2, $fldOpr, $fld), // $fldVal2
+                                        $fld->AdvancedSearch->SearchValue2, // SearchValue2
                                         "", // $fldOpr2 not used
                                         $this->Dbid
                                     );

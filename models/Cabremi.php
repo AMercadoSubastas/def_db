@@ -925,23 +925,23 @@ class Cabremi extends DbTable
             case "gridadd":
             case "register":
             case "addopt":
-                return ($allow & Allow::ADD) == Allow::ADD;
+                return ($allow & Allow::ADD->value) == Allow::ADD->value;
             case "edit":
             case "gridedit":
             case "update":
             case "changepassword":
             case "resetpassword":
-                return ($allow & Allow::EDIT) == Allow::EDIT;
+                return ($allow & Allow::EDIT->value) == Allow::EDIT->value;
             case "delete":
-                return ($allow & Allow::DELETE) == Allow::DELETE;
+                return ($allow & Allow::DELETE->value) == Allow::DELETE->value;
             case "view":
-                return ($allow & Allow::VIEW) == Allow::VIEW;
+                return ($allow & Allow::VIEW->value) == Allow::VIEW->value;
             case "search":
-                return ($allow & Allow::SEARCH) == Allow::SEARCH;
+                return ($allow & Allow::SEARCH->value) == Allow::SEARCH->value;
             case "lookup":
-                return ($allow & Allow::LOOKUP) == Allow::LOOKUP;
+                return ($allow & Allow::LOOKUP->value) == Allow::LOOKUP->value;
             default:
-                return ($allow & Allow::LIST) == Allow::LIST;
+                return ($allow & Allow::LIST->value) == Allow::LIST->value;
         }
     }
 

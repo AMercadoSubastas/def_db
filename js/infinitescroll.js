@@ -1,5 +1,5 @@
 /*!
- * Infinite Scroll for PHPMaker v24.13.0
+ * Infinite Scroll for PHPMaker v24.14.0
  * Copyright (c) e.World Technology Limited. All rights reserved.
  */
 (function ($, ew) {

@@ -26,6 +26,7 @@ class DebugSqlLogger implements SQLLogger
         $this->start = microtime(true);
         $this->sql = $sql;
         $this->query = ["params" => $params, "types" => $types, "executionMS" => 0];
+        Log("Executing query: " . $this->sql, ["params" => $params, "types" => $types]);
     }
 
     /**

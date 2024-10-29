@@ -10,11 +10,12 @@ return [
     ],
     "SMTP" => [
         "PHPMAILER_MAILER" => "smtp", // PHPMailer mailer
-        "SERVER" => "localhost", // SMTP server
-        "SERVER_PORT" => 25, // SMTP server port
+        "SERVER" => "smtp.gmail.com", // SMTP server
+        "SERVER_PORT" => 587, // SMTP server port
         "SECURE_OPTION" => "tls",
-        "SERVER_USERNAME" => "", // SMTP server user name
-        "SERVER_PASSWORD" => "", // SMTP server password
+        "SERVER_USERNAME" => "soporte@grupoadrianmercado.com", // SMTP server user name
+        "SERVER_PASSWORD" => "edes msej zdrf ciab
+", // SMTP server password
     ],
     "JWT" => [
         "SECRET_KEY" => "Q5i7qaDCZ59/7SpzXcCKrKNXT2gbeP2U/M7nXQie9Hs=", // JWT secret key

@@ -2,16 +2,14 @@
 
 namespace PHPMaker2024\Subastas2024;
 
-use BenSampo\Enum\Enum;
-
 // RowTotal
-final class RowTotal extends Enum
+enum RowTotal: int
 {
-    const HEADER = 0;
-    const FOOTER = 1;
-    const SUM = 2;
-    const AVG = 3;
-    const MIN = 4;
-    const MAX = 5;
-    const CNT = 6;
+    case HEADER = 0;
+    case FOOTER = 1;
+    case SUM = 2;
+    case AVG = 3;
+    case MIN = 4;
+    case MAX = 5;
+    case CNT = 6;
 }

@@ -2,21 +2,19 @@
 
 namespace PHPMaker2024\Subastas2024;
 
-use BenSampo\Enum\Enum;
-
 // Allow
-final class Allow extends Enum
+enum Allow: int
 {
-    const ADD = 1;
-    const DELETE = 2;
-    const EDIT = 4;
-    const LIST = 8;
-    const ADMIN = 16;
-    const VIEW = 32;
-    const SEARCH = 64;
-    const IMPORT = 128;
-    const LOOKUP = 256;
-    const PUSH = 512;
-    const EXPORT = 1024;
-    const ALL = 2047;
+    case ADD = 1;
+    case DELETE = 2;
+    case EDIT = 4;
+    case LIST = 8;
+    case ADMIN = 16;
+    case VIEW = 32;
+    case SEARCH = 64;
+    case IMPORT = 128;
+    case LOOKUP = 256;
+    case PUSH = 512;
+    case EXPORT = 1024;
+    case ALL = 2047;
 }

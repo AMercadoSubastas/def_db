@@ -159,7 +159,7 @@ class UserProfile implements \Stringable
     }
 
     // Get provider
-    public function getProvider(): array
+    public function getProvider(): string
     {
         return $this->provider;
     }

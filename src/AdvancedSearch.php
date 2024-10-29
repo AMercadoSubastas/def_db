@@ -192,21 +192,11 @@ class AdvancedSearch
         if (is_array($fldVal2)) {
             $fldVal2 = implode($sep, $fldVal2);
         }
-        if (Session($this->getSessionName("x")) != $fldVal) {
-            $_SESSION[$this->getSessionName("x")] = $fldVal;
-        }
-        if (Session($this->getSessionName("y")) != $fldVal2) {
-            $_SESSION[$this->getSessionName("y")] = $fldVal2;
-        }
-        if (Session($this->getSessionName("z")) != $this->SearchOperator) {
-            $_SESSION[$this->getSessionName("z")] = $this->SearchOperator;
-        }
-        if (Session($this->getSessionName("v")) != $this->SearchCondition) {
-            $_SESSION[$this->getSessionName("v")] = $this->SearchCondition;
-        }
-        if (Session($this->getSessionName("w")) != $this->SearchOperator2) {
-            $_SESSION[$this->getSessionName("w")] = $this->SearchOperator2;
-        }
+        $_SESSION[$this->getSessionName("x")] = $fldVal;
+        $_SESSION[$this->getSessionName("y")] = $fldVal2;
+        $_SESSION[$this->getSessionName("z")] = $this->SearchOperator;
+        $_SESSION[$this->getSessionName("v")] = $this->SearchCondition;
+        $_SESSION[$this->getSessionName("w")] = $this->SearchOperator2;
     }
 
     // Load from session

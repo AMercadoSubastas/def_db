@@ -19,8 +19,6 @@ $Recordset1 = mysqli_query($amercado, $query_Recordset1) or die(mysqli_error($am
 $row_Recordset1 = mysqli_fetch_assoc($Recordset1);
 $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 
-echo "holllaaaaaa";
-
  ?>
 
 <body>

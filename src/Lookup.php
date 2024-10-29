@@ -12,6 +12,7 @@ class Lookup
 {
     public static $ModalLookupSearchType = "AND"; // "AND" or "OR" or "=" or ""
     public static $ModalLookupSearchOperator = "LIKE"; // "LIKE" or "STARTS WITH" or "ENDS WITH"
+    public static $KeepCrLf = false;
     public $LookupType = "";
     public $Options = null;
     public $Template = "";
@@ -25,7 +26,6 @@ class Lookup
     public $SearchExpression = "";
     public $PageSize = -1;
     public $Offset = -1;
-    public $KeepCrLf = false;
     public $LookupFilter = "";
     public $RenderViewFunc = "renderListRow";
     public $RenderEditFunc = "renderEditRow";
@@ -305,7 +305,10 @@ class Lookup
                 }
                 for ($i = 1; $i < $keyCnt; $i++) {
                     $val = &$row[$keys[$i]];
-                    $val = str_replace(["\r", "\n", "\t"], $this->KeepCrLf ? ["\\r", "\\n", "\\t"] : [" ", " ", " "], ConvertToUtf8(strval($val)));
+                    $val = ConvertToUtf8(strval($val));
+                    if (!self::$KeepCrLf) {
+                        $val = str_replace(["\r", "\n", "\t"], [" ", " ", " "], $val);
+                    }
                     if (SameText($this->LookupType, "autofill")) {
                         $autoFillSourceFieldName = $this->AutoFillSourceFields[$i - 1] ?? "";
                         $autoFillSourceField = $renderer->Fields[$autoFillSourceFieldName] ?? null;

@@ -290,7 +290,7 @@ class Userpriv extends Userlevels
         foreach ($ar as $t) {
             if ($t[3]) { // Allowed
                 $tempPriv = $Security->getUserLevelPrivEx($t[4] . $t[0], $Security->CurrentUserLevelID);
-                if (($tempPriv & Allow::ADMIN) == Allow::ADMIN) { // Allow Admin
+                if (($tempPriv & Allow::ADMIN->value) == Allow::ADMIN->value) { // Allow Admin
                     $this->TableList[] = array_merge($t, [$tempPriv]);
                 }
             }

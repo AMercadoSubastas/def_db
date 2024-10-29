@@ -92,7 +92,7 @@ if(isset($_REQUEST["term"])){
             $counter = 0; // Contador para mantener el número de resultados mostrados
             if(mysqli_num_rows($result) > 0){
                 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-                    echo "<p>" . $row["cuit"] . " | " . $row["razsoc"] . "</p>";
+                    echo "<p>" . $row["cuit"] . " | " . $row["razsoc"] . " | ". $row["codnum"] ."</p>";
                     $counter++;
                     if($counter >= 10){ // Salir del bucle después de mostrar 10 resultados
                         break;
@@ -112,7 +112,7 @@ if(isset($_REQUEST["term"])){
 
 
 if(isset($_REQUEST["clienteB"])){
-    $sql = "SELECT * FROM entidades WHERE razsoc LIKE ? and activo = 1 and tipoent = 1 and (tipoiva = 4 OR tipoiva = 6);";
+    $sql = "SELECT * FROM entidades WHERE razsoc LIKE ? and activo = 1 and tipoent = 1 and (tipoiva = 4 OR tipoiva = 6 OR tipoiva = 5 OR tipoiva = 7);";
     if($stmt = mysqli_prepare($amercado, $sql)){
         mysqli_stmt_bind_param($stmt, "s", $param_term);
         $param_term = $_REQUEST["clienteB"] . '%';
@@ -121,7 +121,7 @@ if(isset($_REQUEST["clienteB"])){
             $counter = 0; // Contador para mantener el número de resultados mostrados
             if(mysqli_num_rows($result) > 0){
                 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-                    echo "<p>" . $row["cuit"] . " | " . $row["razsoc"] . "</p>";
+                    echo "<p>" . $row["cuit"] . " | " . $row["razsoc"] . " | ". $row["codnum"] . "</p>";
                     $counter++;
                     if($counter >= 10){ // Salir del bucle después de mostrar 10 resultados
                         break;

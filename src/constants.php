@@ -12,7 +12,7 @@ namespace PHPMaker2024\Subastas2024;
 define(__NAMESPACE__ . "\PROJECT_NAMESPACE", __NAMESPACE__ . "\\");
 
 // PHP >= 8.1.0
-define(PROJECT_NAMESPACE . "IS_PHP81", false);
+define(PROJECT_NAMESPACE . "IS_PHP81", true);
 
 // System
 define(PROJECT_NAMESPACE . "IS_WINDOWS", strtolower(substr(PHP_OS, 0, 3)) === "win"); // Is Windows OS
@@ -41,7 +41,7 @@ define(PROJECT_NAMESPACE . "PRIVILEGES", [
 ]); // User permissions
 
 // Product version
-define(PROJECT_NAMESPACE . "PRODUCT_VERSION", "24.13.0");
+define(PROJECT_NAMESPACE . "PRODUCT_VERSION", "24.14.4");
 
 // Project
 define(PROJECT_NAMESPACE . "PROJECT_NAME", "Subastas2024"); // Project name

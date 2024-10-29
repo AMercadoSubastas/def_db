@@ -11,6 +11,7 @@ require_once('Connections/amercado.php');
 include_once "FE_Pack_WSFE/config.php";
 include_once "FE_Pack_WSFE/afip/AfipWsaa.php";
 include_once "FE_Pack_WSFE/afip/AfipWsfev1.php";
+require_once 'bejerman-xml/api-bejerman/BejermanClient.php';
 define('FC_A2','115');
 define('SERIE_A2','52');
 
@@ -288,8 +289,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {
 	 * extension=php_soap    (.dll / .so)
 	 */
 
-	error_reporting(E_ALL);
-	ini_set('display_errors','Yes');
+	// error_reporting(E_ALL);
+	// ini_set('display_errors','Yes');
 
 	//Cargando archivo de configuracion
 	include_once "FE_Pack_WSFE/config.php";
@@ -1069,6 +1070,314 @@ if ($sigo_y_grabo == 1 && $todo_ok ==1) {
 		}
 		//======================================================================================
 
+
+		
+//======================================================================================
+
+
+    // Cabecera Para BEJERMAN
+    $cliente_query = sprintf("SELECT * FROM entidades WHERE cuit = %s",GetSQLValueString($_POST['cuit'],"text"));
+    $cliente_array = mysqli_query($amercado, $cliente_query) or die(mysqli_error($amercado));
+    $row_cliente = mysqli_fetch_assoc($cliente_array);
+    
+    // Cliente
+    $now = new DateTime();
+    $fechaEmision = $now->format('Y-m-d');
+	$beCliente = str_pad($row_cliente['codnum'], 6, '0', STR_PAD_LEFT);
+    $beRazsocial = $row_cliente['razsoc'];
+    $beClienteTipoIva = $row_cliente['tipoiva'];
+    $clienteNroDocumento = $row_cliente['cuit'];
+    $beCuit = str_replace('-', '', $clienteNroDocumento);
+    $beMail = $row_cliente['mailcont'];
+
+    // UBICACION DEL CLIENTE
+    $beDirec = $row_cliente['calle'].' '.$row_cliente['numero'];
+
+    // Consulta string de Loc
+    $bePostal = $row_cliente['codpost'];
+    $prov_query = sprintf("SELECT * FROM provincias WHERE codnum = %s", GetSQLValueString($row_cliente['codprov'], "int"));
+			$prov_array = mysqli_query($amercado, $prov_query) or die(mysqli_error($amercado));
+			$row_prov = mysqli_fetch_assoc($prov_array);
+			$beProv = $row_prov['codbejerman'];
+
+    $loc_query = sprintf("SELECT descripcion FROM localidades WHERE codnum = %s",GetSQLValueString($row_cliente['codloc'],"int"));
+    $loc_array = mysqli_query($amercado, $loc_query) or die(mysqli_error($amercado));
+    $row_loc = mysqli_fetch_assoc($loc_array);
+
+    $beLoc = $row_loc['descripcion'];
+
+
+			$ivaConcepto = [];
+			$ivaNeto = [];
+			$itemIvaNoInscript = [];
+			$totalUnitario = [];
+			$idLote = [];
+			$descripcion = [];
+			$articulos = [];
+
+
+			for ($i = 0; $i <= $renglones; $i++) {
+
+				if ($i == 0) {
+					$iName = 'importe';
+					$iNameTasa = 'tasa';
+					$iNameComis = 'comision';
+					$iNameImpuesto = 'impuesto';
+					$iNameLote = 'lote';
+
+				}	else {
+	
+					// Importes unitarios sin IVA
+					$iName = 'importe' . $i;
+					$iNameTasa = 'tasa' . $i;
+					$iNameComis = 'comision' . $i;
+					$iNameImpuesto = 'impuesto' . $i;
+					$iNameLote = 'lote' . $i;
+				}
+
+
+				$porcenGs = (3 * intval($_POST[$iNameTasa])) / 100; // ej: el 50 de tasa va a dar el 1.5 de gs
+				$gsSolo = ($porcenGs / 100) * intval($_POST[$iName]); // 675
+
+				$comisionSolo = (intval($_POST[$iNameComis]) / 100) * intval($_POST[$iName]); // 4500 (10% de 45mil)
+
+				$iva21 = ($comisionSolo * 0.21) + ($gsSolo * 0.21);
+				
+				$importeMasIva = ($_POST[$iNameImpuesto] / 100) * intval($_POST[$iName]); // importe mas IVA
+				
+				// Importe total unitario
+				array_push($totalUnitario, $_POST[$iName]);
+
+				// Inserto ID de LOTE
+				array_push($idLote, $_POST[$iNameLote]);
+
+				if($_POST[$iNameImpuesto] == 21){
+					$articulo = "102";
+				} else {
+					$articulo = "101";
+				}
+
+				array_push($articulos, $articulo);
+
+				// Uso de plataforma/ GS admin en importeIvaNoInscripto
+				
+				$gsMasUso = $comisionSolo + $gsSolo + $iva21;
+				array_push($itemIvaNoInscript, $gsMasUso);
+
+				// tipo de impuesto
+				array_push($ivaConcepto, $_POST[$iNameImpuesto]);
+
+				// Calculos de importes unitarios solo IVA
+				array_push($ivaNeto, $importeMasIva);
+				
+				// Descripcion de los conceptos
+				$iNameDesc = 'descripcion' . $i;
+				array_push($descripcion, $_POST[$iNameDesc]);
+
+			}
+			
+			
+			// DATOS DE FACTURA CABECERA
+			$comprobante_Tipo = "FC";
+        	$comprobante_Letra = "A";
+			$ptoVenta = "00002";
+			$beRemate = $_POST['remate_num'];
+			$totNetoItem = $_POST['totneto21_1'];
+			$tazaIvaTotal = $_POST['tot_general_1'];
+			$tazaIva = $_POST['totiva21_1'];
+			$numero_factura = str_pad($num_fac, 8, '0', STR_PAD_LEFT);
+
+			// CAE
+			$beCae = $CAE;
+			$dateTime = DateTime::createFromFormat('Ymd', $CAEFchVto);
+			$beVenciCae = $dateTime->format('Y-m-d');
+
+			$items = [];
+
+			if ($_POST['totcomis'] != 0.00){
+				$totalesNoGravadosComis = $_POST['totcomis'];
+				$ivaComis = 21;
+				$ivaNetocomis = ($_POST['totcomis'] * 0.21);
+				$item = [
+					"Comprobante_Tipo" => $comprobante_Tipo,
+					"Comprobante_Letra" => $comprobante_Letra,
+					"Comprobante_PtoVenta" => $ptoVenta,
+					"Comprobante_Numero" => $numero_factura,
+					"Comprobante_LoteHasta" => " ",
+					"Comprobante_FechaEmision" => $fechaEmision,
+					"Cliente_Codigo" => $beCliente,
+					"Item_Tipo" => "A",
+					"Item_CodigoArticulo" => 5, // Código del artículo
+					"Item_CantidadUM1" => 1, // Cantidad del ítem
+					"Item_CantidadUM2" => 0,
+					"Item_DescripArticulo" => "Uso de Plataforma", // Descripción del ítem
+					"Item_PrecioUnitario" => $totalesNoGravadosComis, // Precio unitario
+					"Item_TasaIVAInscrip" => $ivaComis, // Tasa de IVA inscripto
+					"Item_TasaIVANoInscrip" => 0,
+					"Item_ImporteIVAInscrip" => $ivaNetocomis, // Importe de IVA inscripto
+					"Item_ImporteIVANoInscrip" => 0,
+					"Item_ImporteTotal" => $totalesNoGravadosComis, // Importe total del ítem
+					"Item_ImporteDescComercial" => 0,
+					"Item_ImporteDescFinanciero" => 0,
+					"Item_ImporteDescGeneral" => 0,
+					"Item_ImporteIVANoGravado" => 0,
+					"Item_TipoIVA" => "1",
+					"Item_ImporteDescPorLinea" => 0,
+					"Item_Deposito" => "00",
+					"Item_Partida" => " ",
+					"Item_TasaDescPorItem" => 0,
+					"Item_Importe" => $totalesNoGravadosComis
+				];
+	
+				// Añadir cada ítem al array de ítems
+				array_push($items, $item);
+			}
+	
+			if ($_POST['totimp'] != 0.00) {
+				$totalesNoGravadosGs = $_POST['totimp'];
+				$ivaGs = 21;
+				$ivaNetoGs = ($_POST['totimp'] * 0.21);
+				$item = [
+					"Comprobante_Tipo" => $comprobante_Tipo,
+					"Comprobante_Letra" => $comprobante_Letra,
+					"Comprobante_PtoVenta" => $ptoVenta,
+					"Comprobante_Numero" => $numero_factura,
+					"Comprobante_LoteHasta" => " ",
+					"Comprobante_FechaEmision" => $fechaEmision,
+					"Cliente_Codigo" => $beCliente,
+					"Item_Tipo" => "A",
+					"Item_CodigoArticulo" => 7, // Código del artículo
+					"Item_CantidadUM1" => 1, // Cantidad del ítem
+					"Item_CantidadUM2" => 0,
+					"Item_DescripArticulo" => "Gastos Administrativos", // Descripción del ítem
+					"Item_PrecioUnitario" => $totalesNoGravadosGs, // Precio unitario
+					"Item_TasaIVAInscrip" => $ivaGs, // Tasa de IVA inscripto
+					"Item_TasaIVANoInscrip" => 0,
+					"Item_ImporteIVAInscrip" => $ivaNetoGs,
+					"Item_ImporteIVANoInscrip" => 0,
+					"Item_ImporteTotal" => $totalesNoGravadosGs, // Importe total del ítem
+					"Item_ImporteDescComercial" => 0,
+					"Item_ImporteDescFinanciero" => 0,
+					"Item_ImporteDescGeneral" => 0,
+					"Item_ImporteIVANoGravado" => 0,
+					"Item_TipoIVA" => "1",
+					"Item_ImporteDescPorLinea" => 0,
+					"Item_Deposito" => "00",
+					"Item_Partida" => " ",
+					"Item_TasaDescPorItem" => 0,
+					"Item_Importe" => $totalesNoGravadosGs
+				];
+	
+				// Añadir cada ítem al array de ítems
+				array_push($items, $item);
+			}
+
+			
+
+			for ($i = 0; $i < $renglones; $i++) {
+
+				$item = [
+					"Comprobante_Tipo" => $comprobante_Tipo,
+					"Comprobante_Letra" => $comprobante_Letra,
+					"Comprobante_PtoVenta" => $ptoVenta,
+					"Comprobante_Numero" => $numero_factura,
+					"Comprobante_LoteHasta" => " ",
+					"Comprobante_FechaEmision" => $fechaEmision,
+					"Cliente_Codigo" => $beCliente,
+					"Item_Tipo" => "A",
+					"Item_CodigoArticulo" => $articulos[$i],
+					"Item_CantidadUM1" => 1,
+					"Item_CantidadUM2" => 0,
+					"Item_DescripArticulo" => $descripcion[$i],
+					"Item_PrecioUnitario" => $totalUnitario[$i],
+					"Item_TasaIVAInscrip" => $ivaConcepto[$i],
+					"Item_TasaIVANoInscrip" => 0,
+					"Item_ImporteIVAInscrip" => $ivaNeto[$i],
+					"Item_ImporteIVANoInscrip" => 0,
+					"Item_ImporteTotal" => $totalUnitario[$i],
+					"Item_ImporteDescComercial" => 0,
+					"Item_ImporteDescFinanciero" => 0,
+					"Item_ImporteDescGeneral" => 0,
+					"Item_ImporteIVANoGravado" => 0,
+					"Item_TipoIVA" => "1",
+					"Item_ImporteDescPorLinea" => 0,
+					"Item_Deposito" => "00",
+					"Item_Partida" => " ",
+					"Item_TasaDescPorItem" => 0,
+					"Item_Importe" => $totalUnitario[$i],
+				];
+
+				array_push($items, $item);
+			}
+
+			$parametros = [
+				"Comprobante_Tipo" => $comprobante_Tipo,
+				"Comprobante_Letra" => $comprobante_Letra,
+				"Comprobante_PtoVenta" => $ptoVenta,
+				"Comprobante_Numero" => $numero_factura,
+				"Comprobante_LoteHasta" => " ",
+				"Comprobante_FechaEmision" => $fechaEmision,
+				"Cliente_Codigo" => $beCliente,
+				"Cliente_RazonSocial" => $beRazsocial,
+				"Cliente_SitIVA" => $beClienteTipoIva,
+				"Cliente_TipoDocumento" => 1,
+				"Cliente_NroDocumento" => $beCuit,
+				"Cliente_Direccion" => $beDirec,
+				"Cliente_Localidad" => $beLoc,
+				"Cliente_CodigoPostal" => $bePostal,
+				"Cliente_Provincia" => $beProv,
+				"Cliente_Email" => $beMail,
+				"Cliente_CodigoClase" => "",
+				"Cliente_CodigoClase2" => "",
+				"Vendedor_Codigo" => "0001",
+				"Comprobante_CondVenta" => "02",
+				"Comprobante_FechaVencimiento" => $fechaEmision,
+				"Comprobante_ImporteTotal" => $tazaIvaTotal,
+				"Comprobante_Moneda" => "1",
+				"Comprobante_Proyecto" => $beRemate,
+				"Comprobante_TipoCambio" => "UNI",
+				"Comprobante_CotizacionCambio" => 1,
+				"Comprobante_ListaPrecios" => "02",
+				"Comprobante_NumeroCAI" => $beCae,
+				"Comprobante_FechaVencimientoCAI" => $beVenciCae,
+				"Comprobante_Items" => $items,
+				"Comprobante_MediosPago" => null,
+				"Comprobante_DatosAdicionales" => null,
+				"Comprobante_RelacionComprobante" => null
+			];
+    
+    $jsonParametros = json_encode($parametros, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    
+    var_dump($jsonParametros);
+
+    $parametrosJson = [
+      json_encode($parametros),
+      "N",
+      "R"
+    ];
+    
+
+    $response = $bejermanClient->ejecutar('VENTAS', 'IngresarComprobanteJSON', $parametrosJson);
+	// Verificar respuesta
+	if (strpos($response, 'OK') !== false) {
+		$query_update = "UPDATE cabfac SET bejerman = 1 WHERE codnum = $codnum";
+		mysqli_query($amercado, $query_update) or die(mysqli_error($amercado));
+	} else {
+		$bejerman = "No se cargó correctamente en Bejerman, Porfavor avisar a IT";
+		$query_update = "UPDATE cabfac SET bejerman = 0 WHERE codnum = $codnum";
+		mysqli_query($amercado, $query_update) or die(mysqli_error($amercado));
+	}
+    // Verificar respuesta
+			if (strpos($response, 'OK') !== false) {
+				$bejerman = "Ninguno";
+			} else {
+				$bejerman = "No se cargó correctamente en Bejerman, Porfavor avisar a IT";
+			}
+			echo " Ncomp = " . $ncomp . " ||| ";
+
+
+    //=====================================================================================
+
 		if (!empty($_POST['imprime'])) {
 			$facnum = $num_fac;
 			$tipcomp = FC_A2;
@@ -1080,8 +1389,8 @@ if ($sigo_y_grabo == 1 && $todo_ok ==1) {
 		} else {
 			
   			$facnum = $num_fac;
-			echo '<script language="javascript">alertaConfirmado("factura='.$facnum.'");</script>';
-		}
+			  echo '<script language="javascript">alertaConfirmado("factura=' . $facnum . ' Error: ' . $bejerman .'");</script>';
+			}
 	}
 	
 	$query_facturas_a = "SELECT * FROM series  WHERE series.tipcomp= $tipcomp  AND series.codnum= $numserie";
@@ -1298,7 +1607,7 @@ function getprov1(form) {
 			form.tasa1.value = "" ;
 	  		form.descripcion1.disabled = true ;
       		form.importe1.disabled = true ;
-	  		break ;	
+	  		break ;
     	}
     	if (seleccion1[contador1].selected) {
 	    	var opcion1 = new String (seleccion1[contador1].text);
@@ -2362,7 +2671,7 @@ function validarFormulario(form)
 			if (tasaadm5!=0) {
 				tot_tasa5 = monto5 * 0.03 * (tasaadm5 / 100.0);
 			}
-			else	
+			else
 				tot_tasa5 = 0.00;
 			
 	    	tot_mon = eval(tot_mon + ('+') + monto5);
@@ -2407,6 +2716,9 @@ function validarFormulario(form)
 	   	} 
  
 	}
+
+
+
 	
 	// LOTE 7 AL 10,5 %	
 	if (factura.impuesto6[0].checked==true) { 
@@ -2435,7 +2747,7 @@ function validarFormulario(form)
 
 	
 	// LOTE 7 AL 21 %
-	if (factura.impuesto6[1].checked===true) {	 
+	if (factura.impuesto6[1].checked===true) {
 		if (monto6.length!=0) {
 			if (tasaadm6!=0) {
 				tot_tasa6 = monto6 * 0.03 * (tasaadm6 / 100.0);
@@ -6490,3 +6802,5 @@ function checkDuplicates() {
 </script>
 </body>
 </html>
+
+

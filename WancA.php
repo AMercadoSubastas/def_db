@@ -2823,7 +2823,7 @@ chainedSelects = new DHTMLSuite.chainedSelect();   // Creating object of class D
 chainedSelects.addChain('tcomp','serie','includes/getserxtc.php'); 
 //chainedSelects.addChain('ncomp','datos','includes/getremate.php'); 
 
-chainedSelects.init(); 
+chainedSelects.init();
 </script>
 </body>
 </html>

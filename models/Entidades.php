@@ -1098,23 +1098,23 @@ class Entidades extends DbTable
             case "gridadd":
             case "register":
             case "addopt":
-                return ($allow & Allow::ADD) == Allow::ADD;
+                return ($allow & Allow::ADD->value) == Allow::ADD->value;
             case "edit":
             case "gridedit":
             case "update":
             case "changepassword":
             case "resetpassword":
-                return ($allow & Allow::EDIT) == Allow::EDIT;
+                return ($allow & Allow::EDIT->value) == Allow::EDIT->value;
             case "delete":
-                return ($allow & Allow::DELETE) == Allow::DELETE;
+                return ($allow & Allow::DELETE->value) == Allow::DELETE->value;
             case "view":
-                return ($allow & Allow::VIEW) == Allow::VIEW;
+                return ($allow & Allow::VIEW->value) == Allow::VIEW->value;
             case "search":
-                return ($allow & Allow::SEARCH) == Allow::SEARCH;
+                return ($allow & Allow::SEARCH->value) == Allow::SEARCH->value;
             case "lookup":
-                return ($allow & Allow::LOOKUP) == Allow::LOOKUP;
+                return ($allow & Allow::LOOKUP->value) == Allow::LOOKUP->value;
             default:
-                return ($allow & Allow::LIST) == Allow::LIST;
+                return ($allow & Allow::LIST->value) == Allow::LIST->value;
         }
     }
 
@@ -2677,30 +2677,45 @@ class Entidades extends DbTable
         //Log("Row Selected");
     }
 
-    // Row Inserting event
     public function rowInserting($rsold, &$rsnew)
     {
         $cuit = $rsnew['cuit'];
-        echo '<script language="javascript">alert("El Cuit está mal crack, faltan los guiones o te comiste un número / El cuit no es existente en afip");</script>';
-        if (strlen($cuit) != 13) return false;
-    		$rv = false;
-    		$resultado = 0;
-    		$cuit_nro = str_replace("-", "", $cuit);
-    		$codes = "6789456789";
-    		$cuit_long = intVal($cuit_nro);
-    		$verificador = intVal($cuit_nro[strlen($cuit_nro)-1]);
-    		$x = 0;
-    		while ($x < 10)
-    		{
-    			$digitoValidador = intVal(substr($codes, $x, 1));
-    			$digito = intVal(substr($cuit_nro, $x, 1));
-    			$digitoValidacion = $digitoValidador * $digito;
-    			$resultado += $digitoValidacion;
-    			$x++;
-    		}
-    		$resultado = intVal($resultado) % 11;
-    		$rv = $resultado == $verificador;
-    		return $rv;
+
+        // Validación del formato y longitud del CUIT
+        if (strlen($cuit) != 13) {
+            echo '<script language="javascript">alert("El Cuit está mal crack, faltan los guiones o te comiste un número / El cuit no es existente en AFIP");</script>';
+            return false;
+        }
+
+        // Validación del CUIT según el algoritmo
+        $rv = false;
+        $resultado = 0;
+        $cuit_nro = str_replace("-", "", $cuit);
+        $codes = "6789456789";
+        $cuit_long = intVal($cuit_nro);
+        $verificador = intVal($cuit_nro[strlen($cuit_nro)-1]);
+        $x = 0;
+        while ($x < 10) {
+            $digitoValidador = intVal(substr($codes, $x, 1));
+            $digito = intVal(substr($cuit_nro, $x, 1));
+            $digitoValidacion = $digitoValidador * $digito;
+            $resultado += $digitoValidacion;
+            $x++;
+        }
+        $resultado = intVal($resultado) % 11;
+        $rv = $resultado == $verificador;
+        if (!$rv) {
+            echo '<script language="javascript">alert("El CUIT no es válido según la validación.");</script>';
+            return false;
+        }
+        $amercado = Conn();
+        // Verificar si el CUIT ya existe en la base de datos
+        $sql = "SELECT * FROM entidades WHERE cuit = " . $cuit . " AND activo = 1 AND tipoent = 1";
+        $resultSet = $amercado->executeQuery($sql);
+        if ($resultSet->fetchAssociative()) {
+            echo '<script language="javascript">alert("Error: El CUIT ' . $cuit . ' ya existe en la base de datos y está activo.");</script>';
+            return false;
+        }
         return true;
     }
 
@@ -2710,30 +2725,45 @@ class Entidades extends DbTable
         //Log("Row Inserted");
     }
 
-    // Row Updating event
     public function rowUpdating($rsold, &$rsnew)
     {
         $cuit = $rsnew['cuit'];
-        echo '<script language="javascript">alert("El Cuit está mal crack, faltan los guiones o te comiste un número / El cuit no es existente en afip");</script>';
-        if (strlen($cuit) != 13) return false;
-    		$rv = false;
-    		$resultado = 0;
-    		$cuit_nro = str_replace("-", "", $cuit);
-    		$codes = "6789456789";
-    		$cuit_long = intVal($cuit_nro);
-    		$verificador = intVal($cuit_nro[strlen($cuit_nro)-1]);
-    		$x = 0;
-    		while ($x < 10)
-    		{
-    			$digitoValidador = intVal(substr($codes, $x, 1));
-    			$digito = intVal(substr($cuit_nro, $x, 1));
-    			$digitoValidacion = $digitoValidador * $digito;
-    			$resultado += $digitoValidacion;
-    			$x++;
-    		}
-    		$resultado = intVal($resultado) % 11;
-    		$rv = $resultado == $verificador;
-    		return $rv;
+
+        // Validación del formato y longitud del CUIT
+        if (strlen($cuit) != 13) {
+            echo '<script language="javascript">alert("El Cuit está mal crack, faltan los guiones o te comiste un número / El cuit no es existente en AFIP");</script>';
+            return false;
+        }
+
+        // Validación del CUIT según el algoritmo
+        $rv = false;
+        $resultado = 0;
+        $cuit_nro = str_replace("-", "", $cuit);
+        $codes = "6789456789";
+        $cuit_long = intVal($cuit_nro);
+        $verificador = intVal($cuit_nro[strlen($cuit_nro)-1]);
+        $x = 0;
+        while ($x < 10) {
+            $digitoValidador = intVal(substr($codes, $x, 1));
+            $digito = intVal(substr($cuit_nro, $x, 1));
+            $digitoValidacion = $digitoValidador * $digito;
+            $resultado += $digitoValidacion;
+            $x++;
+        }
+        $resultado = intVal($resultado) % 11;
+        $rv = $resultado == $verificador;
+        if (!$rv) {
+            echo '<script language="javascript">alert("El CUIT no es válido según la validación.");</script>';
+            return false;
+        }
+        $amercado = Conn();
+        // Verificar si el CUIT ya existe en la base de datos
+        $sql = "SELECT * FROM entidades WHERE cuit = " . $cuit . " AND activo = 1 AND tipoent = 1";
+        $resultSet = $amercado->executeQuery($sql);
+        if ($resultSet->fetchAssociative()) {
+            echo '<script language="javascript">alert("Error: El CUIT ' . $cuit . ' ya existe en la base de datos y está activo.");</script>';
+            return false;
+        }
         return true;
     }
 

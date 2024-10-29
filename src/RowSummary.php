@@ -2,13 +2,11 @@
 
 namespace PHPMaker2024\Subastas2024;
 
-use BenSampo\Enum\Enum;
-
 // RowSummary
-final class RowSummary extends Enum
+enum RowSummary: int
 {
-    const DETAIL = 0;
-    const GROUP = 1;
-    const PAGE = 2;
-    const GRAND = 3;
+    case DETAIL = 0;
+    case GROUP = 1;
+    case PAGE = 2;
+    case GRAND = 3;
 }

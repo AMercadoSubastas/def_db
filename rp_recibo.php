@@ -125,7 +125,7 @@ for ($k=0;$k<2;$k++) {
     $query_cheques = "SELECT codban,codsuc,codchq,importe,fechapago FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp' AND serierel='$serie' AND tcomp='8' AND serie='6'";
     $selec_cheques = mysqli_query($amercado,  $query_cheques) or die("ERROR LEYENDO 103");
 
-    $tot_cheques = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='8' AND serie='6'";
+    $tot_cheques = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp' AND tcomp='8' AND serie='6'";
     $result_cheques = mysqli_query($amercado,  $tot_cheques) or die("ERROR LEYENDO 106");
     $cheques_tot = 0 ;
 
@@ -135,10 +135,10 @@ for ($k=0;$k<2;$k++) {
     }
 
     // CHEQUES A TERCEROS
-    $query_cheques11 = "SELECT codban,codsuc,codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='100' AND serie='44'";
+    $query_cheques11 = "SELECT codban,codsuc,codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='100' AND serie='44'";
     $selec_cheques11 = mysqli_query($amercado,  $query_cheques11) or die("ERROR LEYENDO 105");
 
-    $tot_cheques11 = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='100' AND serie='44'";
+    $tot_cheques11 = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='100' AND serie='44'";
     $result_cheques11 = mysqli_query($amercado,  $tot_cheques11) or die("ERROR LEYENDO 111");
     $cheques_tot11 = 0 ;
 
@@ -148,10 +148,10 @@ for ($k=0;$k<2;$k++) {
     }
 
     // REMATES
-    $query_rem = "SELECT ncomp,importe, fechapago FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='4' ";
+    $query_rem = "SELECT ncomp,importe, fechapago FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='4' ";
     $selec_rem = mysqli_query($amercado,  $query_rem) or die("ERROR LEYENDO 107 ");
 
-    $tot_rem = "SELECT importe, ncomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='4' ";
+    $tot_rem = "SELECT importe, ncomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='4' ";
     $result_rem = mysqli_query($amercado,  $tot_rem ) or die("ERROR LEYENDO 112");
     $rem_tot = 0 ;
     while($row41 = mysqli_fetch_array($result_rem, MYSQLI_BOTH)){
@@ -166,7 +166,7 @@ for ($k=0;$k<2;$k++) {
 
     //echo "DEPOSITOS = ".$selec_depositos."  ";
     
-    $tot_dep = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='9' AND serie='7'";
+    $tot_dep = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='9' AND serie='7'";
     $result_dep = mysqli_query($amercado,  $tot_dep ) or die("ERROR LEYENDO 112");
     $dep_tot = 0 ;
     while($row1 = mysqli_fetch_array($result_dep, MYSQLI_BOTH)){
@@ -175,10 +175,10 @@ for ($k=0;$k<2;$k++) {
     }
 
     // DEPOSITOS A TERCEROS
-    $query_depositos_terceros = "SELECT codban,codsuc,codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='95' AND serie='39'";
+    $query_depositos_terceros = "SELECT codban,codsuc,codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='95' AND serie='39'";
     $selec_depositos_terceros = mysqli_query($amercado,  $query_depositos_terceros) or die("ERROR LEYENDO 122");
 
-    $tot_dep_terceros = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='95' AND serie='39'";
+    $tot_dep_terceros = "SELECT importe  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='95' AND serie='39'";
     $result_dep_terceros = mysqli_query($amercado,  $tot_dep_terceros) or die("ERROR LEYENDO 127");
     $dep_tot_terceros = 0 ;
     while($row1_terceros = mysqli_fetch_array($result_dep_terceros, MYSQLI_BOTH)){
@@ -187,7 +187,7 @@ for ($k=0;$k<2;$k++) {
     }
     $tcompefe = 0;
     // EFECTIVO
-    $query_efectivo = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND (tcomp='12' OR tcomp='13')";
+    $query_efectivo = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND (tcomp='12' OR tcomp='13')";
     $selec_efectivo = mysqli_query($amercado,  $query_efectivo) or die("ERROR LEYENDO 139");
     $efe_tot = 0 ;
     while($row2 = mysqli_fetch_array($selec_efectivo, MYSQLI_BOTH)){
@@ -200,7 +200,7 @@ for ($k=0;$k<2;$k++) {
     
     $tcompefe2 = 0;
     // PAGO CON SALDO A FAVOR
-    $query_efectivo_2 = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND  tcomp='91'";
+    $query_efectivo_2 = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND  tcomp='91'";
     $selec_efectivo_2 = mysqli_query($amercado,  $query_efectivo_2) or die("ERROR LEYENDO 187");
     $efe_tot_2 = 0 ;
     while($row2_2 = mysqli_fetch_array($selec_efectivo_2, MYSQLI_BOTH)){
@@ -212,7 +212,7 @@ for ($k=0;$k<2;$k++) {
     }
     $tcompefe3 = 0;
     // CREDITO A FAVOR
-    $query_efectivo_3 = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='98'";
+    $query_efectivo_3 = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp' AND tcomp='98'";
     $selec_efectivo_3 = mysqli_query($amercado,  $query_efectivo_3) or die("ERROR LEYENDO 187");
     $efe_tot_3 = 0 ;
     while($row2_3 = mysqli_fetch_array($selec_efectivo_3, MYSQLI_BOTH)){
@@ -224,7 +224,7 @@ for ($k=0;$k<2;$k++) {
     }
     $tcompefe4 = 0;
     // CANCELA CONTRA FC PROVEEDOR
-    $query_efectivo_4 = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='97'";
+    $query_efectivo_4 = "SELECT importe, codchq,tcomp  FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp' AND tcomp='97'";
     $selec_efectivo_4 = mysqli_query($amercado,  $query_efectivo_4) or die("ERROR LEYENDO 187");
     $efe_tot_4 = 0 ;
     while($row2_4 = mysqli_fetch_array($selec_efectivo_4, MYSQLI_BOTH)){
@@ -248,10 +248,10 @@ for ($k=0;$k<2;$k++) {
     }
     
     // NOTAS DE CREDITO ASOCIADAS A LA FACTURA
-    $query_ganan = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='42' ";
+    $query_ganan = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='42' ";
     $selec_ganancias = mysqli_query($amercado,  $query_ganan) or die("ERROR LEYENDO 156");
 
-    $query_ganan1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='42' ";
+    $query_ganan1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp' AND tcomp='42' ";
     $selec_ganan1 = mysqli_query($amercado,  $query_ganan1) or die("ERROR LEYENDO 161");
 
     $ganancia = 0 ;
@@ -261,10 +261,10 @@ for ($k=0;$k<2;$k++) {
     }
 
     // RETENCION ING BRUTOS PARA CBTES VIEJOS
-    $query_ing_brutos = "SELECT codchq,importe, tcomp FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND serie='34'";
+    $query_ing_brutos = "SELECT codchq,importe, tcomp FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND serie='34'";
     $selec_ing_brutos = mysqli_query($amercado,  $query_ing_brutos) or die("ERROR LEYENDO 173");
 
-    $query_ing_brutos1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND serie='34'";
+    $query_ing_brutos1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND serie='34'";
     $selec_ing_brutos1 = mysqli_query($amercado,  $query_ing_brutos1) or die("ERROR LEYENDO 178");
 
     $t_ing_br = 0 ;
@@ -274,10 +274,10 @@ for ($k=0;$k<2;$k++) {
     }
 
     // RETENCION IVA PARA CBTES VIEJOS
-    $query_iva = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='40' AND serie='22'";
+    $query_iva = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='40' AND serie='22'";
     $selec_iva = mysqli_query($amercado,  $query_iva) or die("ERROR LEYENDO 191");
 
-    $query_iva1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='40' AND serie='22'";
+    $query_iva1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='40' AND serie='22'";
     $selec_iva1 = mysqli_query($amercado,  $query_iva1) or die("ERROR LEYENDO 196");
 
     $tot_iva = 0 ;
@@ -287,10 +287,10 @@ for ($k=0;$k<2;$k++) {
     }
 
     // RETENCION SUSS
-    $query_suss = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='43' AND serie='25'";
+    $query_suss = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='43' AND serie='25'";
     $selec_suss = mysqli_query($amercado,  $query_suss) or die("ERROR LEYENDO 208");
 
-    $query_suss1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='2' AND serierel='3' AND tcomp='43' AND serie='25'";
+    $query_suss1 = "SELECT codchq,importe FROM cartvalores WHERE ncomprel ='$pncomp' AND tcomprel ='$tcomp'  AND tcomp='43' AND serie='25'";
     $selec_suss1 = mysqli_query($amercado,  $query_suss1) or die("ERROR LEYENDO 213");
 
     $tot_sus = 0 ;

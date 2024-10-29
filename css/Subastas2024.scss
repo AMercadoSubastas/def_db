@@ -2089,6 +2089,12 @@ $ew-utilities: map-merge(
         }
     }
 }
+.input-group>.select2-container--bootstrap5:not(:last-child) .select2-selection {
+    border-top-left-radius: $border-radius !important;
+    border-bottom-left-radius: $border-radius !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
 
 // Column Visibility
 .ew-column-dropdown {

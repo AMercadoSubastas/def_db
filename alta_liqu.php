@@ -7,12 +7,17 @@ $query_Recordset1 = "SELECT * FROM `remates` ORDER BY `ncomp` desc";
 $Recordset1 = mysqli_query($amercado, $query_Recordset1) or die("ERROR");
 $row_Recordset1 = mysqli_fetch_assoc($Recordset1);
 $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
+
 //echo $totalRows_Recordset1;
 $cod_usuario = $_SESSION['id'];
 validoUsu($cod_usuario, $amercado);
 echo "USUARIO ".$cod_usuario."  ";
 $usu = $cod_usuario;
 echo $usu;
+
+$fecha_desde = "18-09-2024";
+$fecha_hasta = "18-09-2024";
+
  ?>
 <body>
 <script language="javascript" src="cal2.js" >

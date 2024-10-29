@@ -1,5 +1,5 @@
 /*!
- * JavaScript for PHPMaker v24.13.0
+ * JavaScript for PHPMaker v24.14.0
  * Copyright (c) e.World Technology Limited. All rights reserved.
  */
 (function (ew$1, $$1, luxon) {
@@ -6166,7 +6166,9 @@
       form = (grid == null ? void 0 : grid.querySelector("div.ew-form[id^=f][id$=grid]")) || (grid == null ? void 0 : grid.querySelector("form.ew-form[id^=f][id$=list], form.ew-form[id^=f][id$=grid]")),
       $form = $$1(form),
       frm = $form.data("form");
-    if (!el || !grid || !row || !tbl || !form || !frm) return false;
+    if (!el || !grid || !row || !form || !frm)
+      // tbl can be null if multi-column
+      return false;
     let suffix = $form.is("div") ? "_" + form.id : "",
       keycnt = "#" + ew.FORM_KEY_COUNT_NAME + suffix;
     let _delete = function () {
@@ -9946,10 +9948,10 @@
       // Already initiated
       return true;
     let latlng = data.latlng,
-      $div = $$1("#" + data.id),
       useSingleMap = data.useSingleMap,
       showAllMarkers = data.showAllMarkers,
       useMarkerClusterer = data.useMarkerClusterer,
+      $div = $$1("#" + data.id + "." + (useSingleMap ? "ew-single-map" : "ew-map")),
       ext = ew.maps[data.ext];
     if (useSingleMap) {
       // Use single map
@@ -10441,17 +10443,19 @@
   $$1.fn.extend({
     // Get jQuery object of the row (<div> or <tr>)
     row: function () {
-      var _this$data$substring, _this$data;
+      var _this$data$substring, _this$data, _this$data2;
       let id = (_this$data$substring = (_this$data = this.data("field")) == null ? void 0 : _this$data.substring(2)) != null ? _this$data$substring : "",
-        $row = this.closest("#r_" + id + ", #xs_" + id);
+        tbl = (_this$data2 = this.data("table")) != null ? _this$data2 : "",
+        $row = this.closest("#r_" + id + ", #xs_" + id + ", .row." + tbl + "_" + id);
       if (!$row[0]) $row = this.closest(".ew-table > tbody > tr"); // Grid page
       return $row;
     },
     // Show/Hide field
     visible: function (v) {
-      var _this$data$substring2, _this$data2;
-      let id = (_this$data$substring2 = (_this$data2 = this.data("field")) == null ? void 0 : _this$data2.substring(2)) != null ? _this$data$substring2 : "",
-        $p = this.closest("#r_" + id + ", #xs_" + id); // Find the row
+      var _this$data$substring2, _this$data3, _this$data4;
+      let id = (_this$data$substring2 = (_this$data3 = this.data("field")) == null ? void 0 : _this$data3.substring(2)) != null ? _this$data$substring2 : "",
+        tbl = (_this$data4 = this.data("table")) != null ? _this$data4 : "",
+        $p = this.closest("#r_" + id + ", #xs_" + id + ", .row." + tbl + "_" + id); // Find the row
       if (!$p[0]) $p = this.closest("[id^=el]"); // Find the span
       if (typeof v != "undefined") {
         $p.toggleClass("d-none d-sm-none", !v); // Note: d-sm-none overrides d-sm-flex

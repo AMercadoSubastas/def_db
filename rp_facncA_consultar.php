@@ -33,7 +33,7 @@ mysqli_select_db($amercado, $database_amercado);
     //CUIT (Sin guiones)
     $empresaCuit  = '30718033612';
     //El alias debe estar mencionado en el nombre de los archivos de certificados y firmas digitales
-    $empresaAlias = 'SubastasV8';
+    $empresaAlias = 'SubastasTesting';
 
 
 	//Obtener los datos de la factura que se desea generar

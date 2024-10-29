@@ -2,20 +2,18 @@
 
 namespace PHPMaker2024\Subastas2024;
 
-use BenSampo\Enum\Enum;
-
 // DataType
-final class DataType extends Enum
+enum DataType: int
 {
-    const NUMBER = 1;
-    const DATE = 2;
-    const STRING = 3;
-    const BOOLEAN = 4;
-    const MEMO = 5;
-    const BLOB = 6;
-    const TIME = 7;
-    const GUID = 8;
-    const XML = 9;
-    const BIT = 10;
-    const OTHER = 11;
+    case NUMBER = 1;
+    case DATE = 2;
+    case STRING = 3;
+    case BOOLEAN = 4;
+    case MEMO = 5;
+    case BLOB = 6;
+    case TIME = 7;
+    case GUID = 8;
+    case XML = 9;
+    case BIT = 10;
+    case OTHER = 11;
 }

@@ -84,7 +84,7 @@ class Attributes implements \ArrayAccess, \IteratorAggregate
         if (SameText($offset, "class")) {
             return $this->appendClass($value);
         }
-        $ar = array_filter([$this->offsetGet($offset), $value], fn($v) => !EmptyString($v));
+        $ar = array_unique(array_filter([$this->offsetGet($offset), $value], fn($v) => !EmptyString($v)));
         $this->attrs[$offset] = implode($sep, $ar);
         return $this->attrs[$offset];
     }
@@ -95,7 +95,7 @@ class Attributes implements \ArrayAccess, \IteratorAggregate
         if (SameText($offset, "class")) {
             return $this->prependClass($value);
         }
-        $ar = array_filter([$value, $this->offsetGet($offset)], fn($v) => !EmptyString($v));
+        $ar = array_unique(array_filter([$value, $this->offsetGet($offset)], fn($v) => !EmptyString($v)));
         $this->attrs[$offset] = implode($sep, $ar);
         return $this->attrs[$offset];
     }
@@ -111,7 +111,7 @@ class Attributes implements \ArrayAccess, \IteratorAggregate
                 $this->appendClass($attrs["class"]);
                 unset($attrs["class"]);
             }
-            $this->attrs = array_merge_recursive($this->attrs, $attrs);
+            $this->attrs = array_replace_recursive($this->attrs, $attrs);
         }
     }
 

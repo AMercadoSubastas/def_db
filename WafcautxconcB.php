@@ -4,6 +4,7 @@ require_once('Connections/amercado.php');
 include_once "FE_Pack_WSFE/config.php";
 include_once "FE_Pack_WSFE/afip/AfipWsaa.php";
 include_once "FE_Pack_WSFE/afip/AfipWsfev1.php";
+require_once 'bejerman-xml/api-bejerman/BejermanClient.php';
 define('FC_B2','126');
 define('SERIE_B2','53');
 $num_factura = "";
@@ -744,11 +745,13 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {
 		if ($num_fac >9999 && $num_fac <=99999) {
 			$mascara=$mascara."-"."000".$num_fac;
 		}
+
+
 		if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {	
 			$fecha_factura1 =$_POST['fecha_factura1'] ;
 			$fecha_factura1 = substr($fecha_factura1,6,4)."-".substr($fecha_factura1,3,2)."-".substr($fecha_factura1,0,2);
 	
-			$insertSQL = sprintf("INSERT INTO cabfac (tcomp, serie, ncomp, fecval, fecdoc, fecreg, cliente, fecvenc, estado, emitido, codrem, totbruto, totiva21, totneto21, nrengs, nrodoc, en_liquid, CAE, CAEFchVto, Resultado, usuario, usuarioultmod) VALUES (%s, %s, %s, '$fecha_factura1','$fecha_factura1', '$fecha_factura1', %s, '$fecha_factura1', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+			$insertSQL = sprintf("INSERT INTO cabfac (tcomp, serie, ncomp, fecval, fecdoc, fecreg, cliente, fecvenc, estado, emitido, codrem, totneto, totbruto, totiva21, totneto21, nrengs, nrodoc, en_liquid, CAE, CAEFchVto, Resultado, usuario, usuarioultmod) VALUES (%s, %s, %s, '$fecha_factura1','$fecha_factura1', '$fecha_factura1', %s, '$fecha_factura1', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
 						   FC_B2,
                        	   SERIE_B2,
 						   $num_fac, //GetSQLValueString($_POST['num_factura'], "int"),
@@ -756,6 +759,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {
 						   GetSQLValueString("P", "text"), //GetSQLValueString($_POST['GrupoOpciones1'], "text"), 
 						   GetSQLValueString("0", "int"),
 						   GetSQLValueString($_POST['remate_num'], "int"),
+						   GetSQLValueString($_POST['totneto'], "double"),
 						   GetSQLValueString($_POST['tot_general'], "double"),
 						   GetSQLValueString($_POST['totiva21'], "double"),
 						   GetSQLValueString($_POST['totneto21'], "double"),
@@ -771,8 +775,192 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {
 			}
 			mysqli_select_db($amercado, $database_amercado);
 			$Result1 = mysqli_query($amercado, $insertSQL) or die("ERROR GRABANDO CABFAC: ".$insertSQL." - ");
+
+
+			// DESDE ACA ===================================================================================
+
+			// Consultas Para BEJERMAN
+			$cliente_query = sprintf("SELECT * FROM entidades WHERE cuit = %s",GetSQLValueString($_POST['cuit'],"text"));
+			$cliente_array = mysqli_query($amercado, $cliente_query) or die(mysqli_error($amercado));
+			$row_cliente = mysqli_fetch_assoc($cliente_array);
+			
+			// Cliente
+			$now = new DateTime();
+			$fechaEmision = $now->format('Y-m-d');
+			$beCliente = str_pad($row_cliente['codnum'], 6, '0', STR_PAD_LEFT);
+			$beRazsocial = $row_cliente['razsoc'];
+			$beClienteTipoIva = $row_cliente['tipoiva'];
+			$clienteNroDocumento = $row_cliente['cuit'];
+			$beCuit = str_replace('-', '', $clienteNroDocumento);
+			$beMail = $row_cliente['mailcont'];
+
+			// UBICACION DEL CLIENTE
+			$beDirec = $row_cliente['calle'].' '.$row_cliente['numero'];
+
+			// Consulta string de Loc
+			$bePostal = $row_cliente['codpost'];
+			$prov_query = sprintf("SELECT * FROM provincias WHERE codnum = %s", GetSQLValueString($row_cliente['codprov'], "int"));
+			$prov_array = mysqli_query($amercado, $prov_query) or die(mysqli_error($amercado));
+			$row_prov = mysqli_fetch_assoc($prov_array);
+			$beProv = $row_prov['codbejerman'];
+
+			$loc_query = sprintf("SELECT descripcion FROM localidades WHERE codnum = %s",GetSQLValueString($row_cliente['codloc'],"int"));
+			$loc_array = mysqli_query($amercado, $loc_query) or die(mysqli_error($amercado));
+			$row_loc = mysqli_fetch_assoc($loc_array);
+
+			$beLoc = $row_loc['descripcion'];
+
+			// DATOS DE CABECERAS E ITEMS
+
+			//Precio unitario por concepto (item)
+
+			$importeConcepto = [$_POST['importe']];
+			$ivaNeto = [($_POST['tipoiva'] == 21) ? $importeConcepto[0] * 0.21 : 0];
+			$totalUnitario = [$importeConcepto[0] + $ivaNeto[0],];
+			$descripcion = [$_POST['descripcion'],];
+			$ivaConcepto = [$_POST['tipoiva'],];
+			$concepto = [$_POST['concepto']];
+
+
+			for ($i = 1; $i <= $renglones; $i++) {
+
+				$iNameConcepto = 'concepto' . $i;
+				// articulo cod
+				array_push($concepto, $_POST[$iNameConcepto]);
+
+				// Importes unitarios sin IVA
+				$iName = 'importe' . $i;
+				array_push($importeConcepto, $_POST[$iName]);
+
+				//tipo IVA de los coceptos
+				$iNameIvaConc = 'tipoiva' . $i;
+				array_push($ivaConcepto, $_POST[$iNameIvaConc]);
+
+				// Calculos de importes unitarios solo IVA
+				$calcIvaNeto = ($_POST[$iNameIvaConc] == 21) ? $_POST[$iName] * 0.21 : 0;
+				array_push($ivaNeto, $calcIvaNeto);
+
+				// Importe total unitario
+				$calcTotalUnitario = intval($_POST[$iName]) + $calcIvaNeto;
+				array_push($totalUnitario, $calcTotalUnitario);
+
+				// Descripcion de los conceptos
+				$iNameDesc = 'descripcion' . $i;
+				array_push($descripcion, $_POST[$iNameDesc]);
+
+			}
+			
+			
+			// DATOS DE FACTURA CABECERA
+			$ptoVenta = "00002";
+			$beRemate = $_POST['remate_num'];
+			$totNetoItem = $_POST['totneto21_1'];
+			$tazaIvaTotal = $_POST['tot_general_1'];
+			$tazaIva = $_POST['totiva21_1'];
+			$numero_factura = str_pad($num_fac, 8, '0', STR_PAD_LEFT);
+
+			// CAE
+			$beCae = $CAE;
+			$dateTime = DateTime::createFromFormat('Ymd', $CAEFchVto);
+			$beVenciCae = $dateTime->format('Y-m-d');
+
+			$items = [];
+
+			for ($i=0; $i < $renglones; $i++) {
+
+				$item = [
+					"Comprobante_Tipo" => "FC",
+					"Comprobante_Letra" => "B",
+					"Comprobante_PtoVenta" => $ptoVenta,
+					"Comprobante_Numero" => $numero_factura,
+					"Comprobante_LoteHasta" => " ",
+					"Comprobante_FechaEmision" => $fechaEmision,
+					"Cliente_Codigo" => $beCliente,
+					"Item_Tipo" => "A",
+					"Item_CodigoArticulo" => $concepto[$i],
+					"Item_CantidadUM1" => 1,
+					"Item_CantidadUM2" => 0,
+					"Item_DescripArticulo" => $descripcion[$i],
+					"Item_PrecioUnitario" => $totalUnitario[$i],
+					"Item_TasaIVAInscrip" => $ivaConcepto[$i],
+					"Item_TasaIVANoInscrip" => 0,
+					"Item_ImporteIVAInscrip" => $ivaNeto[$i],
+					"Item_ImporteIVANoInscrip" => 0,
+					"Item_ImporteTotal" => $importeConcepto[$i],
+					"Item_ImporteDescComercial" => 0,
+					"Item_ImporteDescFinanciero" => 0,
+					"Item_ImporteDescGeneral" => 0,
+					"Item_ImporteIVANoGravado" => 0,
+					"Item_TipoIVA" => "1",
+					"Item_ImporteDescPorLinea" => 0,
+					"Item_Deposito" => "00",
+					"Item_Partida" => " ",
+					"Item_TasaDescPorItem" => 0,
+					"Item_Importe" => $totalUnitario[$i],
+			];
+
+			array_push($items, $item);
+
+			}
+			
+			$parametros = [
+				"Comprobante_Tipo" => "FC",
+				"Comprobante_Letra" => "B",
+				"Comprobante_PtoVenta" => $ptoVenta,
+				"Comprobante_Numero" => $numero_factura,
+				"Comprobante_LoteHasta" => " ",
+				"Comprobante_FechaEmision" => $fechaEmision,
+				"Cliente_Codigo" => $beCliente,
+				"Cliente_RazonSocial" => $beRazsocial,
+				"Cliente_SitIVA" => $beClienteTipoIva,
+				"Cliente_TipoDocumento" => 1,
+				"Cliente_NroDocumento" => $beCuit,
+				"Cliente_Direccion" => $beDirec,
+				"Cliente_Localidad" => $beLoc,
+				"Cliente_CodigoPostal" => $bePostal,
+				"Cliente_Provincia" => $beProv,
+				"Cliente_Email" => $beMail,
+				"Cliente_CodigoClase" => "",
+				"Cliente_CodigoClase2" => "",
+				"Vendedor_Codigo" => "0001",
+				"Comprobante_CondVenta" => "02",
+				"Comprobante_FechaVencimiento" => $fechaEmision,
+				"Comprobante_ImporteTotal" => $tazaIvaTotal,
+				"Comprobante_Moneda" => "1",
+				"Comprobante_Proyecto" => $beRemate,
+				"Comprobante_TipoCambio" => "UNI",
+				"Comprobante_CotizacionCambio" => 1,
+				"Comprobante_ListaPrecios" => "02",
+				"Comprobante_NumeroCAI" => $beCae,
+				"Comprobante_FechaVencimientoCAI" => $beVenciCae,
+				"Comprobante_Items" => $items,
+				"Comprobante_MediosPago" => null,
+				"Comprobante_DatosAdicionales" => null,
+				"Comprobante_RelacionComprobante" => null
+			];
+			
+			$jsonParametros = json_encode($parametros, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+			$parametrosJson = [
+				json_encode($parametros),
+				"N",
+				"R"
+			];
+			
+
+			$response = $bejermanClient->ejecutar('VENTAS', 'IngresarComprobanteJSON', $parametrosJson);
+				
+			// Verificar respuesta
+			if (strpos($response, 'OK') !== false) {
+				$query_update = "UPDATE cabfac SET bejerman = 1 WHERE codnum = $codnum";
+				mysqli_query($amercado, $query_update) or die(mysqli_error($amercado));
+			} else {
+				$bejerman = "No se cargó correctamente en Bejerman, Porfavor avisar a IT";
+				$query_update = "UPDATE cabfac SET bejerman = 0 WHERE codnum = $codnum";
+				mysqli_query($amercado, $query_update) or die(mysqli_error($amercado));
+			}
 	
-			if (!empty($_POST['imprime'])) { 
+			if (!empty($_POST['imprime'])) {
 				$facnum = $num_fac;//GetSQLValueString($_POST['num_factura'], "int");
 				$tipcomp = FC_B2;//GetSQLValueString($_POST['tcomp'], "int");
 				$numserie = SERIE_B2;//GetSQLValueString($_POST['serie'], "int");
@@ -780,7 +968,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "factura")) {
 				echo '<script type="text/javascript">';
 				echo 'window.location.href="rp_facncB.php?ftcomp=' . $tipcomp . '&fserie=' . $numserie . '&fncomp=' . $num_fac . '";';
 				echo '</script>';
-			} else { 
+			} else {
 				$facnum = $CbteDesde; //GetSQLValueString($_POST['num_factura'], "int");
 				
 				

@@ -67,14 +67,14 @@ class ReportField extends DbField
         $name = $this->getGroupName();
         if (SameText($sort, "DESC")) {
             $this->DistinctValues = Collection::make($records)
-                ->pluck($name)
                 ->sortByDesc($name)
+                ->pluck($name)
                 ->unique()
                 ->all();
         } else {
             $this->DistinctValues = Collection::make($records)
-                ->pluck($name)
                 ->sortBy($name)
+                ->pluck($name)
                 ->unique()
                 ->all();
         }

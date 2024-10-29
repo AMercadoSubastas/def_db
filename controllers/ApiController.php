@@ -79,7 +79,7 @@ class ApiController extends AbstractController
             return $response->withJson(["error" => $Language->phrase("IncorrectInteger") . ": " . Config("API_LOGIN_EXPIRE")]); // Incorrect expire
         }
         // Valdiate permission
-        if ($permission && (!is_numeric($permission) || ParseInteger($permission) <= 0 || ParseInteger($permission) > Allow::ALL)) {
+        if ($permission && (!is_numeric($permission) || ParseInteger($permission) <= 0 || ParseInteger($permission) > Allow::ALL->value)) {
             return $response->withJson(["error" => $Language->phrase("IncorrectInteger") . ": " . Config("API_LOGIN_PERMISSION")]); // Incorrect expire
         }
         $validPwd = $Security->validateUser($username, $password, securityCode: $code);
@@ -350,11 +350,11 @@ class ApiController extends AbstractController
             $outPrivs = [];
             foreach ($json as $tableName => $permission) {
                 $table = Collection::make($ar)->first(fn ($privs) => $privs[0] == $tableName || $privs[1] == $tableName);
-                if (!$table || !is_numeric($permission) || intval($permission) < 0 || intval($permission) > Allow::ALL) {
+                if (!$table || !is_numeric($permission) || intval($permission) < 0 || intval($permission) > Allow::ALL->value) {
                     $res = ["userlevel" => $userLevel, "permissions" => $json, "success" => false];
                     $response = $response->withJson($res);
                 }
-                $permission = intval($permission) & Allow::ALL;
+                $permission = intval($permission) & Allow::ALL->value;
                 $newPrivs[$table[4] . $table[1]] = $permission;
                 $outPrivs[$table[1]] = $permission;
             }

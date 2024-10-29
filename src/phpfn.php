@@ -1840,7 +1840,7 @@ function GetEntityClass($tablename)
  * @param array $criteria Other criteria
  * @return User entity or null
  */
-function FindUserByUserName(string $username, array $criteria = [])
+function FindUserByUserName(?string $username, array $criteria = [])
 {
     $criteria = array_merge(["usuario" => $username], $criteria);
     return !EmptyValue($username)
@@ -5893,7 +5893,7 @@ function AllowListMenu($tableName)
                 }
             }
         }
-        return ($priv & Allow::LIST);
+        return ($priv & Allow::LIST->value);
     }
 }
 
@@ -6864,6 +6864,7 @@ function GlobalClientVars()
         "ROWTYPE_ADD" => RowType::ADD, // 2
         "ROWTYPE_EDIT" => RowType::EDIT, // 3
         "CURRENCY_FORMAT" => str_replace('¤', '$', $CURRENCY_FORMAT),
+        "IS_RTL" => IsRTL(),
         "IS_LOGGEDIN" => IsLoggedIn(),
         "IS_AUTOLOGIN" => IsAutoLogin(),
         "LANGUAGE_ID" => str_replace("_", "-", CurrentLanguageID()),

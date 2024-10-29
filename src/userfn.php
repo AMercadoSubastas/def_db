@@ -719,8 +719,13 @@ AddListener(ConfigurationEvent::NAME, function (ConfigurationEvent $event) {
 
 // PhpSpreadsheet
 AddListener(ConfigurationEvent::NAME, function (ConfigurationEvent $event) {
+    $exts = array_merge($event->get("PHP_EXTENSIONS"), [
+        "zip" => "zip",
+        "zlib" => "zlib",
+    ]);
     $event->import([
         "USE_PHPEXCEL" => true,
         "EXPORT_EXCEL_FORMAT" => "Excel5",
+        "PHP_EXTENSIONS" => $exts,
     ]);
 });

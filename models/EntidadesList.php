@@ -1476,6 +1476,31 @@ class EntidadesList extends Entidades
         // Clear other search and save rules to session
         if ($where && $fieldName == "") { // Skip if get query for specific field
             $this->resetSearchParms();
+            $this->codnum->AdvancedSearch->save(); // codnum
+            $this->razsoc->AdvancedSearch->save(); // razsoc
+            $this->calle->AdvancedSearch->save(); // calle
+            $this->numero->AdvancedSearch->save(); // numero
+            $this->pisodto->AdvancedSearch->save(); // pisodto
+            $this->codpais->AdvancedSearch->save(); // codpais
+            $this->codprov->AdvancedSearch->save(); // codprov
+            $this->codloc->AdvancedSearch->save(); // codloc
+            $this->codpost->AdvancedSearch->save(); // codpost
+            $this->tellinea->AdvancedSearch->save(); // tellinea
+            $this->telcelu->AdvancedSearch->save(); // telcelu
+            $this->tipoent->AdvancedSearch->save(); // tipoent
+            $this->tipoiva->AdvancedSearch->save(); // tipoiva
+            $this->cuit->AdvancedSearch->save(); // cuit
+            $this->fecalta->AdvancedSearch->save(); // fecalta
+            $this->usuario->AdvancedSearch->save(); // usuario
+            $this->contacto->AdvancedSearch->save(); // contacto
+            $this->mailcont->AdvancedSearch->save(); // mailcont
+            $this->cargo->AdvancedSearch->save(); // cargo
+            $this->fechahora->AdvancedSearch->save(); // fechahora
+            $this->activo->AdvancedSearch->save(); // activo
+            $this->pagweb->AdvancedSearch->save(); // pagweb
+            $this->tipoind->AdvancedSearch->save(); // tipoind
+            $this->usuarioultmod->AdvancedSearch->save(); // usuarioultmod
+            $this->fecultmod->AdvancedSearch->save(); // fecultmod
             $this->setSessionRules($rules);
         }
 
@@ -3950,7 +3975,7 @@ class EntidadesList extends Entidades
                     if (!$ope || !$fldOpr) {
                         throw new \Exception("Unknown SQL operation for operator '" . $rule["operator"] . "'");
                     }
-                    if ($ope["nb_inputs"] > 0 && ($rule["value"] ?? false) || IsNullOrEmptyOperator($fldOpr)) {
+                    if ($ope["nb_inputs"] > 0 && isset($rule["value"]) && !EmptyValue($rule["value"]) || IsNullOrEmptyOperator($fldOpr)) {
                         $fldVal = $rule["value"];
                         if (is_array($fldVal)) {
                             $fldVal = $fld->isMultiSelect() ? implode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal) : $fldVal[0];
@@ -3981,12 +4006,14 @@ class EntidadesList extends Entidades
                                     if (is_array($fldVal2)) {
                                         $fldVal2 = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $fldVal2);
                                     }
+                                    $fld->AdvancedSearch->SearchValue = ConvertSearchValue($fldVal, $fldOpr, $fld);
+                                    $fld->AdvancedSearch->SearchValue2 = ConvertSearchValue($fldVal2, $fldOpr, $fld);
                                     $parts[] = GetSearchSql(
                                         $fld,
-                                        ConvertSearchValue($fldVal, $fldOpr, $fld), // $fldVal
+                                        $fld->AdvancedSearch->SearchValue, // SearchValue
                                         $fldOpr,
                                         "", // $fldCond not used
-                                        ConvertSearchValue($fldVal2, $fldOpr, $fld), // $fldVal2
+                                        $fld->AdvancedSearch->SearchValue2, // SearchValue2
                                         "", // $fldOpr2 not used
                                         $this->Dbid
                                     );

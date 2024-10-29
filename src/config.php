@@ -1294,8 +1294,7 @@ $CONFIG = [
         "TokenNameKey", // Token name key
         "TokenName", // Token name
         "CurrentUserName", // Current user name
-        "IsSysAdmin", // Is system admin
-        "IsRTL" // Is RTL
+        "IsSysAdmin" // Is system admin
     ],
 
     // Doctrine ORM

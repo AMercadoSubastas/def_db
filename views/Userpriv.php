@@ -40,8 +40,8 @@ var headerSortTristate = false,
     },
     priv = <?= JsonEncode($Page->Privileges) ?>;
 window.Tabulator || loadjs([
-    ew.PATH_BASE + "css/<?= CssFile("tabulator_bootstrap5.css", false) ?>?v=24.13.1",
-    ew.PATH_BASE + "js/tabulator.min.js?v=24.13.1"
+    ew.PATH_BASE + "css/<?= CssFile("tabulator_bootstrap5.css", false) ?>?v=24.14.3",
+    ew.PATH_BASE + "js/tabulator.min.js?v=24.14.3"
 ], "tabulator");
 </script>
 <style>
@@ -92,5 +92,5 @@ loadjs.ready("load", function () {
 });
 </script>
 <script>
-ew.ready(["load", "tabulator"], ew.PATH_BASE + "js/userpriv.min.js?v=24.13.1");
+ew.ready(["load", "tabulator"], ew.PATH_BASE + "js/userpriv.min.js?v=24.14.3");
 </script>

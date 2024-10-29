@@ -266,176 +266,176 @@ class AdvancedSecurity
     // Can add
     public function canAdd()
     {
-        return ($this->CurrentUserLevel & Allow::ADD) == Allow::ADD;
+        return ($this->CurrentUserLevel & Allow::ADD->value) == Allow::ADD->value;
     }
 
     // Set can add
     public function setCanAdd($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::ADD;
+            $this->CurrentUserLevel |= Allow::ADD->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::ADD);
+            $this->CurrentUserLevel &= ~(Allow::ADD->value);
         }
     }
 
     // Can delete
     public function canDelete()
     {
-        return ($this->CurrentUserLevel & Allow::DELETE) == Allow::DELETE;
+        return ($this->CurrentUserLevel & Allow::DELETE->value) == Allow::DELETE->value;
     }
 
     // Set can delete
     public function setCanDelete($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::DELETE;
+            $this->CurrentUserLevel |= Allow::DELETE->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::DELETE);
+            $this->CurrentUserLevel &= ~(Allow::DELETE->value);
         }
     }
 
     // Can edit
     public function canEdit()
     {
-        return ($this->CurrentUserLevel & Allow::EDIT) == Allow::EDIT;
+        return ($this->CurrentUserLevel & Allow::EDIT->value) == Allow::EDIT->value;
     }
 
     // Set can edit
     public function setCanEdit($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::EDIT;
+            $this->CurrentUserLevel |= Allow::EDIT->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::EDIT);
+            $this->CurrentUserLevel &= ~(Allow::EDIT->value);
         }
     }
 
     // Can view
     public function canView()
     {
-        return ($this->CurrentUserLevel & Allow::VIEW) == Allow::VIEW;
+        return ($this->CurrentUserLevel & Allow::VIEW->value) == Allow::VIEW->value;
     }
 
     // Set can view
     public function setCanView($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::VIEW;
+            $this->CurrentUserLevel |= Allow::VIEW->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::VIEW);
+            $this->CurrentUserLevel &= ~(Allow::VIEW->value);
         }
     }
 
     // Can list
     public function canList()
     {
-        return ($this->CurrentUserLevel & Allow::LIST) == Allow::LIST;
+        return ($this->CurrentUserLevel & Allow::LIST->value) == Allow::LIST->value;
     }
 
     // Set can list
     public function setCanList($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::LIST;
+            $this->CurrentUserLevel |= Allow::LIST->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::LIST);
+            $this->CurrentUserLevel &= ~(Allow::LIST->value);
         }
     }
 
     // Can search
     public function canSearch()
     {
-        return ($this->CurrentUserLevel & Allow::SEARCH) == Allow::SEARCH;
+        return ($this->CurrentUserLevel & Allow::SEARCH->value) == Allow::SEARCH->value;
     }
 
     // Set can search
     public function setCanSearch($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::SEARCH;
+            $this->CurrentUserLevel |= Allow::SEARCH->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::SEARCH);
+            $this->CurrentUserLevel &= ~(Allow::SEARCH->value);
         }
     }
 
     // Can admin
     public function canAdmin()
     {
-        return ($this->CurrentUserLevel & Allow::ADMIN) == Allow::ADMIN;
+        return ($this->CurrentUserLevel & Allow::ADMIN->value) == Allow::ADMIN->value;
     }
 
     // Set can admin
     public function setCanAdmin($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::ADMIN;
+            $this->CurrentUserLevel |= Allow::ADMIN->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::ADMIN);
+            $this->CurrentUserLevel &= ~(Allow::ADMIN->value);
         }
     }
 
     // Can import
     public function canImport()
     {
-        return ($this->CurrentUserLevel & Allow::IMPORT) == Allow::IMPORT;
+        return ($this->CurrentUserLevel & Allow::IMPORT->value) == Allow::IMPORT->value;
     }
 
     // Set can import
     public function setCanImport($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::IMPORT;
+            $this->CurrentUserLevel |= Allow::IMPORT->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::IMPORT);
+            $this->CurrentUserLevel &= ~(Allow::IMPORT->value);
         }
     }
 
     // Can lookup
     public function canLookup()
     {
-        return ($this->CurrentUserLevel & Allow::LOOKUP) == Allow::LOOKUP;
+        return ($this->CurrentUserLevel & Allow::LOOKUP->value) == Allow::LOOKUP->value;
     }
 
     // Set can lookup
     public function setCanLookup($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::LOOKUP;
+            $this->CurrentUserLevel |= Allow::LOOKUP->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::LOOKUP);
+            $this->CurrentUserLevel &= ~(Allow::LOOKUP->value);
         }
     }
 
     // Can push
     public function canPush()
     {
-        return ($this->CurrentUserLevel & Allow::PUSH) == Allow::PUSH;
+        return ($this->CurrentUserLevel & Allow::PUSH->value) == Allow::PUSH->value;
     }
 
     // Set can push
     public function setCanPush($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::PUSH;
+            $this->CurrentUserLevel |= Allow::PUSH->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::PUSH);
+            $this->CurrentUserLevel &= ~(Allow::PUSH->value);
         }
     }
 
     // Can export
     public function canExport()
     {
-        return ($this->CurrentUserLevel & Allow::EXPORT) == Allow::EXPORT;
+        return ($this->CurrentUserLevel & Allow::EXPORT->value) == Allow::EXPORT->value;
     }
 
     // Set can push
     public function setCanExport($b)
     {
         if ($b) {
-            $this->CurrentUserLevel |= Allow::EXPORT;
+            $this->CurrentUserLevel |= Allow::EXPORT->value;
         } else {
-            $this->CurrentUserLevel &= ~(Allow::EXPORT);
+            $this->CurrentUserLevel &= ~(Allow::EXPORT->value);
         }
     }
 
@@ -1174,7 +1174,7 @@ class AdvancedSecurity
         $userPriv = 0;
         foreach ($ids as $id) {
             if ($id == self::ADMIN_USER_LEVEL_ID) { // System Administrator
-                return Allow::ALL;
+                return Allow::ALL->value;
             } elseif ((int)$id >= self::DEFAULT_USER_LEVEL_ID || $id == self::ANONYMOUS_USER_LEVEL_ID) {
                 if (is_array($this->UserLevelPriv)) {
                     foreach ($this->UserLevelPriv as $row) {
@@ -1238,43 +1238,43 @@ class AdvancedSecurity
     // Check privilege for List page (for menu items)
     public function allowList($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::LIST);
+        return ($this->currentUserLevelPriv($tableName) & Allow::LIST->value);
     }
 
     // Check privilege for View page (for Allow-View / Detail-View)
     public function allowView($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::VIEW);
+        return ($this->currentUserLevelPriv($tableName) & Allow::VIEW->value);
     }
 
     // Check privilege for Add page (for Allow-Add / Detail-Add)
     public function allowAdd($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::ADD);
+        return ($this->currentUserLevelPriv($tableName) & Allow::ADD->value);
     }
 
     // Check privilege for Edit page (for Detail-Edit)
     public function allowEdit($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::EDIT);
+        return ($this->currentUserLevelPriv($tableName) & Allow::EDIT->value);
     }
 
     // Check privilege for Edit page (for Detail-Edit)
     public function allowDelete($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::DELETE);
+        return ($this->currentUserLevelPriv($tableName) & Allow::DELETE->value);
     }
 
     // Check privilege for lookup
     public function allowLookup($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::LOOKUP);
+        return ($this->currentUserLevelPriv($tableName) & Allow::LOOKUP->value);
     }
 
     // Check privilege for export
     public function allowExport($tableName)
     {
-        return ($this->currentUserLevelPriv($tableName) & Allow::EXPORT);
+        return ($this->currentUserLevelPriv($tableName) & Allow::EXPORT->value);
     }
 
     // Check if user password expired

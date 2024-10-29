@@ -1,12 +1,12 @@
 <?php require_once('Connections/amercado.php'); 
 include_once "funcion_mysqli_result.php";
-if (isset($_POST['cliente'])) {
-	$cliente = $_POST['cliente'];
+if (isset($_POST['cuit'])) {
+	$cliente = $_POST['cuit'];
 	echo "Nro.Cliente = ".$cliente;
 }
 mysqli_select_db($amercado, $database_amercado);
 
-$query_cliente = "SELECT entidades.codnum, entidades.razsoc , entidades.calle , entidades.numero ,  entidades.codloc , entidades.codprov FROM entidades WHERE razsoc='$cliente' and activo=1";
+$query_cliente = "SELECT entidades.codnum, entidades.razsoc , entidades.calle , entidades.numero ,  entidades.codloc , entidades.codprov FROM entidades WHERE cuit='$cliente' and activo=1";
 $selec_cliente = mysqli_query($amercado, $query_cliente) or die("ERROR LEYENDO CLIENTE ".$cliente." ");
 $row_cliente = mysqli_fetch_assoc($selec_cliente);
 
@@ -38,30 +38,30 @@ function carga_cheque(form) {
 	   		var monto_cheque = eval(monto) ;
 			deposito_list.total_deposito.value = monto_cheque ;
     		deposito_list.cod_num.value = deposito_list.idcheque.value ;;
-	 	}	  
-	} else { 
+	 	}
+	} else {
 
-		var monto_total = new Array(cantcheques) 
+		var monto_total = new Array(cantcheques)
 		var i = 0 ;
 		var pesos_total = 0
-		var lista = ""; 
+		var lista = "";
 		for (i ; i < cantcheques ; i++)
-		{ 
+		{
    			if(deposito_list.idcheque[i].checked == true)
-	 		{ 
+	 		{
 	   			var monto = "deposito_list.monto"+eval(i)+".value" ;
 	   			var lista  = lista + deposito_list.idcheque[i].value+",";
 	   			var monto = "deposito_list.monto"+eval(i)+".value" ;
 	   			var monto_cheque = eval(monto) ;
 	   			monto_total[i] = monto_cheque;
 	   			pesos_total = eval(pesos_total+('+')+monto_cheque) ;
-			}  
-		}	 
+			}
+		}
 		cant_cheques = eval(lista.length-1) ;
 		cheques_can = lista.substr(0,cant_cheques);
 		deposito_list.total_deposito.value = pesos_total ;
 		deposito_list.cod_num.value = cheques_can;
-	}	   
+	}
   	// total_deposito
 }
 </script>
